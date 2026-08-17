@@ -38,14 +38,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Calculation formula: PRECIO × VENTAS × 90%
     const totalCommission = price * sales * 0.90;
 
-    // Format output as currency
-    const formattedResult = new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
+    // Format output as currency in US Dollars (US$)
+    const formattedNumber = new Intl.NumberFormat('en-US', {
       maximumFractionDigits: 0
     }).format(totalCommission);
 
-    calcResultAmount.textContent = formattedResult;
+    calcResultAmount.textContent = `US$ ${formattedNumber}`;
   }
 
   if (calcPriceInput && calcSalesInput) {
