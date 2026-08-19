@@ -412,13 +412,75 @@
               ${modulesSidebarHtml}
             </div>
 
-            <!-- Main Content Area -->
-            <div class="main-player-content">
-              <div class="video-responsive-frame">
-                <iframe src="${currentLesson.videoUrl}" title="${currentLesson.title}" allowfullscreen></iframe>
+        // Determine lesson viewer layout based on type (drive, page, video)
+        let mediaViewerHtml = '';
+        const targetLink = currentLesson.driveLink || currentLesson.videoUrl;
+
+        if (currentLesson.type === 'drive') {
+          mediaViewerHtml = `
+            <div class="drive-banner-bar">
+              <div class="drive-banner-info">
+                <span class="drive-icon-badge">📁 GOOGLE DRIVE</span>
+                <span class="drive-desc-title">Material y Videos del Curso</span>
+              </div>
+              <a href="${targetLink}" target="_blank" rel="noopener noreferrer" class="btn-open-drive">
+                Abrir en Google Drive ↗
+              </a>
+            </div>
+            <div class="video-responsive-frame drive-frame-container">
+              <iframe src="${currentLesson.videoUrl}" title="${currentLesson.title}" allow="autoplay; fullscreen" loading="lazy"></iframe>
+            </div>
+            <div class="drive-quick-tip">
+              💡 <strong>Tip para alumnos:</strong> Podés navegar los videos y documentos directamente desde el visor superior o hacer clic en <strong>"Abrir en Google Drive"</strong> para verlos en pantalla completa.
+            </div>
+          `;
+        } else if (currentLesson.type === 'page') {
+          mediaViewerHtml = `
+            <div class="drive-banner-bar">
+              <div class="drive-banner-info">
+                <span class="drive-icon-badge" style="background:rgba(16,185,129,0.15); color:#34d399; border-color:rgba(16,185,129,0.3);">🌐 MÓDULO WEB</span>
+                <span class="drive-desc-title">${currentLesson.title}</span>
+              </div>
+              <a href="${targetLink}" target="_blank" rel="noopener noreferrer" class="btn-open-drive" style="background:linear-gradient(135deg,#0052cc,#00c2ff);">
+                Abrir Módulo ↗
+              </a>
+            </div>
+            <div class="video-responsive-frame drive-frame-container">
+              <iframe src="${currentLesson.videoUrl}" title="${currentLesson.title}" allow="autoplay; fullscreen" loading="lazy"></iframe>
+            </div>
+          `;
+        } else {
+          mediaViewerHtml = `
+            <div class="video-responsive-frame">
+              <iframe src="${currentLesson.videoUrl}" title="${currentLesson.title}" allowfullscreen></iframe>
+            </div>
+          `;
+        }
+
+        container.innerHTML = `
+          <div class="player-layout">
+            <!-- Sidebar -->
+            <div class="modules-sidebar">
+              <h3 class="sidebar-course-title">${course.title}</h3>
+              
+              <div class="progress-bar-container">
+                <div class="progress-info">
+                  <span>PROGRESO DEL CURSO</span>
+                  <span>${stats.percentage}%</span>
+                </div>
+                <div class="progress-track">
+                  <div class="progress-fill ${stats.isCompleted ? 'is-100' : ''}" style="width: ${stats.percentage}%;"></div>
+                </div>
               </div>
 
-              <h1 class="lesson-title-heading">${currentLesson.title}</h1>
+              ${modulesSidebarHtml}
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="main-player-content">
+              ${mediaViewerHtml}
+
+              <h1 class="lesson-title-heading" style="margin-top:1.25rem;">${currentLesson.title}</h1>
               <div class="lesson-text-body">${currentLesson.content}</div>
 
               <div class="player-controls-bar">
