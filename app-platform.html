@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RUMBO PRO — Plataforma Educativa Interna</title>
+  <link rel="icon" type="image/jpeg" href="assets/logo.jpg">
+  <link rel="stylesheet" href="styles-platform.css">
+</head>
+<body class="platform-body">
+
+  <!-- Header Navigation Bar -->
+  <nav class="platform-nav">
+    <div class="platform-nav-inner">
+      <a href="#/dashboard" class="platform-logo">
+        <img src="assets/logo.jpg" alt="Logo Rumbo Pro" class="platform-logo-img">
+        <span>RUMBO PRO</span>
+      </a>
+
+      <div class="platform-menu-links" id="nav-menu-container">
+        <!-- Dynamic links injected via JS -->
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main View Container -->
+  <main id="app-view-container">
+    <!-- Active view content dynamically rendered by platform-router -->
+  </main>
+
+  <!-- Core Scripts -->
+  <script src="store-db.js"></script>
+  <script src="certificate-generator.js"></script>
+  <script>
+    // Router & View Controller Logic
+    document.addEventListener('DOMContentLoaded', () => {
+      window.addEventListener('hashchange', renderCurrentRoute);
+      renderCurrentRoute();
+    });
+
+    function navigateTo(route) {
+      window.location.hash = route;
+    }
+
+    function renderCurrentRoute() {
+      const hash = window.location.hash || '#/dashboard';
+      const currentUser = window.rumboDB.getCurrentUser();
+      const container = document.getElementById('app-view-container');
+      const navContainer = document.getElementById('nav-menu-container');
+
+      // Update Navigation Header
+      renderNavMenu(currentUser, hash);
+
+      // Public Routes
+      if (hash.startsWith('#/verificar')) {
+        renderVerifyCertificatesView(container);
+        return;
+      }
+
+      if (hash === '#/registro') {
+        renderRegisterView(container);
+        return;
+      }
+
+      if (hash === '#/login') {
+        renderLoginView(container);
+        return;
+      }
+
+      // Protection Guard: If not logged in, redirect to login
+      if (!currentUser) {
+        navigateTo('#/login');
+        return;
+      }
+
+      // Check User Status (PENDIENTE / RECHAZADO / SUSPENDIDO)
+      if (currentUser.role !== 'ADMINISTRADOR' && currentUser.status !== 'APROBADO') {
+        renderPendingView(container, currentUser);
+        return;
+      }
+
+      // Protected Student / Admin Routes
+      if (hash === '#/dashboard') {
+        renderDashboardView(container, currentUser);
+      } else if (hash.startsWith('#/curso/')) {
+        const courseId = hash.replace('#/curso/', '');
+        renderCoursePlayerView(container, currentUser, courseId);
+      } else if (hash === '#/certificados') {
+        renderCertificatesView(container, currentUser);
+      } else if (hash === '#/admin') {
+        if (currentUser.role !== 'ADMINISTRADOR') {
+          navigateTo('#/dashboard');
+          return;
+        }
+        renderAdminView(container, currentUser);
+      } else {
+        renderDashboardView(container, currentUser);
+      }
+    }
+
+    function renderNavMenu(user, currentHash) {
+      const navContainer = document.getElementById('nav-menu-container');
+      if (!user) {
+        navContainer.innerHTML = `
+          <a href="#/login" class="platform-menu-link ${currentHash === '#/login' ? 'active' : ''}">Iniciar Sesión</a>
+          <a href="#/registro" class="platform-menu-link ${currentHash === '#/registro' ? 'active' : ''}">Registrarse</a>
+          <a href="#/verificar" class="platform-menu-link ${currentHash.startsWith('#/verificar') ? 'active' : ''}">Verificar Certificado</a>
+        `;
+        return;
+      }
+
+      let adminLink = user.role === 'ADMINISTRADOR' ? `<a href="#/admin" class="platform-menu-link ${currentHash === '#/admin' ? 'active' : ''}">Panel Admin</a>` : '';
+
+      navContainer.innerHTML = `
+        <a href="#/dashboard" class="platform-menu-link ${currentHash === '#/dashboard' ? 'active' : ''}">Mis Cursos</a>
+        <a href="#/certificados" class="platform-menu-link ${currentHash === '#/certificados' ? 'active' : ''}">Certificados</a>
+        ${adminLink}
+        <a href="#/verificar" class="platform-menu-link ${currentHash.startsWith('#/verificar') ? 'active' : ''}">Verificar ID</a>
+        <div class="user-badge-nav">
+          <span>${user.firstName} ${user.lastName}</span>
+          <span class="role-badge">${user.role}</span>
+          <button class="btn-logout" onclick="handleLogout()">Salir</button>
+        </div>
+      `;
+    }
+
+    function handleLogout() {
+      window.rumboDB.logout();
+      navigateTo('#/login');
+    }
+
+    // --- VIEW: LOGIN ---
+    function renderLoginView(container) {
+      container.innerHTML = `
+        <div class="auth-container">
+          <div class="auth-card">
+            <h1 class="auth-title">Plataforma RUMBO PRO</h1>
+            <p class="auth-subtitle">Ingresá a tu cuenta de alumno</p>
+
+            <form id="login-form">
+              <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" id="login-email" class="form-input" required placeholder="tu@email.com">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Contraseña</label>
+                <input type="password" id="login-password" class="form-input" required placeholder="••••••••">
+              </div>
+
+              <div id="login-error" style="color: #ef4444; font-size: 0.82rem; margin-bottom: 1rem; display: none;"></div>
+
+              <button type="submit" class="btn-auth-submit">INICIAR SESIÓN</button>
+            </form>
+
+            <div class="auth-footer-link">
+              ¿No tenés una cuenta? <a href="#/registro">Registrate acá</a>
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('login-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = document.getElementById('login-email').value;
+        const pass = document.getElementById('login-password').value;
+        const errDiv = document.getElementById('login-error');
+
+        try {
+          window.rumboDB.loginUser(email, pass);
+          navigateTo('#/dashboard');
+        } catch (err) {
+          errDiv.textContent = err.message;
+          errDiv.style.display = 'block';
+        }
+      });
+    }
+
+    // --- VIEW: REGISTRO ---
+    function renderRegisterView(container) {
+      container.innerHTML = `
+        <div class="auth-container">
+          <div class="auth-card">
+            <h1 class="auth-title">Crear Cuenta</h1>
+            <p class="auth-subtitle">Registrate en la academia de RUMBO PRO</p>
+
+            <form id="register-form">
+              <div class="form-group">
+                <label class="form-label">Nombre</label>
+                <input type="text" id="reg-firstname" class="form-input" required placeholder="Tu nombre">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Apellido</label>
+                <input type="text" id="reg-lastname" class="form-input" required placeholder="Tu apellido">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" id="reg-email" class="form-input" required placeholder="tu@email.com">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Contraseña</label>
+                <input type="password" id="reg-password" class="form-input" required placeholder="••••••••">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Confirmar Contraseña</label>
+                <input type="password" id="reg-confirm" class="form-input" required placeholder="••••••••">
+              </div>
+
+              <div id="reg-error" style="color: #ef4444; font-size: 0.82rem; margin-bottom: 1rem; display: none;"></div>
+
+              <button type="submit" class="btn-auth-submit">SOLICITAR REGISTRO</button>
+            </form>
+
+            <div class="auth-footer-link">
+              ¿Ya tenés cuenta? <a href="#/login">Iniciá sesión</a>
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('register-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const fn = document.getElementById('reg-firstname').value;
+        const ln = document.getElementById('reg-lastname').value;
+        const email = document.getElementById('reg-email').value;
+        const pass = document.getElementById('reg-password').value;
+        const confirm = document.getElementById('reg-confirm').value;
+        const errDiv = document.getElementById('reg-error');
+
+        if (pass !== confirm) {
+          errDiv.textContent = 'Las contraseñas no coinciden.';
+          errDiv.style.display = 'block';
+          return;
+        }
+
+        try {
+          const newUser = window.rumboDB.registerUser({
+            firstName: fn,
+            lastName: ln,
+            email: email,
+            password: pass
+          });
+          window.rumboDB.loginUser(email, pass);
+          navigateTo('#/dashboard');
+        } catch (err) {
+          errDiv.textContent = err.message;
+          errDiv.style.display = 'block';
+        }
+      });
+    }
+
+    // --- VIEW: PENDIENTE / RECHAZADO ---
+    function renderPendingView(container, user) {
+      let isRejected = user.status === 'RECHAZADO' || user.status === 'SUSPENDIDO';
+      let boxClass = isRejected ? 'status-box-rejected' : 'status-box-pending';
+      let title = isRejected ? 'ACCESO RESTRINGIDO' : 'SOLICITUD PENDIENTE DE APROBACIÓN';
+      let msg = isRejected 
+        ? `Tu cuenta se encuentra actualmente en estado: <strong>${user.status}</strong>. Ponete en contacto con la administración de RUMBO PRO para más información.`
+        : `Hola <strong>${user.firstName}</strong>. Tus datos han sido enviados correctamente. Tu cuenta se encuentra en proceso de revisión manual. Una vez aprobada por la administración de RUMBO PRO, tendrás acceso inmediato a tus cursos.`;
+
+      container.innerHTML = `
+        <div class="auth-container">
+          <div class="auth-card">
+            <div class="${boxClass}">
+              <h2 style="font-size: 1.2rem; font-weight: 800; margin-bottom: 0.5rem;">${title}</h2>
+              <p style="font-size: 0.88rem; line-height: 1.6;">${msg}</p>
+            </div>
+
+            <button class="btn-logout" style="width: 100%; padding: 0.75rem;" onclick="handleLogout()">CERRAR SESIÓN</button>
+          </div>
+        </div>
+      `;
+    }
+
+    // --- VIEW: DASHBOARD DEL ALUMNO ---
+    function renderDashboardView(container, user) {
+      const courses = window.rumboDB.getUserCourses(user.id);
+
+      let cardsHtml = courses.map(course => {
+        const stats = window.rumboDB.getCourseStats(user.id, course.id);
+        const isFinished = stats.isCompleted;
+
+        return `
+          <div class="platform-course-card">
+            <div>
+              <div class="p-course-header">
+                <span class="p-course-icon">${course.icon}</span>
+                <div>
+                  <h3 class="p-course-title">${course.title}</h3>
+                  <span class="role-badge">${course.badge}</span>
+                </div>
+              </div>
+              <p class="p-course-desc">${course.description}</p>
+            </div>
+
+            <div>
+              <div class="progress-bar-container">
+                <div class="progress-info">
+                  <span>PROGRESO</span>
+                  <span>${stats.percentage}% (${stats.completedLessons}/${stats.totalLessons} Clases)</span>
+                </div>
+                <div class="progress-track">
+                  <div class="progress-fill ${isFinished ? 'is-100' : ''}" style="width: ${stats.percentage}%;"></div>
+                </div>
+              </div>
+
+              ${isFinished ? `
+                <button class="btn-continue-course btn-cert-unlocked" onclick="handleGenerateCert('${user.id}', '${course.id}')">
+                  🏆 OBTENER CERTIFICADO
+                </button>
+              ` : `
+                <a href="#/curso/${course.id}" class="btn-continue-course">
+                  CONTINUAR CURSO →
+                </a>
+              `}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      container.innerHTML = `
+        <div class="dashboard-container">
+          <div class="welcome-header">
+            <h1 class="welcome-title">Hola, ${user.firstName} ${user.lastName}</h1>
+            <p class="welcome-sub">Bienvenido a la academia de RUMBO PRO. Continuá desarrollando tus habilidades digitales.</p>
+          </div>
+
+          <h2 class="courses-section-title">📚 Mis Cursos Asignados</h2>
+          
+          <div class="dashboard-courses-grid">
+            ${cardsHtml || '<p>No tenés cursos asignados en este momento.</p>'}
+          </div>
+        </div>
+      `;
+    }
+
+    // --- VIEW: REPRODUCTOR DE CURSO Y CLASES ---
+    function renderCoursePlayerView(container, user, courseId) {
+      const courses = window.rumboDB.getCourses();
+      const course = courses.find(c => c.id === courseId);
+      if (!course) {
+        navigateTo('#/dashboard');
+        return;
+      }
+
+      // Flatten all lessons
+      let allLessons = [];
+      course.modules.forEach(m => {
+        m.lessons.forEach(l => {
+          allLessons.push({ ...l, moduleId: m.id, moduleTitle: m.title });
+        });
+      });
+
+      if (allLessons.length === 0) {
+        container.innerHTML = `<div class="dashboard-container"><h2>Este curso aún no tiene clases publicadas.</h2><a href="#/dashboard" class="btn-continue-course" style="display:inline-block; margin-top:1rem;">Volver al Dashboard</a></div>`;
+        return;
+      }
+
+      // Get initial selected lesson
+      let selectedLessonId = allLessons[0].id;
+      
+      function renderPlayerContent() {
+        const stats = window.rumboDB.getCourseStats(user.id, course.id);
+        const currentLesson = allLessons.find(l => l.id === selectedLessonId) || allLessons[0];
+        const progressList = window.rumboDB.getProgress();
+        const isLessonDone = progressList.some(p => p.userId === user.id && p.lessonId === currentLesson.id);
+
+        const currentIndex = allLessons.findIndex(l => l.id === currentLesson.id);
+        const prevLesson = currentIndex > 0 ? allLessons[currentIndex - 1] : null;
+        const nextLesson = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1] : null;
+
+        let modulesSidebarHtml = course.modules.map(m => {
+          let lessonsHtml = m.lessons.map(l => {
+            const isDone = progressList.some(p => p.userId === user.id && p.lessonId === l.id);
+            const isActive = l.id === currentLesson.id;
+            return `
+              <div class="lesson-list-item ${isActive ? 'active-lesson' : ''}" onclick="selectLesson('${l.id}')">
+                <span>${l.title}</span>
+                ${isDone ? '<span class="lesson-check-icon">✓</span>' : ''}
+              </div>
+            `;
+          }).join('');
+
+          return `
+            <div class="module-accordion">
+              <div class="module-accordion-header">${m.title}</div>
+              <div>${lessonsHtml}</div>
+            </div>
+          `;
+        }).join('');
+
+        container.innerHTML = `
+          <div class="player-layout">
+            <!-- Sidebar -->
+            <div class="modules-sidebar">
+              <h3 class="sidebar-course-title">${course.title}</h3>
+              
+              <div class="progress-bar-container">
+                <div class="progress-info">
+                  <span>PROGRESO DEL CURSO</span>
+                  <span>${stats.percentage}%</span>
+                </div>
+                <div class="progress-track">
+                  <div class="progress-fill ${stats.isCompleted ? 'is-100' : ''}" style="width: ${stats.percentage}%;"></div>
+                </div>
+              </div>
+
+              ${modulesSidebarHtml}
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="main-player-content">
+              <div class="video-responsive-frame">
+                <iframe src="${currentLesson.videoUrl}" title="${currentLesson.title}" allowfullscreen></iframe>
+              </div>
+
+              <h1 class="lesson-title-heading">${currentLesson.title}</h1>
+              <div class="lesson-text-body">${currentLesson.content}</div>
+
+              <div class="player-controls-bar">
+                <button class="btn-complete-lesson ${isLessonDone ? 'is-completed-btn' : ''}" onclick="toggleLessonComplete('${user.id}', '${course.id}', '${currentLesson.id}', ${isLessonDone})">
+                  ${isLessonDone ? '✓ CLASE COMPLETADA' : 'MARCAR COMO COMPLETADA'}
+                </button>
+
+                <div style="display: flex; gap: 0.5rem;">
+                  ${prevLesson ? `<button class="btn-continue-course" onclick="selectLesson('${prevLesson.id}')">← Anterior</button>` : ''}
+                  ${nextLesson ? `<button class="btn-continue-course" onclick="selectLesson('${nextLesson.id}')">Siguiente →</button>` : ''}
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      window.selectLesson = (lessonId) => {
+        selectedLessonId = lessonId;
+        renderPlayerContent();
+      };
+
+      window.toggleLessonComplete = (uId, cId, lId, currentState) => {
+        if (currentState) {
+          window.rumboDB.markLessonIncomplete(uId, cId, lId);
+        } else {
+          window.rumboDB.markLessonComplete(uId, cId, lId);
+        }
+        renderPlayerContent();
+      };
+
+      renderPlayerContent();
+    }
+
+    // --- VIEW: CERTIFICADOS DEL ALUMNO ---
+    function renderCertificatesView(container, user) {
+      const courses = window.rumboDB.getUserCourses(user.id);
+
+      let itemsHtml = courses.map(course => {
+        const stats = window.rumboDB.getCourseStats(user.id, course.id);
+        const isDone = stats.isCompleted;
+
+        return `
+          <div class="platform-course-card" style="margin-bottom: 1rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <h3 class="p-course-title">${course.title}</h3>
+                <p class="p-course-desc">Estado: ${isDone ? '🏆 100% Completado' : `En curso (${stats.percentage}%)`}</p>
+              </div>
+              <div>
+                ${isDone ? `
+                  <button class="btn-continue-course btn-cert-unlocked" onclick="handleGenerateCert('${user.id}', '${course.id}')">
+                    DESCARGAR CERTIFICADO
+                  </button>
+                ` : `
+                  <span class="role-badge" style="background:rgba(255,255,255,0.05); color:var(--text-muted);">Completa el 100% para desbloquear</span>
+                `}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      container.innerHTML = `
+        <div class="dashboard-container">
+          <div class="welcome-header">
+            <h1 class="welcome-title">Certificados Oficiales RUMBO PRO</h1>
+            <p class="welcome-sub">Obtené tus diplomas oficiales al completar el 100% de cada curso. Firmados por Pablo Xavier.</p>
+          </div>
+
+          <div>${itemsHtml}</div>
+        </div>
+      `;
+    }
+
+    window.handleGenerateCert = (userId, courseId) => {
+      try {
+        const cert = window.rumboDB.generateCertificate(userId, courseId);
+        openCertificateModal(cert);
+      } catch (err) {
+        alert(err.message);
+      }
+    };
+
+    // --- VIEW: VERIFICAR CERTIFICADO ---
+    function renderVerifyCertificatesView(container) {
+      container.innerHTML = `
+        <div class="auth-container">
+          <div class="auth-card">
+            <h1 class="auth-title">Verificar Certificado</h1>
+            <p class="auth-subtitle">Ingresá el código de verificación único para validar su autenticidad oficial.</p>
+
+            <form id="verify-form">
+              <div class="form-group">
+                <label class="form-label">Código de Verificación (ID)</label>
+                <input type="text" id="verify-code-input" class="form-input" required placeholder="Ejemplo: RP-CERT-8F92A0">
+              </div>
+
+              <button type="submit" class="btn-auth-submit">VERIFICAR DIPLOMA</button>
+            </form>
+
+            <div id="verify-result-box" style="margin-top: 1.5rem; text-align: left; display: none;"></div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('verify-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const code = document.getElementById('verify-code-input').value;
+        const resBox = document.getElementById('verify-result-box');
+        const cert = window.rumboDB.verifyCertificate(code);
+
+        if (cert) {
+          resBox.className = 'status-box-pending';
+          resBox.style.borderColor = '#10b981';
+          resBox.style.color = '#ffffff';
+          resBox.innerHTML = `
+            <h3 style="color:#34d399; font-weight:800;">✅ CERTIFICADO VÁLIDO Y AUTÉNTICO</h3>
+            <p style="font-size:0.88rem; margin-top:0.5rem;">
+              <strong>Alumno:</strong> ${cert.userName}<br>
+              <strong>Curso:</strong> ${cert.courseTitle}<br>
+              <strong>Fecha de Emisión:</strong> ${cert.issueDate}<br>
+              <strong>Emisor:</strong> ${cert.signature} (${cert.directorTitle})<br>
+              <strong>ID Oficial:</strong> ${cert.id}
+            </p>
+          `;
+        } else {
+          resBox.className = 'status-box-rejected';
+          resBox.innerHTML = `
+            <h3 style="color:#fca5a5; font-weight:800;">❌ CERTIFICADO NO ENCONTRADO</h3>
+            <p style="font-size:0.88rem; margin-top:0.5rem;">No existe ningún certificado registrado con el código ingresado. Verifica los caracteres e intentalo de nuevo.</p>
+          `;
+        }
+        resBox.style.display = 'block';
+      });
+    }
+
+    // --- VIEW: PANEL ADMINISTRADOR ---
+    function renderAdminView(container, user) {
+      const users = window.rumboDB.getUsers();
+      const courses = window.rumboDB.getCourses();
+
+      let usersRows = users.map(u => {
+        let tagClass = 'tag-pending';
+        if (u.status === 'APROBADO') tagClass = 'tag-approved';
+        if (u.status === 'RECHAZADO') tagClass = 'tag-rejected';
+        if (u.status === 'SUSPENDIDO') tagClass = 'tag-suspended';
+
+        return `
+          <tr>
+            <td><strong>${u.firstName} ${u.lastName}</strong><br><small style="color:var(--text-muted);">${u.email}</small></td>
+            <td><span class="role-badge">${u.role}</span></td>
+            <td><span class="status-tag ${tagClass}">${u.status}</span></td>
+            <td>
+              <button class="action-btn-sm btn-act-approve" onclick="handleAdminUpdateUser('${u.id}', 'APROBADO')">Aprobar</button>
+              <button class="action-btn-sm btn-act-reject" onclick="handleAdminUpdateUser('${u.id}', 'RECHAZADO')">Rechazar</button>
+              <button class="action-btn-sm btn-act-suspend" onclick="handleAdminUpdateUser('${u.id}', 'SUSPENDIDO')">Suspender</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      container.innerHTML = `
+        <div class="dashboard-container">
+          <div class="welcome-header">
+            <h1 class="welcome-title">Panel de Administración</h1>
+            <p class="welcome-sub">Gestión integral de usuarios, aprobación de accesos y contenidos de RUMBO PRO.</p>
+          </div>
+
+          <h2 class="courses-section-title">👥 Gestión de Alumnos y Solicitudes</h2>
+          
+          <div class="admin-table-container">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Usuario / Email</th>
+                  <th>Rol</th>
+                  <th>Estado</th>
+                  <th>Acciones de Administración</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${usersRows}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    window.handleAdminUpdateUser = (userId, newStatus) => {
+      window.rumboDB.updateUserStatus(userId, newStatus);
+      renderCurrentRoute();
+    };
+  </script>
+</body>
+</html>
