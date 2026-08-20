@@ -393,25 +393,6 @@
           `;
         }).join('');
 
-        container.innerHTML = `
-          <div class="player-layout">
-            <!-- Sidebar -->
-            <div class="modules-sidebar">
-              <h3 class="sidebar-course-title">${course.title}</h3>
-              
-              <div class="progress-bar-container">
-                <div class="progress-info">
-                  <span>PROGRESO DEL CURSO</span>
-                  <span>${stats.percentage}%</span>
-                </div>
-                <div class="progress-track">
-                  <div class="progress-fill ${stats.isCompleted ? 'is-100' : ''}" style="width: ${stats.percentage}%;"></div>
-                </div>
-              </div>
-
-              ${modulesSidebarHtml}
-            </div>
-
         // Determine lesson viewer layout based on type (drive, page, video)
         let mediaViewerHtml = '';
         const targetLink = currentLesson.driveLink || currentLesson.videoUrl;
