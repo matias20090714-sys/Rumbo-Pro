@@ -203,6 +203,19 @@ section {
   background: rgba(37, 211, 102, 0.25);
 }
 
+@media (max-width: 480px) {
+  .header-logo-text {
+    font-size: 0.95rem;
+  }
+  .header-logo-img {
+    height: 30px;
+  }
+  .header-wa-btn {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.74rem;
+  }
+}
+
 /* ==========================================================================
    SECTION 1: HERO
    ========================================================================== */
