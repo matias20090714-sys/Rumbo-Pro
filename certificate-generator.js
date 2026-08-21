@@ -99,7 +99,7 @@ async function openCertificateModal(rawCertData) {
 function closeCertificateModal() {
   const modalContainer = document.getElementById('certificate-modal-overlay');
   if (modalContainer) {
-    modalContainer.innerHTML = '';
+    modalContainer.remove();
   }
   document.body.classList.remove('cert-modal-open');
 }
