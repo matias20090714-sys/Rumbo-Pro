@@ -976,6 +976,19 @@ body.cert-modal-open {
   z-index: 9999;
 }
 
+#certificate-modal-overlay:empty {
+  display: none !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+}
+
+button, a, input, select, textarea, 
+.btn-continue-course, .btn-complete-lesson, .lesson-list-item, 
+.btn-open-drive, .action-btn-sm, .btn-auth-submit, .btn-logout {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
 .cert-modal-backdrop {
   position: fixed;
   inset: 0;
