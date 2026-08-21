@@ -215,9 +215,10 @@ class RumboProDB {
   }
 
   async initDatabase() {
-    const CURRENT_VERSION = 'v6-direct-clean-folders';
+    const CURRENT_VERSION = 'v7-clean-zero-progress';
     if (localStorage.getItem('rumbopro_folders_version') !== CURRENT_VERSION) {
       localStorage.setItem(DB_KEY_COURSES, JSON.stringify(INITIAL_COURSES));
+      localStorage.setItem(DB_KEY_PROGRESS, JSON.stringify([]));
       localStorage.setItem('rumbopro_folders_version', CURRENT_VERSION);
     } else if (!localStorage.getItem(DB_KEY_COURSES)) {
       localStorage.setItem(DB_KEY_COURSES, JSON.stringify(INITIAL_COURSES));
