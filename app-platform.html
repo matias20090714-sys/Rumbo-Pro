@@ -29,12 +29,22 @@
   </main>
 
   <!-- Core Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="store-db.js"></script>
   <script src="certificate-generator.js"></script>
   <script>
     // Router & View Controller Logic
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
       window.addEventListener('hashchange', renderCurrentRoute);
+
+      // Initialize Cloud DB & Subscribe to Real-Time Cloud Updates
+      if (window.rumboDB) {
+        await window.rumboDB.initDatabase();
+        window.rumboDB.subscribeToLiveUpdates(() => {
+          renderCurrentRoute();
+        });
+      }
+
       renderCurrentRoute();
     });
 
@@ -160,18 +170,25 @@
         </div>
       `;
 
-      document.getElementById('login-form').addEventListener('submit', (e) => {
+      document.getElementById('login-form').addEventListener('submit', async (e) => {
         e.preventDefault();
+        const submitBtn = e.target.querySelector('button[type="submit"]');
         const email = document.getElementById('login-email').value;
         const pass = document.getElementById('login-password').value;
         const errDiv = document.getElementById('login-error');
 
+        errDiv.style.display = 'none';
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'INGRESANDO...';
+
         try {
-          window.rumboDB.loginUser(email, pass);
+          await window.rumboDB.loginUser(email, pass);
           navigateTo('#/dashboard');
         } catch (err) {
           errDiv.textContent = err.message;
           errDiv.style.display = 'block';
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'INICIAR SESIÓN';
         }
       });
     }
@@ -222,8 +239,9 @@
         </div>
       `;
 
-      document.getElementById('register-form').addEventListener('submit', (e) => {
+      document.getElementById('register-form').addEventListener('submit', async (e) => {
         e.preventDefault();
+        const submitBtn = e.target.querySelector('button[type="submit"]');
         const fn = document.getElementById('reg-firstname').value;
         const ln = document.getElementById('reg-lastname').value;
         const email = document.getElementById('reg-email').value;
@@ -231,24 +249,31 @@
         const confirm = document.getElementById('reg-confirm').value;
         const errDiv = document.getElementById('reg-error');
 
+        errDiv.style.display = 'none';
+
         if (pass !== confirm) {
           errDiv.textContent = 'Las contraseñas no coinciden.';
           errDiv.style.display = 'block';
           return;
         }
 
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'REGISTRANDO...';
+
         try {
-          const newUser = window.rumboDB.registerUser({
+          await window.rumboDB.registerUser({
             firstName: fn,
             lastName: ln,
             email: email,
             password: pass
           });
-          window.rumboDB.loginUser(email, pass);
+          await window.rumboDB.loginUser(email, pass);
           navigateTo('#/dashboard');
         } catch (err) {
           errDiv.textContent = err.message;
           errDiv.style.display = 'block';
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'SOLICITAR REGISTRO';
         }
       });
     }
@@ -722,8 +747,8 @@
       `;
     }
 
-    window.handleAdminUpdateUser = (userId, newStatus) => {
-      window.rumboDB.updateUserStatus(userId, newStatus);
+    window.handleAdminUpdateUser = async (userId, newStatus) => {
+      await window.rumboDB.updateUserStatus(userId, newStatus);
       renderCurrentRoute();
     };
   </script>
