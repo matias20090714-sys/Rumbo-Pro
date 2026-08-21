@@ -12,7 +12,7 @@ const DB_KEY_CERTIFICATES = 'rumbopro_db_certificates';
 const DB_KEY_USER_COURSES = 'rumbopro_db_user_courses';
 const DB_KEY_SESSION = 'rumbopro_db_session';
 
-// Official Courses Definition
+// Official Courses Definition (Structured by Real Modules & Lessons)
 const INITIAL_COURSES = [
   {
     id: 'course-ecommerce',
@@ -24,16 +24,61 @@ const INITIAL_COURSES = [
     modules: [
       {
         id: 'mod-ecom-1',
-        title: 'Modulo 1 — Material del Curso',
+        title: 'Módulo 1 — Fundamentos y Modelo de Negocio',
         lessons: [
           {
             id: 'les-ecom-101',
-            title: 'Contenido completo del curso',
-            duration: '',
+            title: 'Módulo 1: Introducción, Fundamentos y Mentalidad de E-Commerce',
+            duration: 'Carpeta Drive',
             type: 'drive',
             videoUrl: 'https://drive.google.com/embeddedfolderview?id=1a44KG1tc_PqjUEP4xPmM-NkGURACJGcz#list',
             driveLink: 'https://drive.google.com/drive/folders/1a44KG1tc_PqjUEP4xPmM-NkGURACJGcz',
-            content: 'Accede a todos los materiales, videos y recursos del curso de E-Commerce / Dropshipping.'
+            content: 'Material formativo sobre los fundamentos del comercio electrónico, estructura de negocios digitales y modelos de venta online.'
+          }
+        ]
+      },
+      {
+        id: 'mod-ecom-2',
+        title: 'Módulo 2 — Selección de Productos Ganadores',
+        lessons: [
+          {
+            id: 'les-ecom-201',
+            title: 'Módulo 2: Investigación de Mercado y Productos Ganadores',
+            duration: 'Carpeta Drive',
+            type: 'drive',
+            videoUrl: 'https://drive.google.com/embeddedfolderview?id=1a44KG1tc_PqjUEP4xPmM-NkGURACJGcz#list',
+            driveLink: 'https://drive.google.com/drive/folders/1a44KG1tc_PqjUEP4xPmM-NkGURACJGcz',
+            content: 'Estrategias para identificar productos de alta demanda, análisis de competencia y márgenes de ganancia.'
+          }
+        ]
+      },
+      {
+        id: 'mod-ecom-3',
+        title: 'Módulo 3 — Creación y Configuración de Tienda',
+        lessons: [
+          {
+            id: 'les-ecom-301',
+            title: 'Módulo 3: Creación de Tienda Online y Pasarelas de Pago',
+            duration: 'Carpeta Drive',
+            type: 'drive',
+            videoUrl: 'https://drive.google.com/embeddedfolderview?id=1a44KG1tc_PqjUEP4xPmM-NkGURACJGcz#list',
+            driveLink: 'https://drive.google.com/drive/folders/1a44KG1tc_PqjUEP4xPmM-NkGURACJGcz',
+            content: 'Estructuración visual de tu tienda, configuración de cobros y catálogo de productos.'
+          }
+        ]
+      },
+      {
+        id: 'mod-ecom-4',
+        title: 'Módulo 4 — Proveedores, Envíos y Publicidad',
+        lessons: [
+          {
+            id: 'les-ecom-401',
+            title: 'Módulo 4: Proveedores, Logística y Estrategias de Venta',
+            duration: 'Carpeta Drive',
+            type: 'drive',
+            videoUrl: 'https://drive.google.com/embeddedfolderview?id=1a44KG1tc_PqjUEP4xPmM-NkGURACJGcz#list',
+            driveLink: 'https://drive.google.com/drive/folders/1a44KG1tc_PqjUEP4xPmM-NkGURACJGcz',
+            content: 'Gestión de logística con proveedores y atracción de clientes compradores.'
           }
         ]
       }
@@ -49,16 +94,61 @@ const INITIAL_COURSES = [
     modules: [
       {
         id: 'mod-afi-1',
-        title: 'Modulo 1 — Material del Curso',
+        title: 'Módulo 1 — Ecosistema y Fundamentos de Afiliación',
         lessons: [
           {
             id: 'les-afi-101',
-            title: 'Contenido completo del curso',
-            duration: '',
+            title: 'Módulo 1: Ecosistema y Modelos de Negocio en Afiliación',
+            duration: 'Carpeta Drive',
             type: 'drive',
             videoUrl: 'https://drive.google.com/embeddedfolderview?id=104agUfbMBtEr25dVY2gjGRnf9o8OzhXD#list',
             driveLink: 'https://drive.google.com/drive/folders/104agUfbMBtEr25dVY2gjGRnf9o8OzhXD',
-            content: 'Accede a todos los materiales, videos y recursos del curso de Marketing de Afiliados.'
+            content: 'Conceptos clave de comisiones, plataformas y modelos de recomendación comercial.'
+          }
+        ]
+      },
+      {
+        id: 'mod-afi-2',
+        title: 'Módulo 2 — Elección de Ofertas y Productos',
+        lessons: [
+          {
+            id: 'les-afi-201',
+            title: 'Módulo 2: Selección de Infoproductos y Ofertas Rentables',
+            duration: 'Carpeta Drive',
+            type: 'drive',
+            videoUrl: 'https://drive.google.com/embeddedfolderview?id=104agUfbMBtEr25dVY2gjGRnf9o8OzhXD#list',
+            driveLink: 'https://drive.google.com/drive/folders/104agUfbMBtEr25dVY2gjGRnf9o8OzhXD',
+            content: 'Criterios para elegir ofertas con alta conversión y buen soporte de ventas.'
+          }
+        ]
+      },
+      {
+        id: 'mod-afi-3',
+        title: 'Módulo 3 — Estrategias de Contenido y Tráfico',
+        lessons: [
+          {
+            id: 'les-afi-301',
+            title: 'Módulo 3: Contenido Orgánico, Redes y Embudos de Conversión',
+            duration: 'Carpeta Drive',
+            type: 'drive',
+            videoUrl: 'https://drive.google.com/embeddedfolderview?id=104agUfbMBtEr25dVY2gjGRnf9o8OzhXD#list',
+            driveLink: 'https://drive.google.com/drive/folders/104agUfbMBtEr25dVY2gjGRnf9o8OzhXD',
+            content: 'Cómo atraer prospectos calificados mediante contenido estratégico y videos cortos.'
+          }
+        ]
+      },
+      {
+        id: 'mod-afi-4',
+        title: 'Módulo 4 — Cierre de Ventas y Escalamiento',
+        lessons: [
+          {
+            id: 'les-afi-401',
+            title: 'Módulo 4: Conversaciones, Guiones de Venta y Cierre',
+            duration: 'Carpeta Drive',
+            type: 'drive',
+            videoUrl: 'https://drive.google.com/embeddedfolderview?id=104agUfbMBtEr25dVY2gjGRnf9o8OzhXD#list',
+            driveLink: 'https://drive.google.com/drive/folders/104agUfbMBtEr25dVY2gjGRnf9o8OzhXD',
+            content: 'Guiones y técnicas de respuesta para cerrar interesados y generar comisiones.'
           }
         ]
       }
@@ -74,16 +164,61 @@ const INITIAL_COURSES = [
     modules: [
       {
         id: 'mod-cls-1',
-        title: 'Modulo 1 — Material del Curso',
+        title: 'Módulo 1 — Mentalidad y Perfil del Closer',
         lessons: [
           {
             id: 'les-cls-101',
-            title: 'Contenido completo del curso',
-            duration: '',
+            title: 'Módulo 1: El Rol y Habilidades del Closer de Ventas',
+            duration: 'Carpeta Drive',
             type: 'drive',
             videoUrl: 'https://drive.google.com/embeddedfolderview?id=1Lx5_7cC_AaTfWHnddgqYRvs6L8_9cr9d#list',
             driveLink: 'https://drive.google.com/drive/folders/1Lx5_7cC_AaTfWHnddgqYRvs6L8_9cr9d',
-            content: 'Accede a todos los materiales, videos y recursos del curso de Closer de Ventas.'
+            content: 'Perfil profesional, roles en negocios digitales y ofertas de alto valor.'
+          }
+        ]
+      },
+      {
+        id: 'mod-cls-2',
+        title: 'Módulo 2 — Diagnóstico y Calificación',
+        lessons: [
+          {
+            id: 'les-cls-201',
+            title: 'Módulo 2: Preguntas Estratégicas y Descubrimiento de Dolores',
+            duration: 'Carpeta Drive',
+            type: 'drive',
+            videoUrl: 'https://drive.google.com/embeddedfolderview?id=1Lx5_7cC_AaTfWHnddgqYRvs6L8_9cr9d#list',
+            driveLink: 'https://drive.google.com/drive/folders/1Lx5_7cC_AaTfWHnddgqYRvs6L8_9cr9d',
+            content: 'Cómo entender a fondo la situación del cliente para presentar la solución adecuada.'
+          }
+        ]
+      },
+      {
+        id: 'mod-cls-3',
+        title: 'Módulo 3 — Manejo de Objeciones y Cierre',
+        lessons: [
+          {
+            id: 'les-cls-301',
+            title: 'Módulo 3: Superación de Objeciones (Precio, Tiempo, Confianza)',
+            duration: 'Carpeta Drive',
+            type: 'drive',
+            videoUrl: 'https://drive.google.com/embeddedfolderview?id=1Lx5_7cC_AaTfWHnddgqYRvs6L8_9cr9d#list',
+            driveLink: 'https://drive.google.com/drive/folders/1Lx5_7cC_AaTfWHnddgqYRvs6L8_9cr9d',
+            content: 'Marcos de respuesta para generar confianza y cerrar acuerdos comerciales.'
+          }
+        ]
+      },
+      {
+        id: 'mod-cls-4',
+        title: 'Módulo 4 — Seguimiento y Acuerdos de Pago',
+        lessons: [
+          {
+            id: 'les-cls-401',
+            title: 'Módulo 4: Cierre Formal, Seguimiento Profesional y Contratos',
+            duration: 'Carpeta Drive',
+            type: 'drive',
+            videoUrl: 'https://drive.google.com/embeddedfolderview?id=1Lx5_7cC_AaTfWHnddgqYRvs6L8_9cr9d#list',
+            driveLink: 'https://drive.google.com/drive/folders/1Lx5_7cC_AaTfWHnddgqYRvs6L8_9cr9d',
+            content: 'Estrategias de seguimiento post-llamada para concretar pagos sin ser invasivo.'
           }
         ]
       }
@@ -99,76 +234,76 @@ const INITIAL_COURSES = [
     modules: [
       {
         id: 'mod-cm-1',
-        title: 'Modulo 1 — Trabaja en Digital',
+        title: 'Módulo 1 — Trabaja en Digital',
         lessons: [
           {
             id: 'les-cm-101',
-            title: 'Trabaja en Digital',
-            duration: '',
+            title: 'Trabaja en Digital: Formación y Oportunidad',
+            duration: 'Módulo Web',
             type: 'page',
             videoUrl: 'https://trabaja-en-digital-lyc-2026.netlify.app/gracias',
             driveLink: 'https://trabaja-en-digital-lyc-2026.netlify.app/gracias',
-            content: 'Formacion sobre como trabajar en el mundo digital.'
+            content: 'Formación sobre cómo trabajar en el mundo digital y ofrecer servicios de gestión digital.'
           }
         ]
       },
       {
         id: 'mod-cm-2',
-        title: 'Modulo 2 — Incognito Pro',
+        title: 'Módulo 2 — Incógnito Pro',
         lessons: [
           {
             id: 'les-cm-201',
-            title: 'Incognito Pro',
-            duration: '',
+            title: 'Incógnito Pro: Creación de Marcas sin Rostro',
+            duration: 'Módulo Web',
             type: 'page',
             videoUrl: 'https://incognito-pro-lyc-2026.netlify.app/gracias',
             driveLink: 'https://incognito-pro-lyc-2026.netlify.app/gracias',
-            content: 'Estrategias de contenido anonimo y marca personal.'
+            content: 'Estrategias de contenido anónimo y monetización de marcas digitales.'
           }
         ]
       },
       {
         id: 'mod-cm-3',
-        title: 'Modulo 3 — Creador Pro',
+        title: 'Módulo 3 — Creador Pro',
         lessons: [
           {
             id: 'les-cm-301',
-            title: 'Creador Pro',
-            duration: '',
+            title: 'Creador Pro: Edición y Formatos Virales',
+            duration: 'Módulo Web',
             type: 'page',
             videoUrl: 'https://creador-pro-lyc-2026.netlify.app/gracias',
             driveLink: 'https://creador-pro-lyc-2026.netlify.app/gracias',
-            content: 'Formacion para creadores de contenido digital y edicion de video.'
+            content: 'Formación para creadores de contenido digital, edición de video corto y diseño ágil.'
           }
         ]
       },
       {
         id: 'mod-cm-4',
-        title: 'Modulo 4 — ABC Marketing de Afiliados',
+        title: 'Módulo 4 — ABC Marketing de Afiliados',
         lessons: [
           {
             id: 'les-cm-401',
-            title: 'ABC Marketing de Afiliados',
-            duration: '',
+            title: 'ABC Marketing de Afiliados aplicado a Redes',
+            duration: 'Módulo Web',
             type: 'page',
             videoUrl: 'https://abc-marketing-de-afiliados-lyc-2026.netlify.app/gracias',
             driveLink: 'https://abc-marketing-de-afiliados-lyc-2026.netlify.app/gracias',
-            content: 'Fundamentos del marketing de afiliados aplicados a redes sociales.'
+            content: 'Fundamentos del marketing de afiliados aplicados a la gestión de comunidades.'
           }
         ]
       },
       {
         id: 'mod-cm-5',
-        title: 'Modulo 5 — Domina la IA',
+        title: 'Módulo 5 — Domina la IA',
         lessons: [
           {
             id: 'les-cm-501',
-            title: 'Domina la IA',
-            duration: '',
+            title: 'Domina la IA: Herramientas y Automatización',
+            duration: 'Módulo Web',
             type: 'page',
             videoUrl: 'https://domina-la-ia-lyc-2026.netlify.app/gracias',
             driveLink: 'https://domina-la-ia-lyc-2026.netlify.app/gracias',
-            content: 'Uso de inteligencia artificial para crear contenido y automatizar procesos.'
+            content: 'Uso de inteligencia artificial para acelerar la creación de contenido y automatizar procesos.'
           }
         ]
       }
@@ -184,16 +319,61 @@ const INITIAL_COURSES = [
     modules: [
       {
         id: 'mod-hot-1',
-        title: 'Modulo 1 — Material del Curso',
+        title: 'Módulo 1 — Registro y Configuración de Cuenta',
         lessons: [
           {
             id: 'les-hot-101',
-            title: 'Contenido completo del curso',
-            duration: '',
+            title: 'Módulo 1: Creación de Perfil y Configuración en Hotmart',
+            duration: 'Carpeta Drive',
             type: 'drive',
             videoUrl: 'https://drive.google.com/embeddedfolderview?id=1MjLMShD3uJ_EEMFTEZJ-BwdXeIhYylOV#list',
             driveLink: 'https://drive.google.com/drive/folders/1MjLMShD3uJ_EEMFTEZJ-BwdXeIhYylOV',
-            content: 'Accede a todos los materiales, videos y recursos del curso de Hotmart.'
+            content: 'Paso a paso para configurar tu cuenta, verificación y navegación en la plataforma Hotmart.'
+          }
+        ]
+      },
+      {
+        id: 'mod-hot-2',
+        title: 'Módulo 2 — Exploración del Mercado de Afiliación',
+        lessons: [
+          {
+            id: 'les-hot-201',
+            title: 'Módulo 2: Análisis de Productos y Temperatura en Hotmart',
+            duration: 'Carpeta Drive',
+            type: 'drive',
+            videoUrl: 'https://drive.google.com/embeddedfolderview?id=1MjLMShD3uJ_EEMFTEZJ-BwdXeIhYylOV#list',
+            driveLink: 'https://drive.google.com/drive/folders/1MjLMShD3uJ_EEMFTEZJ-BwdXeIhYylOV',
+            content: 'Cómo evaluar la temperatura, blueprint y comisiones de productos en el mercado de Hotmart.'
+          }
+        ]
+      },
+      {
+        id: 'mod-hot-3',
+        title: 'Módulo 3 — Hotlinks y Tracking de Comisiones',
+        lessons: [
+          {
+            id: 'les-hot-301',
+            title: 'Módulo 3: Gestión de Enlaces de Afiliado y Parámetros de Rastreo',
+            duration: 'Carpeta Drive',
+            type: 'drive',
+            videoUrl: 'https://drive.google.com/embeddedfolderview?id=1MjLMShD3uJ_EEMFTEZJ-BwdXeIhYylOV#list',
+            driveLink: 'https://drive.google.com/drive/folders/1MjLMShD3uJ_EEMFTEZJ-BwdXeIhYylOV',
+            content: 'Configuración correcta de enlaces Hotlinks para asegurar la asignación de tus comisiones.'
+          }
+        ]
+      },
+      {
+        id: 'mod-hot-4',
+        title: 'Módulo 4 — Estrategias de Venta y Retiros',
+        lessons: [
+          {
+            id: 'les-hot-401',
+            title: 'Módulo 4: Estrategias de Promoción, Métricas y Retiro de Fondos',
+            duration: 'Carpeta Drive',
+            type: 'drive',
+            videoUrl: 'https://drive.google.com/embeddedfolderview?id=1MjLMShD3uJ_EEMFTEZJ-BwdXeIhYylOV#list',
+            driveLink: 'https://drive.google.com/drive/folders/1MjLMShD3uJ_EEMFTEZJ-BwdXeIhYylOV',
+            content: 'Análisis de métricas de ventas y procedimiento para retirar tus ganancias bancarias.'
           }
         ]
       }
@@ -215,7 +395,11 @@ class RumboProDB {
   }
 
   async initDatabase() {
-    if (!localStorage.getItem(DB_KEY_COURSES)) {
+    const CURRENT_VERSION = 'v5-multi-modules-clean';
+    if (localStorage.getItem('rumbopro_modules_version') !== CURRENT_VERSION) {
+      localStorage.setItem(DB_KEY_COURSES, JSON.stringify(INITIAL_COURSES));
+      localStorage.setItem('rumbopro_modules_version', CURRENT_VERSION);
+    } else if (!localStorage.getItem(DB_KEY_COURSES)) {
       localStorage.setItem(DB_KEY_COURSES, JSON.stringify(INITIAL_COURSES));
     }
     // Sync latest from Supabase
