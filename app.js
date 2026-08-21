@@ -70,4 +70,54 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });
+
+  // 4. Interactive FAQ Accordion
+  const faqItems = document.querySelectorAll('.faq-item');
+  faqItems.forEach(item => {
+    const questionBtn = item.querySelector('.faq-question');
+    if (questionBtn) {
+      questionBtn.addEventListener('click', () => {
+        const isOpen = item.classList.contains('faq-open');
+        // Close other open FAQs
+        faqItems.forEach(other => {
+          if (other !== item) other.classList.remove('faq-open');
+        });
+        item.classList.toggle('faq-open', !isOpen);
+      });
+    }
+  });
+
+  // 5. Live Social Proof Toast Ticker
+  const toastEl = document.getElementById('social-proof-toast');
+  const toastTitle = document.getElementById('toast-title');
+  const toastText = document.getElementById('toast-text');
+
+  const notifications = [
+    { name: 'Lucas de Argentina 🇦🇷', action: 'Comenzó el curso de E-Commerce' },
+    { name: 'Camila de Uruguay 🇺🇾', action: 'Completó el curso de Closer de Ventas' },
+    { name: 'Mateo de Chile 🇨🇱', action: 'Accedió al Método Fukuda de Hotmart' },
+    { name: 'Valentina de Colombia 🇨🇴', action: 'Obtuvo su Certificado Oficial' },
+    { name: 'Agustín de México 🇲🇽', action: 'Se unió a la comunidad de Rumbo Pro' }
+  ];
+
+  let notifIdx = 0;
+  function showNextNotification() {
+    if (!toastEl || !toastTitle || !toastText) return;
+    const notif = notifications[notifIdx];
+    toastTitle.textContent = notif.name;
+    toastText.textContent = notif.action;
+    toastEl.classList.add('toast-active');
+
+    setTimeout(() => {
+      toastEl.classList.remove('toast-active');
+    }, 4500);
+
+    notifIdx = (notifIdx + 1) % notifications.length;
+  }
+
+  // First trigger after 4s, then repeat every 14s
+  setTimeout(() => {
+    showNextNotification();
+    setInterval(showNextNotification, 14000);
+  }, 4000);
 });
