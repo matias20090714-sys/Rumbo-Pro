@@ -327,7 +327,7 @@
               <div class="progress-bar-container">
                 <div class="progress-info">
                   <span>PROGRESO DEL CURSO</span>
-                  <span style="color:${isFinished ? '#34d399' : '#00c2ff'}; font-weight:800;">${stats.percentage}% ${isFinished ? '🎉' : ''}</span>
+                  <span style="color:${isFinished ? '#34d399' : '#00c2ff'}; font-weight:800;">${stats.percentage}%</span>
                 </div>
                 <div class="progress-track">
                   <div class="progress-fill ${isFinished ? 'is-100' : ''}" style="width: ${stats.percentage}%;"></div>
@@ -336,14 +336,9 @@
 
               <!-- Action Buttons -->
               <div style="display:flex; flex-direction:column; gap:0.6rem;">
-                <div style="display:flex; gap:0.5rem;">
-                  <a href="#/curso/${course.id}" class="btn-continue-course" style="flex:1;">
-                    ${isFinished ? 'Ver Material ↗' : 'Continuar Formación →'}
-                  </a>
-                  <button class="btn-quick-toggle ${isFinished ? 'is-done' : ''}" title="${isFinished ? 'Desmarcar curso' : 'Marcar curso como completado'}" onclick="handleToggleCourse('${user.id}', '${course.id}')">
-                    ${isFinished ? '✓ 100%' : 'Marcar Completado'}
-                  </button>
-                </div>
+                <a href="#/curso/${course.id}" class="btn-continue-course" style="width:100%;">
+                  ${isFinished ? 'Ver Material del Curso ↗' : 'Continuar Formación →'}
+                </a>
 
                 ${isFinished ? `
                   <button class="btn-continue-course btn-cert-unlocked" onclick="handleGenerateCert('${user.id}', '${course.id}')">
@@ -401,11 +396,6 @@
       `;
     }
 
-    window.handleToggleCourse = (userId, courseId) => {
-      window.rumboDB.toggleCourseComplete(userId, courseId);
-      renderCurrentRoute();
-    };
-
     // --- VIEW: REPRODUCTOR DE CURSO Y CLASES ---
     function renderCoursePlayerView(container, user, courseId) {
       const courses = window.rumboDB.getCourses();
@@ -415,11 +405,18 @@
         return;
       }
 
-      // Flatten all lessons
+      // Flatten all lessons with module info
       let allLessons = [];
-      course.modules.forEach(m => {
-        m.lessons.forEach(l => {
-          allLessons.push({ ...l, moduleId: m.id, moduleTitle: m.title });
+      course.modules.forEach((m, mIdx) => {
+        m.lessons.forEach((l, lIdx) => {
+          allLessons.push({
+            ...l,
+            moduleId: m.id,
+            moduleTitle: m.title,
+            moduleNumber: mIdx + 1,
+            totalModules: course.modules.length,
+            lessonNumber: lIdx + 1
+          });
         });
       });
 
@@ -441,27 +438,34 @@
         const prevLesson = currentIndex > 0 ? allLessons[currentIndex - 1] : null;
         const nextLesson = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1] : null;
 
-        let modulesSidebarHtml = course.modules.map(m => {
+        // Render Clean & Readable Modules in Sidebar
+        let modulesSidebarHtml = course.modules.map((m, idx) => {
           let lessonsHtml = m.lessons.map(l => {
             const isDone = progressList.some(p => p.userId === user.id && p.lessonId === l.id);
             const isActive = l.id === currentLesson.id;
             return `
-              <div class="lesson-list-item ${isActive ? 'active-lesson' : ''}" onclick="selectLesson('${l.id}')">
-                <span>${l.title}</span>
-                ${isDone ? '<span class="lesson-check-icon">✓</span>' : ''}
+              <div class="lesson-list-item ${isActive ? 'active-lesson' : ''} ${isDone ? 'done-lesson' : ''}" onclick="selectLesson('${l.id}')">
+                <div style="display:flex; align-items:center; gap:0.6rem;">
+                  <span class="lesson-bullet ${isDone ? 'bullet-done' : ''}">${isDone ? '✓' : (idx + 1)}</span>
+                  <span class="lesson-item-text">${l.title}</span>
+                </div>
+                ${isDone ? '<span class="status-pill-done">Visto</span>' : ''}
               </div>
             `;
           }).join('');
 
           return `
-            <div class="module-accordion">
-              <div class="module-accordion-header">${m.title}</div>
-              <div>${lessonsHtml}</div>
+            <div class="module-accordion-card">
+              <div class="module-accordion-header">
+                <span class="mod-badge-num">MÓDULO ${idx + 1}</span>
+                <span class="mod-title-text">${m.title}</span>
+              </div>
+              <div class="module-lessons-group">${lessonsHtml}</div>
             </div>
           `;
         }).join('');
 
-        // Determine lesson viewer layout based on type (drive, page, video)
+        // Determine viewer layout
         let mediaViewerHtml = '';
         const targetLink = currentLesson.driveLink || currentLesson.videoUrl;
 
@@ -469,8 +473,8 @@
           mediaViewerHtml = `
             <div class="drive-banner-bar">
               <div class="drive-banner-info">
-                <span class="drive-icon-badge">📁 MATERIAL DE DRIVE</span>
-                <span class="drive-desc-title">Archivos y Videos Oficiales</span>
+                <span class="drive-icon-badge">📁 GOOGLE DRIVE</span>
+                <span class="drive-desc-title">Material y Videos del Módulo</span>
               </div>
               <a href="${targetLink}" target="_blank" rel="noopener noreferrer" class="btn-open-drive">
                 Abrir en Google Drive ↗
@@ -480,7 +484,7 @@
               <iframe src="${currentLesson.videoUrl}" title="${currentLesson.title}" allow="autoplay; fullscreen" loading="lazy"></iframe>
             </div>
             <div class="drive-quick-tip">
-              💡 <strong>Tip:</strong> Podés navegar los archivos en el visor o abrirlos en pantalla completa en Drive con el botón azul.
+              💡 <strong>Instrucciones:</strong> Revisá los videos y materiales arriba o abrilos en Google Drive. Cuando termines, marcá el botón <strong>"✓ Marcar Módulo como Completado"</strong> abajo para sumar tu progreso en la barra.
             </div>
           `;
         } else if (currentLesson.type === 'page') {
@@ -509,9 +513,11 @@
         container.innerHTML = `
           <div class="player-top-header">
             <a href="#/dashboard" class="btn-back-dashboard">← Volver a Mis Cursos</a>
-            <button class="btn-mark-course-complete ${isCourseFinished ? 'is-complete' : ''}" onclick="handlePlayerToggleCourse('${user.id}', '${course.id}')">
-              ${isCourseFinished ? '✅ CURSO COMPLETADO (100%)' : '✓ MARCAR CURSO COMO COMPLETADO'}
-            </button>
+            <div style="display:flex; align-items:center; gap:0.65rem;">
+              <span class="role-badge" style="font-size:0.8rem; padding:0.35rem 0.85rem;">
+                Progreso: <strong>${stats.percentage}%</strong> (${stats.completedLessons}/${stats.totalLessons} Módulos)
+              </span>
+            </div>
           </div>
 
           ${isCourseFinished ? `
@@ -519,49 +525,75 @@
               <div style="display:flex; align-items:center; gap:0.85rem;">
                 <span style="font-size:2rem;">🎉</span>
                 <div>
-                  <h3 style="font-weight:900; color:#ffffff; font-size:1.1rem; margin-bottom:0.2rem;">¡Felicitaciones! Has completado esta formación al 100%.</h3>
+                  <h3 style="font-weight:900; color:#ffffff; font-size:1.1rem; margin-bottom:0.2rem;">¡Felicitaciones! Has completado el 100% de este curso.</h3>
                   <p style="font-size:0.85rem; color:#d1fae5;">Tu certificado oficial firmado por Pablo Xavier está listo para emitir y descargar.</p>
                 </div>
               </div>
               <button class="btn-continue-course btn-cert-unlocked" style="width:auto; padding:0.75rem 1.5rem;" onclick="handleGenerateCert('${user.id}', '${course.id}')">
-                🏆 OBTENER CERTIFICADO
+                🏆 OBTENER CERTIFICADO OFICIAL
               </button>
             </div>
           ` : ''}
 
           <div class="player-layout">
-            <!-- Sidebar -->
+            <!-- Sidebar with Clear Modules List -->
             <div class="modules-sidebar">
-              <h3 class="sidebar-course-title">${course.title}</h3>
-              
-              <div class="progress-bar-container">
-                <div class="progress-info">
-                  <span>PROGRESO DEL CURSO</span>
-                  <span style="color:${isCourseFinished ? '#34d399' : '#00c2ff'}; font-weight:800;">${stats.percentage}%</span>
-                </div>
-                <div class="progress-track">
-                  <div class="progress-fill ${isCourseFinished ? 'is-100' : ''}" style="width: ${stats.percentage}%;"></div>
+              <div class="sidebar-header-box">
+                <span class="sidebar-course-tag">FORMACIÓN</span>
+                <h3 class="sidebar-course-title">${course.title}</h3>
+                
+                <div class="progress-bar-container" style="margin-bottom:0.5rem; margin-top:0.75rem;">
+                  <div class="progress-info">
+                    <span>PROGRESO DEL CURSO</span>
+                    <span style="color:${isCourseFinished ? '#34d399' : '#00c2ff'}; font-weight:800;">${stats.percentage}%</span>
+                  </div>
+                  <div class="progress-track">
+                    <div class="progress-fill ${isCourseFinished ? 'is-100' : ''}" style="width: ${stats.percentage}%;"></div>
+                  </div>
                 </div>
               </div>
 
-              ${modulesSidebarHtml}
+              <div class="sidebar-modules-list">
+                ${modulesSidebarHtml}
+              </div>
             </div>
 
             <!-- Main Content Area -->
             <div class="main-player-content">
+              <!-- Module Header Breadcrumb -->
+              <div class="active-module-header">
+                <span class="badge-pill" style="margin-bottom:0.4rem;">MÓDULO ${currentLesson.moduleNumber} DE ${currentLesson.totalModules}</span>
+                <h1 class="lesson-title-heading">${currentLesson.moduleTitle}</h1>
+                <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:1.25rem;">${currentLesson.content || 'Accedé a todo el material formativo y recursos de este módulo.'}</p>
+              </div>
+
               ${mediaViewerHtml}
 
-              <h1 class="lesson-title-heading" style="margin-top:1.25rem;">${currentLesson.title}</h1>
-              <div class="lesson-text-body">${currentLesson.content}</div>
+              <!-- Module Completion Action Bar -->
+              <div class="module-completion-card">
+                <div style="display:flex; align-items:center; gap:0.75rem;">
+                  <span style="font-size:1.6rem;">${isLessonDone ? '✅' : '📌'}</span>
+                  <div>
+                    <h4 style="font-size:0.95rem; font-weight:800; color:#ffffff; margin-bottom:0.15rem;">
+                      ${isLessonDone ? 'Módulo Completado' : '¿Completaste este módulo?'}
+                    </h4>
+                    <p style="font-size:0.8rem; color:var(--text-muted);">
+                      ${isLessonDone ? 'Tu progreso ha sido registrado en la barra general.' : 'Marcá como completado para sumar progreso en la barra y desbloquear tu certificado.'}
+                    </p>
+                  </div>
+                </div>
 
-              <div class="player-controls-bar">
-                <button class="btn-complete-lesson ${isLessonDone ? 'is-completed-btn' : ''}" onclick="toggleLessonComplete('${user.id}', '${course.id}', '${currentLesson.id}', ${isLessonDone})">
-                  ${isLessonDone ? '✓ MATERIAL REVISADO' : 'MARCAR COMO VISTO'}
+                <button class="btn-complete-lesson ${isLessonDone ? 'is-completed-btn' : ''}" onclick="handleToggleLessonAsync('${user.id}', '${course.id}', '${currentLesson.id}', ${isLessonDone})">
+                  ${isLessonDone ? '✓ MÓDULO COMPLETADO' : '✓ MARCAR MÓDULO COMPLETADO'}
                 </button>
+              </div>
 
-                <div style="display: flex; gap: 0.5rem;">
-                  ${prevLesson ? `<button class="btn-continue-course" onclick="selectLesson('${prevLesson.id}')">← Anterior</button>` : ''}
-                  ${nextLesson ? `<button class="btn-continue-course" onclick="selectLesson('${nextLesson.id}')">Siguiente →</button>` : ''}
+              <div class="player-controls-bar" style="margin-top:1.25rem;">
+                <div>
+                  ${prevLesson ? `<button class="btn-continue-course" style="width:auto; padding:0.6rem 1.25rem;" onclick="selectLesson('${prevLesson.id}')">← Módulo Anterior</button>` : '<span></span>'}
+                </div>
+                <div>
+                  ${nextLesson ? `<button class="btn-continue-course" style="width:auto; padding:0.6rem 1.25rem;" onclick="selectLesson('${nextLesson.id}')">Siguiente Módulo →</button>` : ''}
                 </div>
               </div>
             </div>
@@ -574,16 +606,11 @@
         renderPlayerContent();
       };
 
-      window.handlePlayerToggleCourse = (uId, cId) => {
-        window.rumboDB.toggleCourseComplete(uId, cId);
-        renderPlayerContent();
-      };
-
-      window.toggleLessonComplete = (uId, cId, lId, currentState) => {
+      window.handleToggleLessonAsync = async (uId, cId, lId, currentState) => {
         if (currentState) {
-          window.rumboDB.markLessonIncomplete(uId, cId, lId);
+          await window.rumboDB.markLessonIncomplete(uId, cId, lId);
         } else {
-          window.rumboDB.markLessonComplete(uId, cId, lId);
+          await window.rumboDB.markLessonComplete(uId, cId, lId);
         }
         renderPlayerContent();
       };
