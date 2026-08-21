@@ -470,20 +470,20 @@
 
         if (currentLesson.type === 'drive') {
           mediaViewerHtml = `
-            <div class="drive-banner-bar">
+            <div class="drive-banner-bar" style="background:#0d1527; border:1px solid rgba(0,194,255,0.25);">
               <div class="drive-banner-info">
-                <span class="drive-icon-badge">📁 CARPETA OFICIAL DE GOOGLE DRIVE</span>
-                <span class="drive-desc-title">${course.title}</span>
+                <span class="drive-icon-badge" style="background:rgba(0,194,255,0.15); color:#00c2ff; font-weight:800;">🎬 REPRODUCTOR DE CONTENIDO</span>
+                <span class="drive-desc-title" style="color:#ffffff; font-weight:700;">${currentLesson.title}</span>
               </div>
               <a href="${targetLink}" target="_blank" rel="noopener noreferrer" class="btn-open-drive">
-                Abrir en Google Drive ↗
+                Abrir en Pantalla Completa ↗
               </a>
             </div>
-            <div class="video-responsive-frame drive-frame-container">
+            <div class="video-responsive-frame drive-frame-container" style="border:1px solid rgba(255,255,255,0.12); border-radius:14px; overflow:hidden; background:#070b14;">
               <iframe src="${currentLesson.videoUrl}" title="${currentLesson.title}" allow="autoplay; fullscreen" loading="lazy"></iframe>
             </div>
-            <div class="drive-quick-tip">
-              💡 <strong>Orden del Material:</strong> Las carpetas y archivos se muestran en orden alfabético y cronológico oficial. Podés explorarlas dentro del visor o tocar <strong>"Abrir en Google Drive ↗"</strong> para verlas directamente en tu aplicación de Drive. Cuando termines, marcá el botón de completado abajo.
+            <div class="drive-quick-tip" style="background:rgba(15,23,42,0.7); border:1px solid rgba(255,255,255,0.08); margin-top:0.85rem;">
+              💡 <strong>Instrucciones:</strong> Reproducí los videos y materiales directamente en este visor. Al finalizar la lección, hacé clic en el botón verde <strong>"✓ MARCAR COMO COMPLETADO"</strong> para sumar tu porcentaje a la barra del curso.
             </div>
           `;
         } else if (currentLesson.type === 'page') {
