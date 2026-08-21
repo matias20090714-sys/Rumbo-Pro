@@ -279,19 +279,20 @@
     // --- VIEW: DASHBOARD DEL ALUMNO ---
     function renderDashboardView(container, user) {
       const courses = window.rumboDB.getUserCourses(user.id);
+      const overall = window.rumboDB.getOverallStats(user.id);
 
       let cardsHtml = courses.map(course => {
         const stats = window.rumboDB.getCourseStats(user.id, course.id);
         const isFinished = stats.isCompleted;
 
         return `
-          <div class="platform-course-card">
+          <div class="platform-course-card ${isFinished ? 'card-completed-border' : ''}">
             <div>
               <div class="p-course-header">
                 <span class="p-course-icon">${course.icon}</span>
                 <div>
                   <h3 class="p-course-title">${course.title}</h3>
-                  <span class="role-badge">${course.badge}</span>
+                  <span class="role-badge ${isFinished ? 'badge-completed' : ''}">${isFinished ? 'COMPLETADO ✓' : course.badge}</span>
                 </div>
               </div>
               <p class="p-course-desc">${course.description}</p>
@@ -300,23 +301,31 @@
             <div>
               <div class="progress-bar-container">
                 <div class="progress-info">
-                  <span>PROGRESO</span>
-                  <span>${stats.percentage}% (${stats.completedLessons}/${stats.totalLessons} Clases)</span>
+                  <span>PROGRESO DEL CURSO</span>
+                  <span style="color:${isFinished ? '#34d399' : '#00c2ff'}; font-weight:800;">${stats.percentage}% ${isFinished ? '🎉' : ''}</span>
                 </div>
                 <div class="progress-track">
                   <div class="progress-fill ${isFinished ? 'is-100' : ''}" style="width: ${stats.percentage}%;"></div>
                 </div>
               </div>
 
-              ${isFinished ? `
-                <button class="btn-continue-course btn-cert-unlocked" onclick="handleGenerateCert('${user.id}', '${course.id}')">
-                  🏆 OBTENER CERTIFICADO
-                </button>
-              ` : `
-                <a href="#/curso/${course.id}" class="btn-continue-course">
-                  CONTINUAR CURSO →
-                </a>
-              `}
+              <!-- Action Buttons -->
+              <div style="display:flex; flex-direction:column; gap:0.6rem;">
+                <div style="display:flex; gap:0.5rem;">
+                  <a href="#/curso/${course.id}" class="btn-continue-course" style="flex:1;">
+                    ${isFinished ? 'Ver Material ↗' : 'Continuar Formación →'}
+                  </a>
+                  <button class="btn-quick-toggle ${isFinished ? 'is-done' : ''}" title="${isFinished ? 'Desmarcar curso' : 'Marcar curso como completado'}" onclick="handleToggleCourse('${user.id}', '${course.id}')">
+                    ${isFinished ? '✓ 100%' : 'Marcar Completado'}
+                  </button>
+                </div>
+
+                ${isFinished ? `
+                  <button class="btn-continue-course btn-cert-unlocked" onclick="handleGenerateCert('${user.id}', '${course.id}')">
+                    🏆 OBTENER CERTIFICADO OFICIAL
+                  </button>
+                ` : ''}
+              </div>
             </div>
           </div>
         `;
@@ -324,12 +333,41 @@
 
       container.innerHTML = `
         <div class="dashboard-container">
-          <div class="welcome-header">
-            <h1 class="welcome-title">Hola, ${user.firstName} ${user.lastName}</h1>
-            <p class="welcome-sub">Bienvenido a la academia de RUMBO PRO. Continuá desarrollando tus habilidades digitales.</p>
+          <!-- Welcome Hero Banner -->
+          <div class="dashboard-hero-banner">
+            <div class="welcome-header">
+              <span class="badge-pill">ACADEMIA RUMBO PRO</span>
+              <h1 class="welcome-title">Hola, ${user.firstName} ${user.lastName}</h1>
+              <p class="welcome-sub">Panel de estudiante. Avanzá en tus formaciones y obtené tus certificaciones oficiales.</p>
+            </div>
+
+            <!-- Stats Overview Bar -->
+            <div class="stats-overview-grid">
+              <div class="stat-mini-card">
+                <span class="stat-mini-num">${overall.totalCourses}</span>
+                <span class="stat-mini-label">Cursos Activos</span>
+              </div>
+              <div class="stat-mini-card">
+                <span class="stat-mini-num" style="color:#34d399;">${overall.completedCourses}/${overall.totalCourses}</span>
+                <span class="stat-mini-label">Completados</span>
+              </div>
+              <div class="stat-mini-card">
+                <span class="stat-mini-num" style="color:#f59e0b;">${overall.totalCertificates}</span>
+                <span class="stat-mini-label">Certificados Emitidos</span>
+              </div>
+              <div class="stat-mini-card stat-progress-card">
+                <div style="display:flex; justify-content:space-between; font-size:0.78rem; font-weight:800; margin-bottom:0.4rem;">
+                  <span>PROGRESO TOTAL</span>
+                  <span style="color:#00c2ff;">${overall.percentage}%</span>
+                </div>
+                <div class="progress-track" style="height:10px;">
+                  <div class="progress-fill ${overall.percentage === 100 ? 'is-100' : ''}" style="width:${overall.percentage}%;"></div>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <h2 class="courses-section-title">📚 Mis Cursos Asignados</h2>
+          <h2 class="courses-section-title">📚 Mis Cursos y Formaciones</h2>
           
           <div class="dashboard-courses-grid">
             ${cardsHtml || '<p>No tenés cursos asignados en este momento.</p>'}
@@ -337,6 +375,11 @@
         </div>
       `;
     }
+
+    window.handleToggleCourse = (userId, courseId) => {
+      window.rumboDB.toggleCourseComplete(userId, courseId);
+      renderCurrentRoute();
+    };
 
     // --- VIEW: REPRODUCTOR DE CURSO Y CLASES ---
     function renderCoursePlayerView(container, user, courseId) {
@@ -360,7 +403,6 @@
         return;
       }
 
-      // Get initial selected lesson
       let selectedLessonId = allLessons[0].id;
       
       function renderPlayerContent() {
@@ -368,6 +410,7 @@
         const currentLesson = allLessons.find(l => l.id === selectedLessonId) || allLessons[0];
         const progressList = window.rumboDB.getProgress();
         const isLessonDone = progressList.some(p => p.userId === user.id && p.lessonId === currentLesson.id);
+        const isCourseFinished = stats.isCompleted;
 
         const currentIndex = allLessons.findIndex(l => l.id === currentLesson.id);
         const prevLesson = currentIndex > 0 ? allLessons[currentIndex - 1] : null;
@@ -401,8 +444,8 @@
           mediaViewerHtml = `
             <div class="drive-banner-bar">
               <div class="drive-banner-info">
-                <span class="drive-icon-badge">📁 GOOGLE DRIVE</span>
-                <span class="drive-desc-title">Material y Videos del Curso</span>
+                <span class="drive-icon-badge">📁 MATERIAL DE DRIVE</span>
+                <span class="drive-desc-title">Archivos y Videos Oficiales</span>
               </div>
               <a href="${targetLink}" target="_blank" rel="noopener noreferrer" class="btn-open-drive">
                 Abrir en Google Drive ↗
@@ -412,14 +455,14 @@
               <iframe src="${currentLesson.videoUrl}" title="${currentLesson.title}" allow="autoplay; fullscreen" loading="lazy"></iframe>
             </div>
             <div class="drive-quick-tip">
-              💡 <strong>Tip para alumnos:</strong> Podés navegar los videos y documentos directamente desde el visor superior o hacer clic en <strong>"Abrir en Google Drive"</strong> para verlos en pantalla completa.
+              💡 <strong>Tip:</strong> Podés navegar los archivos en el visor o abrirlos en pantalla completa en Drive con el botón azul.
             </div>
           `;
         } else if (currentLesson.type === 'page') {
           mediaViewerHtml = `
             <div class="drive-banner-bar">
               <div class="drive-banner-info">
-                <span class="drive-icon-badge" style="background:rgba(16,185,129,0.15); color:#34d399; border-color:rgba(16,185,129,0.3);">🌐 MÓDULO WEB</span>
+                <span class="drive-icon-badge" style="background:rgba(16,185,129,0.15); color:#34d399; border-color:rgba(16,185,129,0.3);">🌐 MÓDULO INTERACTIVO</span>
                 <span class="drive-desc-title">${currentLesson.title}</span>
               </div>
               <a href="${targetLink}" target="_blank" rel="noopener noreferrer" class="btn-open-drive" style="background:linear-gradient(135deg,#0052cc,#00c2ff);">
@@ -439,6 +482,28 @@
         }
 
         container.innerHTML = `
+          <div class="player-top-header">
+            <a href="#/dashboard" class="btn-back-dashboard">← Volver a Mis Cursos</a>
+            <button class="btn-mark-course-complete ${isCourseFinished ? 'is-complete' : ''}" onclick="handlePlayerToggleCourse('${user.id}', '${course.id}')">
+              ${isCourseFinished ? '✅ CURSO COMPLETADO (100%)' : '✓ MARCAR CURSO COMO COMPLETADO'}
+            </button>
+          </div>
+
+          ${isCourseFinished ? `
+            <div class="course-completed-celebration-banner">
+              <div style="display:flex; align-items:center; gap:0.85rem;">
+                <span style="font-size:2rem;">🎉</span>
+                <div>
+                  <h3 style="font-weight:900; color:#ffffff; font-size:1.1rem; margin-bottom:0.2rem;">¡Felicitaciones! Has completado esta formación al 100%.</h3>
+                  <p style="font-size:0.85rem; color:#d1fae5;">Tu certificado oficial firmado por Pablo Xavier está listo para emitir y descargar.</p>
+                </div>
+              </div>
+              <button class="btn-continue-course btn-cert-unlocked" style="width:auto; padding:0.75rem 1.5rem;" onclick="handleGenerateCert('${user.id}', '${course.id}')">
+                🏆 OBTENER CERTIFICADO
+              </button>
+            </div>
+          ` : ''}
+
           <div class="player-layout">
             <!-- Sidebar -->
             <div class="modules-sidebar">
@@ -447,10 +512,10 @@
               <div class="progress-bar-container">
                 <div class="progress-info">
                   <span>PROGRESO DEL CURSO</span>
-                  <span>${stats.percentage}%</span>
+                  <span style="color:${isCourseFinished ? '#34d399' : '#00c2ff'}; font-weight:800;">${stats.percentage}%</span>
                 </div>
                 <div class="progress-track">
-                  <div class="progress-fill ${stats.isCompleted ? 'is-100' : ''}" style="width: ${stats.percentage}%;"></div>
+                  <div class="progress-fill ${isCourseFinished ? 'is-100' : ''}" style="width: ${stats.percentage}%;"></div>
                 </div>
               </div>
 
@@ -466,7 +531,7 @@
 
               <div class="player-controls-bar">
                 <button class="btn-complete-lesson ${isLessonDone ? 'is-completed-btn' : ''}" onclick="toggleLessonComplete('${user.id}', '${course.id}', '${currentLesson.id}', ${isLessonDone})">
-                  ${isLessonDone ? '✓ CLASE COMPLETADA' : 'MARCAR COMO COMPLETADA'}
+                  ${isLessonDone ? '✓ MATERIAL REVISADO' : 'MARCAR COMO VISTO'}
                 </button>
 
                 <div style="display: flex; gap: 0.5rem;">
@@ -481,6 +546,11 @@
 
       window.selectLesson = (lessonId) => {
         selectedLessonId = lessonId;
+        renderPlayerContent();
+      };
+
+      window.handlePlayerToggleCourse = (uId, cId) => {
+        window.rumboDB.toggleCourseComplete(uId, cId);
         renderPlayerContent();
       };
 
