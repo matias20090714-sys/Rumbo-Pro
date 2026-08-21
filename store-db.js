@@ -413,7 +413,7 @@ class RumboProDB {
 
   // --- COURSE & CONTENT MANAGEMENT ---
   getCourses() {
-    return JSON.parse(localStorage.getItem(DB_KEY_COURSES) || JSON.stringify(INITIAL_COURSES));
+    return INITIAL_COURSES;
   }
 
   getUserCourses(userId) {
