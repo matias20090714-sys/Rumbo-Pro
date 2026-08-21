@@ -379,6 +379,52 @@ class RumboProDB {
     this.saveProgress(progress);
   }
 
+  toggleCourseComplete(userId, courseId) {
+    const stats = this.getCourseStats(userId, courseId);
+    const course = this.getCourses().find(c => c.id === courseId);
+    if (!course) return false;
+
+    let progress = this.getProgress();
+    const allLessonIds = [];
+    course.modules.forEach(m => {
+      m.lessons.forEach(l => {
+        allLessonIds.push(l.id);
+      });
+    });
+
+    if (stats.isCompleted) {
+      // Mark all lessons incomplete
+      progress = progress.filter(p => !(p.userId === userId && allLessonIds.includes(p.lessonId)));
+    } else {
+      // Mark all lessons complete
+      allLessonIds.forEach(lId => {
+        if (!progress.some(p => p.userId === userId && p.lessonId === lId)) {
+          progress.push({ userId, courseId, lessonId: lId, completedAt: new Date().toISOString() });
+        }
+      });
+    }
+    this.saveProgress(progress);
+    return !stats.isCompleted;
+  }
+
+  getOverallStats(userId) {
+    const courses = this.getUserCourses(userId);
+    const totalCourses = courses.length;
+    let completedCourses = 0;
+    courses.forEach(c => {
+      const stats = this.getCourseStats(userId, c.id);
+      if (stats.isCompleted) completedCourses++;
+    });
+    const percentage = totalCourses > 0 ? Math.round((completedCourses / totalCourses) * 100) : 0;
+    const certs = this.getCertificates().filter(c => c.userId === userId);
+    return {
+      totalCourses,
+      completedCourses,
+      percentage,
+      totalCertificates: certs.length
+    };
+  }
+
   getCourseStats(userId, courseId) {
     const courses = this.getCourses();
     const course = courses.find(c => c.id === courseId);
