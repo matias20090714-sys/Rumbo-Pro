@@ -537,16 +537,29 @@ class RumboProDB {
     const existing = certs.find(c => c.userId === userId && c.courseId === courseId);
     if (existing) return existing;
 
-    const user = this.getUsers().find(u => u.id === userId);
-    const course = this.getCourses().find(c => c.id === courseId);
+    const user = this.getUsers().find(u => u.id === userId) || this.getCurrentUser() || {};
+    const course = this.getCourses().find(c => c.id === courseId) || {};
+    
+    let studentName = '';
+    if (user.firstName || user.first_name) {
+      studentName = `${user.firstName || user.first_name} ${user.lastName || user.last_name || ''}`.trim();
+    } else if (user.email) {
+      studentName = user.email.split('@')[0];
+    } else {
+      studentName = 'Estudiante RUMBO PRO';
+    }
+
+    const courseTitle = course.title || 'Formación Profesional RUMBO PRO';
     const randomHash = Math.random().toString(36).substring(2, 8).toUpperCase();
+    const formattedDate = new Date().toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' });
+
     const newCert = {
       id: 'RP-CERT-' + randomHash,
-      userId,
-      userName: user.firstName + ' ' + user.lastName,
-      courseId,
-      courseTitle: course.title,
-      issueDate: new Date().toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' }),
+      userId: userId || user.id || 'user-default',
+      userName: studentName,
+      courseId: courseId,
+      courseTitle: courseTitle,
+      issueDate: formattedDate,
       signature: 'Pablo Xavier',
       directorTitle: 'Director & Fundador de RUMBO PRO'
     };
