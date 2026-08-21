@@ -997,90 +997,417 @@ section {
   color: var(--color-whatsapp);
 }
 
-.cta-punchline {
-  font-family: var(--font-heading);
-  font-size: 0.85rem;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  color: var(--color-primary-light);
-  text-transform: uppercase;
-  margin-top: 1.75rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--border-light);
-  max-width: 500px;
-  margin-left: auto;
-  margin-right: auto;
-  word-break: break-word;
-}
-
 /* ==========================================================================
-   FLOATING WHATSAPP BUTTON (Optimized for Mobile)
+   STATS & SOCIAL PROOF BAR
    ========================================================================== */
-.floating-wa-btn {
-  position: fixed;
-  bottom: 1.25rem;
-  right: 1.25rem;
-  z-index: 999;
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  background: #25d366;
-  color: #ffffff;
-  padding: 0.75rem 1.15rem;
-  border-radius: 50px;
-  text-decoration: none;
+.stats-bar-section {
+  padding: 1.5rem 0 2.5rem 0;
+  border-bottom: 1px solid var(--border-light);
+  margin-bottom: 3rem;
+  background: rgba(15, 23, 42, 0.45);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  text-align: center;
+}
+
+.stat-item {
+  padding: 1rem;
+}
+
+.stat-number {
   font-family: var(--font-heading);
-  font-weight: 700;
-  font-size: 0.88rem;
-  box-shadow: 0 10px 25px rgba(37, 211, 102, 0.45);
-  transition: all 0.25s ease;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  font-size: clamp(1.75rem, 3.5vw, 2.4rem);
+  font-weight: 900;
+  line-height: 1.1;
+  margin-bottom: 0.35rem;
 }
 
-.floating-wa-btn:active {
-  transform: scale(0.95);
-  background: #22c55e;
+.stat-label {
+  font-size: 0.85rem;
+  color: var(--text-silver);
+  font-weight: 600;
 }
 
-.floating-wa-icon {
-  width: 22px;
-  height: 22px;
-  fill: currentColor;
-  flex-shrink: 0;
-}
-
-.floating-pulse {
-  position: absolute;
-  inset: 0;
-  border-radius: 50px;
-  border: 2px solid #25d366;
-  animation: pulseWa 2s infinite;
-  pointer-events: none;
-}
-
-@keyframes pulseWa {
-  0% { transform: scale(1); opacity: 0.8; }
-  100% { transform: scale(1.35); opacity: 0; }
-}
-
-@media (max-width: 480px) {
-  .floating-wa-btn {
-    bottom: 1rem;
-    right: 1rem;
-    padding: 0.65rem 1rem;
-    font-size: 0.82rem;
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
   }
 }
 
 /* ==========================================================================
-   FOOTER MINIMAL
+   COMPARISON SECTION (TRADITIONAL VS RUMBO PRO)
    ========================================================================== */
-.site-footer {
+.section-comparison {
+  padding: 4rem 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.comparison-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.comparison-card {
+  border-radius: 20px;
+  padding: 2.2rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.card-traditional {
+  border-color: rgba(239, 68, 68, 0.25);
+  background: rgba(239, 68, 68, 0.03);
+}
+
+.card-rumbo {
+  border-color: rgba(0, 194, 255, 0.4);
+  background: linear-gradient(145deg, rgba(15, 23, 42, 0.9), rgba(0, 102, 255, 0.08));
+  box-shadow: 0 15px 35px rgba(0, 102, 255, 0.15);
+}
+
+.comp-header {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.comp-badge {
+  font-size: 0.74rem;
+  font-weight: 800;
+  padding: 0.35rem 0.75rem;
+  border-radius: 20px;
+  letter-spacing: 0.05em;
+  display: inline-block;
+  margin-bottom: 0.6rem;
+}
+
+.comp-badge-red {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.comp-badge-green {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.comp-title {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.comp-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.comp-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-size: 0.92rem;
+  color: var(--text-silver);
+  line-height: 1.5;
+}
+
+.comp-icon {
+  font-weight: 900;
+  font-size: 0.95rem;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.comp-icon.red { color: #ef4444; }
+.comp-icon.green { color: #10b981; }
+
+@media (max-width: 768px) {
+  .comparison-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ==========================================================================
+   CERTIFICATE SHOWCASE SECTION
+   ========================================================================== */
+.section-cert-showcase {
+  padding: 4.5rem 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.cert-showcase-box {
+  background: radial-gradient(circle at top right, rgba(0, 194, 255, 0.12), transparent 70%), var(--bg-card);
+  border: 1px solid rgba(0, 194, 255, 0.3);
+  border-radius: 24px;
+  padding: 3rem;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 2.5rem;
+  align-items: center;
+}
+
+.cert-badges-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.cert-feature-pill {
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid var(--border-light);
+  padding: 0.4rem 0.85rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #bae6fd;
+}
+
+.cert-preview-card {
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  border: 2px solid rgba(234, 179, 8, 0.5);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(234, 179, 8, 0.15);
+  border-radius: 16px;
+  padding: 1.75rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.cert-preview-inner {
   text-align: center;
-  padding: 1.75rem 1rem;
-  border-top: 1px solid var(--border-light);
-  font-size: 0.78rem;
-  color: var(--text-dark-muted);
+  border: 1px dashed rgba(234, 179, 8, 0.35);
+  border-radius: 12px;
+  padding: 1.5rem 1rem;
+}
+
+.cert-preview-badge {
+  font-size: 0.68rem;
+  letter-spacing: 0.15em;
+  color: #eab308;
+  font-weight: 900;
+  margin-bottom: 0.35rem;
+}
+
+.cert-preview-title {
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: #ffffff;
+}
+
+.cert-preview-sub {
+  font-size: 0.68rem;
+  color: #94a3b8;
+  letter-spacing: 0.1em;
+  margin-bottom: 1rem;
+}
+
+.cert-preview-name {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #38bdf8;
+  margin-bottom: 0.25rem;
+}
+
+.cert-preview-course {
+  font-size: 0.72rem;
+  color: #cbd5e1;
+  font-weight: 700;
+  margin-bottom: 1.25rem;
+}
+
+.cert-preview-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.68rem;
+  color: #64748b;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 0.6rem;
+}
+
+.cert-preview-seal {
+  color: #34d399;
+  font-weight: 800;
+}
+
+@media (max-width: 860px) {
+  .cert-showcase-box {
+    grid-template-columns: 1fr;
+    padding: 2rem;
+  }
+}
+
+/* ==========================================================================
+   FAQ SECTION (Interactive Accordion)
+   ========================================================================== */
+.section-faq {
+  padding: 4.5rem 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.faq-container {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.faq-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: all 0.25s ease;
+}
+
+.faq-item.faq-open {
+  border-color: rgba(0, 194, 255, 0.45);
+  background: rgba(15, 23, 42, 0.95);
+  box-shadow: 0 6px 20px rgba(0, 194, 255, 0.08);
+}
+
+.faq-question {
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #ffffff;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  text-align: left;
+  gap: 1rem;
+}
+
+.faq-arrow {
+  font-size: 0.75rem;
+  color: var(--color-primary-light);
+  transition: transform 0.3s ease;
+}
+
+.faq-item.faq-open .faq-arrow {
+  transform: rotate(180deg);
+}
+
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease, padding 0.35s ease;
+  padding: 0 1.5rem;
+  color: var(--text-silver);
+  font-size: 0.92rem;
+  line-height: 1.65;
+}
+
+.faq-item.faq-open .faq-answer {
+  max-height: 300px;
+  padding: 0 1.5rem 1.25rem 1.5rem;
+}
+
+/* ==========================================================================
+   LIVE SOCIAL PROOF TOAST
+   ========================================================================== */
+.social-proof-toast {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 1.5rem;
+  z-index: 998;
+  background: rgba(15, 23, 42, 0.94);
+  border: 1px solid rgba(0, 194, 255, 0.35);
+  backdrop-filter: blur(12px);
+  padding: 0.75rem 1rem;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  transform: translateY(120px);
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+.social-proof-toast.toast-active {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.toast-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(0, 194, 255, 0.15);
+  border: 1px solid rgba(0, 194, 255, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  flex-shrink: 0;
+}
+
+.toast-title {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.toast-text {
+  font-size: 0.74rem;
+  color: var(--color-primary-light);
+}
+
+.toast-time {
+  font-size: 0.65rem;
+  color: #64748b;
+  margin-left: 0.5rem;
+  align-self: flex-start;
+}
+
+@media (max-width: 640px) {
+  .social-proof-toast {
+    display: none;
+  }
+}
+
+.floating-wa-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #ef4444;
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 900;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.5);
+  border: 2px solid #0f172a;
 }
 
 /* Scroll Animations */
@@ -1094,3 +1421,4 @@ section {
   opacity: 1;
   transform: translateY(0);
 }
+
