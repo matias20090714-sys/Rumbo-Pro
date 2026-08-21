@@ -872,50 +872,180 @@
       const users = window.rumboDB.getUsers();
       const courses = window.rumboDB.getCourses();
 
-      let usersRows = users.map(u => {
-        let tagClass = 'tag-pending';
-        if (u.status === 'APROBADO') tagClass = 'tag-approved';
-        if (u.status === 'RECHAZADO') tagClass = 'tag-rejected';
-        if (u.status === 'SUSPENDIDO') tagClass = 'tag-suspended';
+      // 1. Pending users
+      const pendingUsers = users.filter(u => u.status === 'PENDIENTE');
+      // 2. Approved users
+      const approvedUsers = users.filter(u => u.status === 'APROBADO');
+      // 3. Suspended or Rejected users
+      const otherUsers = users.filter(u => u.status === 'SUSPENDIDO' || u.status === 'RECHAZADO');
 
+      let pendingRows = pendingUsers.map(u => `
+        <tr>
+          <td>
+            <div style="font-weight:800; color:#ffffff;">${u.firstName} ${u.lastName}</div>
+            <div style="font-size:0.8rem; color:var(--text-muted);">${u.email}</div>
+          </td>
+          <td><span class="role-badge">${u.role}</span></td>
+          <td><span class="status-tag tag-pending">⏳ PENDIENTE</span></td>
+          <td>
+            <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+              <button class="action-btn-sm btn-act-approve" onclick="handleAdminUpdateUser('${u.id}', 'APROBADO')">
+                ✓ Aprobar
+              </button>
+              <button class="action-btn-sm btn-act-reject" onclick="handleAdminUpdateUser('${u.id}', 'RECHAZADO')">
+                ✕ Rechazar
+              </button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+
+      let approvedRows = approvedUsers.map(u => {
+        const isAdmin = u.role === 'ADMINISTRADOR';
         return `
           <tr>
-            <td><strong>${u.firstName} ${u.lastName}</strong><br><small style="color:var(--text-muted);">${u.email}</small></td>
-            <td><span class="role-badge">${u.role}</span></td>
-            <td><span class="status-tag ${tagClass}">${u.status}</span></td>
             <td>
-              <button class="action-btn-sm btn-act-approve" onclick="handleAdminUpdateUser('${u.id}', 'APROBADO')">Aprobar</button>
-              <button class="action-btn-sm btn-act-reject" onclick="handleAdminUpdateUser('${u.id}', 'RECHAZADO')">Rechazar</button>
-              <button class="action-btn-sm btn-act-suspend" onclick="handleAdminUpdateUser('${u.id}', 'SUSPENDIDO')">Suspender</button>
+              <div style="font-weight:800; color:#ffffff;">${u.firstName} ${u.lastName}</div>
+              <div style="font-size:0.8rem; color:var(--text-muted);">${u.email}</div>
+            </td>
+            <td><span class="role-badge" style="background:${isAdmin ? 'rgba(0,194,255,0.15)' : 'rgba(255,255,255,0.06)'}; color:${isAdmin ? '#38bdf8' : '#cbd5e1'};">${u.role}</span></td>
+            <td><span class="status-tag tag-approved">✅ APROBADO</span></td>
+            <td>
+              ${isAdmin ? `
+                <span style="font-size:0.75rem; color:#94a3b8; font-weight:700;">Administrador Principal</span>
+              ` : `
+                <button class="action-btn-sm btn-act-suspend" onclick="handleAdminUpdateUser('${u.id}', 'SUSPENDIDO')">
+                  🚫 Suspender
+                </button>
+              `}
             </td>
           </tr>
         `;
       }).join('');
 
+      let otherRows = otherUsers.map(u => `
+        <tr>
+          <td>
+            <div style="font-weight:800; color:#ffffff;">${u.firstName} ${u.lastName}</div>
+            <div style="font-size:0.8rem; color:var(--text-muted);">${u.email}</div>
+          </td>
+          <td><span class="role-badge">${u.role}</span></td>
+          <td>
+            <span class="status-tag ${u.status === 'SUSPENDIDO' ? 'tag-suspended' : 'tag-rejected'}">
+              ${u.status === 'SUSPENDIDO' ? '🚫 SUSPENDIDO' : '❌ RECHAZADO'}
+            </span>
+          </td>
+          <td>
+            <button class="action-btn-sm btn-act-approve" onclick="handleAdminUpdateUser('${u.id}', 'APROBADO')">
+              🔄 Reactivar Acceso
+            </button>
+          </td>
+        </tr>
+      `).join('');
+
       container.innerHTML = `
         <div class="dashboard-container">
           <div class="welcome-header">
+            <span class="badge-pill" style="background:rgba(0,194,255,0.15); color:#38bdf8; border-color:rgba(0,194,255,0.4); margin-bottom:0.5rem; display:inline-block;">PANEL DE CONTROL</span>
             <h1 class="welcome-title">Panel de Administración</h1>
-            <p class="welcome-sub">Gestión integral de usuarios, aprobación de accesos y contenidos de RUMBO PRO.</p>
+            <p class="welcome-sub">Gestión integral de usuarios, aprobación de accesos y estados de alumnos en RUMBO PRO.</p>
           </div>
 
-          <h2 class="courses-section-title">👥 Gestión de Alumnos y Solicitudes</h2>
-          
-          <div class="admin-table-container">
-            <table class="admin-table">
-              <thead>
-                <tr>
-                  <th>Usuario / Email</th>
-                  <th>Rol</th>
-                  <th>Estado</th>
-                  <th>Acciones de Administración</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${usersRows}
-              </tbody>
-            </table>
+          <!-- SECTION 1: SOLICITUDES PENDIENTES -->
+          <div class="admin-section-block">
+            <div class="admin-section-header">
+              <div style="display:flex; align-items:center; gap:0.6rem;">
+                <h2 class="courses-section-title" style="margin:0;">⏳ Solicitudes Pendientes de Aprobación</h2>
+                <span class="admin-count-badge" style="background:rgba(245,158,11,0.2); color:#fbbf24; border:1px solid rgba(245,158,11,0.4);">${pendingUsers.length}</span>
+              </div>
+              <p style="font-size:0.85rem; color:var(--text-muted); margin-top:0.25rem;">Nuevos usuarios registrados esperando tu aprobación para ingresar a los cursos.</p>
+            </div>
+
+            <div class="admin-table-container">
+              ${pendingUsers.length > 0 ? `
+                <table class="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Usuario / Email</th>
+                      <th>Rol</th>
+                      <th>Estado</th>
+                      <th>Acción</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${pendingRows}
+                  </tbody>
+                </table>
+              ` : `
+                <div class="admin-empty-state">
+                  <span>✨</span> No hay solicitudes pendientes de aprobación en este momento.
+                </div>
+              `}
+            </div>
           </div>
+
+          <!-- SECTION 2: ALUMNOS ACEPTADOS / ACTIVOS -->
+          <div class="admin-section-block" style="margin-top:2.5rem;">
+            <div class="admin-section-header">
+              <div style="display:flex; align-items:center; gap:0.6rem;">
+                <h2 class="courses-section-title" style="margin:0; color:#34d399;">✅ Alumnos Aprobados y Activos</h2>
+                <span class="admin-count-badge" style="background:rgba(16,185,129,0.2); color:#34d399; border:1px solid rgba(16,185,129,0.4);">${approvedUsers.length}</span>
+              </div>
+              <p style="font-size:0.85rem; color:var(--text-muted); margin-top:0.25rem;">Alumnos con acceso total a las clases. El único botón disponible es para suspender el acceso si corresponde.</p>
+            </div>
+
+            <div class="admin-table-container">
+              ${approvedUsers.length > 0 ? `
+                <table class="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Usuario / Email</th>
+                      <th>Rol</th>
+                      <th>Estado</th>
+                      <th>Acción</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${approvedRows}
+                  </tbody>
+                </table>
+              ` : `
+                <div class="admin-empty-state">
+                  No hay alumnos activos registrados.
+                </div>
+              `}
+            </div>
+          </div>
+
+          <!-- SECTION 3: USUARIOS SUSPENDIDOS / RECHAZADOS (SI EXISTEN) -->
+          ${otherUsers.length > 0 ? `
+            <div class="admin-section-block" style="margin-top:2.5rem;">
+              <div class="admin-section-header">
+                <div style="display:flex; align-items:center; gap:0.6rem;">
+                  <h2 class="courses-section-title" style="margin:0; color:#f87171;">🚫 Usuarios Suspendidos o Rechazados</h2>
+                  <span class="admin-count-badge" style="background:rgba(239,68,68,0.2); color:#f87171; border:1px solid rgba(239,68,68,0.4);">${otherUsers.length}</span>
+                </div>
+                <p style="font-size:0.85rem; color:var(--text-muted); margin-top:0.25rem;">Usuarios sin acceso a la plataforma. Puedes reactivarlos en cualquier momento.</p>
+              </div>
+
+              <div class="admin-table-container">
+                <table class="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Usuario / Email</th>
+                      <th>Rol</th>
+                      <th>Estado</th>
+                      <th>Acción</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${otherRows}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          ` : ''}
+
         </div>
       `;
     }
