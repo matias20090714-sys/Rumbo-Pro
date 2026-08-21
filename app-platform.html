@@ -468,7 +468,7 @@
           mediaViewerHtml = `
             <div class="drive-banner-bar">
               <div class="drive-banner-info">
-                <span class="drive-icon-badge">📁 CARPETA DE GOOGLE DRIVE</span>
+                <span class="drive-icon-badge">📁 CARPETA OFICIAL DE GOOGLE DRIVE</span>
                 <span class="drive-desc-title">${course.title}</span>
               </div>
               <a href="${targetLink}" target="_blank" rel="noopener noreferrer" class="btn-open-drive">
@@ -479,7 +479,7 @@
               <iframe src="${currentLesson.videoUrl}" title="${currentLesson.title}" allow="autoplay; fullscreen" loading="lazy"></iframe>
             </div>
             <div class="drive-quick-tip">
-              💡 <strong>Acceso al Material:</strong> Navegá por los archivos y videos dentro del visor o abrilos en pantalla completa en Drive con el botón azul. Cuando termines, tocá el botón verde abajo para marcar como completado.
+              💡 <strong>Instrucciones:</strong> Revisá los videos y materiales dentro del visor de Drive o abrilos en pantalla completa con el botón azul. Cuando termines, tocá el botón verde <strong>"✓ MARCAR COMO COMPLETADO"</strong> abajo para subir tu progreso y desbloquear el certificado.
             </div>
           `;
         } else if (currentLesson.type === 'page') {
@@ -507,46 +507,54 @@
 
         container.innerHTML = `
           <div class="player-top-header">
-            <a href="#/dashboard" class="btn-back-dashboard">← Volver a Mis Cursos</a>
+            <a href="#/dashboard" class="btn-back-dashboard">← Volver al Panel Principal</a>
             <div style="display:flex; align-items:center; gap:0.65rem;">
-              <span class="role-badge" style="font-size:0.82rem; padding:0.4rem 0.9rem;">
-                Progreso del Curso: <strong>${stats.percentage}%</strong>
+              <span class="role-badge" style="font-size:0.85rem; padding:0.4rem 0.9rem; background:${isCourseFinished ? 'rgba(16,185,129,0.2)' : 'rgba(0,194,255,0.15)'}; color:${isCourseFinished ? '#34d399' : '#00c2ff'}; border-color:${isCourseFinished ? '#10b981' : 'var(--border-accent)'};">
+                ${isCourseFinished ? '🏆 CURSO COMPLETADO AL 100%' : `Progreso del Curso: ${stats.percentage}%`}
               </span>
             </div>
           </div>
 
+          <!-- Live Animated Progress Bar inside Course Player -->
+          <div class="dashboard-container" style="padding: 0 1rem; margin-bottom: 1.25rem;">
+            <div style="background:#0d1527; border:1px solid ${isCourseFinished ? '#10b981' : 'rgba(0,194,255,0.3)'}; border-radius:14px; padding:1.15rem 1.4rem; box-shadow:0 6px 25px rgba(0,0,0,0.4);">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.6rem;">
+                <div style="display:flex; align-items:center; gap:0.5rem;">
+                  <span style="font-size:1.1rem;">${isCourseFinished ? '🎉' : '📈'}</span>
+                  <span style="font-size:0.88rem; font-weight:800; color:#ffffff; letter-spacing:0.04em;">BARRA DE PROGRESO DE ESTE CURSO</span>
+                </div>
+                <span style="font-size:1.15rem; font-weight:900; color:${isCourseFinished ? '#34d399' : '#00c2ff'};">
+                  ${stats.percentage}% ${isCourseFinished ? '✓' : ''}
+                </span>
+              </div>
+              <div class="progress-track" style="height:14px; background:rgba(255,255,255,0.08); border-radius:50px; overflow:hidden; border:1px solid rgba(255,255,255,0.1);">
+                <div class="progress-fill ${isCourseFinished ? 'is-100' : ''}" style="width:${stats.percentage}%; height:100%; transition:width 0.5s ease; background:${isCourseFinished ? 'linear-gradient(90deg,#10b981,#34d399)' : 'linear-gradient(90deg,#0066ff,#00c2ff)'};"></div>
+              </div>
+            </div>
+          </div>
+
           ${isCourseFinished ? `
-            <div class="course-completed-celebration-banner">
+            <div class="course-completed-celebration-banner" style="margin-left:auto; margin-right:auto; max-width:1280px;">
               <div style="display:flex; align-items:center; gap:0.85rem;">
-                <span style="font-size:2rem;">🎉</span>
+                <span style="font-size:2.4rem;">🎉</span>
                 <div>
-                  <h3 style="font-weight:900; color:#ffffff; font-size:1.1rem; margin-bottom:0.2rem;">¡Felicitaciones! Has completado el 100% de este curso.</h3>
-                  <p style="font-size:0.85rem; color:#d1fae5;">Tu certificado oficial firmado por Pablo Xavier está listo para emitir y descargar.</p>
+                  <h3 style="font-weight:900; color:#ffffff; font-size:1.2rem; margin-bottom:0.2rem;">¡Felicitaciones! Has completado el 100% de esta formación.</h3>
+                  <p style="font-size:0.88rem; color:#d1fae5;">Tu certificado oficial firmado por Pablo Xavier está listo para emitir y descargar.</p>
                 </div>
               </div>
-              <button class="btn-continue-course btn-cert-unlocked" style="width:auto; padding:0.75rem 1.5rem;" onclick="handleGenerateCert('${user.id}', '${course.id}')">
+              <button class="btn-continue-course btn-cert-unlocked" style="width:auto; padding:0.85rem 1.75rem; font-size:0.95rem;" onclick="handleGenerateCert('${user.id}', '${course.id}')">
                 🏆 OBTENER CERTIFICADO OFICIAL
               </button>
             </div>
           ` : ''}
 
-          <div class="${isMultiLesson ? 'player-layout' : 'dashboard-container'}" style="${!isMultiLesson ? 'padding-top:0.5rem;' : ''}">
+          <div class="${isMultiLesson ? 'player-layout' : 'dashboard-container'}" style="${!isMultiLesson ? 'padding-top:0.25rem;' : ''}">
             ${isMultiLesson ? `
               <!-- Sidebar for multi-module courses (Community Manager) -->
               <div class="modules-sidebar">
                 <div class="sidebar-header-box">
                   <span class="sidebar-course-tag">FORMACIÓN DIGITAL</span>
                   <h3 class="sidebar-course-title">${course.title}</h3>
-                  
-                  <div class="progress-bar-container" style="margin-bottom:0.5rem; margin-top:0.75rem;">
-                    <div class="progress-info">
-                      <span>PROGRESO</span>
-                      <span style="color:${isCourseFinished ? '#34d399' : '#00c2ff'}; font-weight:800;">${stats.percentage}%</span>
-                    </div>
-                    <div class="progress-track">
-                      <div class="progress-fill ${isCourseFinished ? 'is-100' : ''}" style="width: ${stats.percentage}%;"></div>
-                    </div>
-                  </div>
                 </div>
 
                 <div style="display:flex; flex-direction:column; gap:0.5rem;">
@@ -559,26 +567,26 @@
             <div class="main-player-content">
               <div class="active-module-header">
                 <h1 class="lesson-title-heading" style="font-size:1.6rem; color:#ffffff;">${isMultiLesson ? currentLesson.title : course.title}</h1>
-                <p style="color:var(--text-muted); font-size:0.92rem; margin-bottom:1.25rem;">${currentLesson.content || course.description}</p>
+                <p style="color:var(--text-silver); font-size:0.92rem; margin-bottom:1.25rem;">${currentLesson.content || course.description}</p>
               </div>
 
               ${mediaViewerHtml}
 
               <!-- Module Completion Action Bar -->
-              <div class="module-completion-card">
-                <div style="display:flex; align-items:center; gap:0.75rem;">
-                  <span style="font-size:1.8rem;">${isLessonDone ? '✅' : '📌'}</span>
+              <div class="module-completion-card" style="background:#131d35; border:1px solid ${isLessonDone ? '#10b981' : 'rgba(0,194,255,0.4)'};">
+                <div style="display:flex; align-items:center; gap:0.85rem;">
+                  <span style="font-size:2rem;">${isLessonDone ? '✅' : '📌'}</span>
                   <div>
-                    <h4 style="font-size:1rem; font-weight:800; color:#ffffff; margin-bottom:0.15rem;">
-                      ${isLessonDone ? 'Completado ✓' : '¿Terminaste de revisar este material?'}
+                    <h4 style="font-size:1.05rem; font-weight:800; color:#ffffff; margin-bottom:0.15rem;">
+                      ${isLessonDone ? '¡Material Completado!' : '¿Terminaste de revisar este contenido?'}
                     </h4>
-                    <p style="font-size:0.84rem; color:var(--text-muted);">
-                      ${isLessonDone ? 'Progreso sumado a tu barra general y certificado.' : 'Hacé clic para marcar como completado y sumar tu progreso en la barra.'}
+                    <p style="font-size:0.86rem; color:${isLessonDone ? '#34d399' : 'var(--text-muted)'};">
+                      ${isLessonDone ? 'Progreso sumado al 100% en la barra y certificado desbloqueado.' : 'Hacé clic en el botón verde para marcarlo como completado y subir tu barra de progreso.'}
                     </p>
                   </div>
                 </div>
 
-                <button class="btn-complete-lesson ${isLessonDone ? 'is-completed-btn' : ''}" style="font-size:0.95rem; padding:0.85rem 1.6rem;" onclick="handleToggleLessonAsync('${user.id}', '${course.id}', '${currentLesson.id}', ${isLessonDone})">
+                <button class="btn-complete-lesson ${isLessonDone ? 'is-completed-btn' : ''}" style="font-size:1rem; padding:0.9rem 1.8rem; font-weight:900;" onclick="handleToggleLessonAsync('${user.id}', '${course.id}', '${currentLesson.id}', ${isLessonDone})">
                   ${isLessonDone ? '✓ COMPLETADO (100%)' : '✓ MARCAR COMO COMPLETADO'}
                 </button>
               </div>
