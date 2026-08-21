@@ -96,6 +96,8 @@
       // Protected Student / Admin Routes
       if (hash === '#/dashboard') {
         renderDashboardView(container, currentUser);
+      } else if (hash === '#/afiliados' || hash === '#/manual-afiliado') {
+        renderAfiliadosManualView(container, currentUser);
       } else if (hash.startsWith('#/curso/')) {
         const courseId = hash.replace('#/curso/', '');
         renderCoursePlayerView(container, currentUser, courseId);
@@ -127,6 +129,7 @@
 
       navContainer.innerHTML = `
         <a href="#/dashboard" class="platform-menu-link ${currentHash === '#/dashboard' ? 'active' : ''}">Mis Cursos</a>
+        <a href="#/afiliados" class="platform-menu-link ${currentHash.startsWith('#/afiliados') ? 'active' : ''}" style="color:#facc15; font-weight:700;">Manual Afiliados 💰</a>
         <a href="#/certificados" class="platform-menu-link ${currentHash === '#/certificados' ? 'active' : ''}">Certificados</a>
         ${adminLink}
         <a href="#/verificar" class="platform-menu-link ${currentHash.startsWith('#/verificar') ? 'active' : ''}">Verificar ID</a>
@@ -389,6 +392,23 @@
                 </div>
               </div>
             </div>
+          </div>
+
+          <!-- Featured VIP Affiliate Manual Banner -->
+          <div class="manual-afiliado-banner">
+            <div class="manual-banner-content">
+              <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.5rem;">
+                <span class="badge-pill" style="background:rgba(234,179,8,0.2); color:#facc15; border-color:rgba(234,179,8,0.5); font-weight:800;">MÓDULO EXCLUSIVO DE MONETIZACIÓN</span>
+                <span style="font-size:0.8rem; color:#94a3b8;">100% Práctico</span>
+              </div>
+              <h2 class="manual-banner-title">💰 RUMBO PRO — MANUAL DEL AFILIADO</h2>
+              <p class="manual-banner-desc">
+                Aprendé a crear tu marca, atraer personas en redes sociales, cerrar ventas por WhatsApp y generar comisiones desde tu celular paso a paso.
+              </p>
+            </div>
+            <a href="#/afiliados" class="btn-manual-action">
+              ABRIR MANUAL DEL AFILIADO ↗
+            </a>
           </div>
 
           <h2 class="courses-section-title">📚 Mis Cursos y Formaciones</h2>
@@ -785,6 +805,739 @@
         </div>
       `;
     }
+
+    // --- VIEW: MANUAL DEL AFILIADO (10 CAPÍTULOS INTERACTIVOS) ---
+    function renderAfiliadosManualView(container, user) {
+      const chapters = [
+        {
+          id: 'cap-1',
+          num: '01',
+          icon: '📱',
+          title: 'Manual del Afiliado — Introducción',
+          subtitle: 'Cómo crear tu marca, atraer personas, vender y generar comisiones desde tu celular',
+          contentHtml: `
+            <div class="manual-hero-header">
+              <span class="manual-tag">MÓDULO FUNDAMENTAL</span>
+              <h2 class="manual-page-title">RUMBO PRO — MANUAL DEL AFILIADO</h2>
+              <p class="manual-lead">Cómo crear tu marca, atraer personas, vender y generar comisiones desde tu celular.</p>
+            </div>
+
+            <div class="manual-card-highlight">
+              <p><strong>Ser afiliado de Rumbo Pro</strong> no consiste simplemente en publicar un enlace y esperar ventas.</p>
+              <p style="margin-top:0.6rem;">Tu objetivo es construir una presencia en redes sociales alrededor de una habilidad digital, crear contenido que atraiga personas interesadas, llevarlas a tu WhatsApp, conversar con ellas y presentarles Rumbo Pro cuando tenga sentido.</p>
+            </div>
+
+            <h3 class="manual-subheading">El Proceso de 8 Pasos:</h3>
+            <div class="manual-flow-grid">
+              <div class="flow-pill"><span class="flow-pill-num">1</span> Crear tu marca</div>
+              <div class="flow-arrow">➔</div>
+              <div class="flow-pill"><span class="flow-pill-num">2</span> Crear contenido</div>
+              <div class="flow-arrow">➔</div>
+              <div class="flow-pill"><span class="flow-pill-num">3</span> Atraer personas</div>
+              <div class="flow-arrow">➔</div>
+              <div class="flow-pill"><span class="flow-pill-num">4</span> Llevarlas a WhatsApp</div>
+              <div class="flow-arrow">➔</div>
+              <div class="flow-pill"><span class="flow-pill-num">5</span> Conversar</div>
+              <div class="flow-arrow">➔</div>
+              <div class="flow-pill"><span class="flow-pill-num">6</span> Presentar Rumbo Pro</div>
+              <div class="flow-arrow">➔</div>
+              <div class="flow-pill"><span class="flow-pill-num">7</span> Conseguir la venta</div>
+              <div class="flow-arrow">➔</div>
+              <div class="flow-pill highlight-gold"><span class="flow-pill-num">8</span> Recibir tu comisión 💰</div>
+            </div>
+
+            <div class="manual-tip-box" style="margin-top:1.5rem;">
+              💡 <strong>Dato clave:</strong> Puedes realizar gran parte de todo este proceso utilizando únicamente tu celular.
+            </div>
+          `
+        },
+        {
+          id: 'cap-2',
+          num: '02',
+          icon: '💰',
+          title: '¿Cómo gana dinero un afiliado?',
+          subtitle: 'El modelo de recomendación, ventas y comisiones',
+          contentHtml: `
+            <div class="manual-hero-header">
+              <span class="manual-tag">MODELO DE NEGOCIO</span>
+              <h2 class="manual-page-title">¿Cómo gana dinero un afiliado?</h2>
+              <p class="manual-lead">Como afiliado de Rumbo Pro, puedes recomendar la academia a otras personas y recibir una comisión por las ventas que generes, de acuerdo con las condiciones vigentes del programa de afiliados.</p>
+            </div>
+
+            <div class="manual-card-highlight">
+              <p>🎯 <strong>Tu trabajo es generar la venta.</strong></p>
+              <p style="margin-top:0.4rem; color:var(--text-silver);">No necesitas encargarte de crear los cursos ni administrar la plataforma. Nosotros nos ocupamos del contenido, la infraestructura y el soporte.</p>
+            </div>
+
+            <h3 class="manual-subheading">Tu trabajo consiste principalmente en 3 tareas:</h3>
+            <div class="manual-tri-grid">
+              <div class="manual-tri-card">
+                <div class="tri-icon">🎥</div>
+                <h4 class="tri-title">1. Crear contenido</h4>
+                <p class="tri-desc">Construir una audiencia. Aportar valor y generar confianza.</p>
+              </div>
+
+              <div class="manual-tri-card">
+                <div class="tri-icon">💬</div>
+                <h4 class="tri-title">2. Conseguir interesados</h4>
+                <p class="tri-desc">Atenderlos por WhatsApp de forma personalizada. Explicar Rumbo Pro.</p>
+              </div>
+
+              <div class="manual-tri-card">
+                <div class="tri-icon">🤝</div>
+                <h4 class="tri-title">3. Resolver dudas</h4>
+                <p class="tri-desc">Compartir tu enlace de afiliado y conseguir ventas efectivas.</p>
+              </div>
+            </div>
+
+            <div class="manual-card-highlight" style="margin-top:1.5rem; background:rgba(0,194,255,0.08); border-color:rgba(0,194,255,0.3);">
+              <p>Cuando una persona realiza una compra válida mediante tu sistema de afiliado, la venta queda asociada a ti y podrás recibir la comisión correspondiente según las reglas del programa.</p>
+            </div>
+
+            <h3 class="manual-subheading">Tu Sistema en Resumen:</h3>
+            <div class="system-chain-box">
+              <span>📱 Redes sociales</span> ➔ <span>🎥 Contenido</span> ➔ <span>👥 Personas interesadas</span> ➔ <span>💬 Tu WhatsApp</span> ➔ <span>🤝 Conversación</span> ➔ <span>🎓 Rumbo Pro</span> ➔ <span>🔗 Tu enlace de afiliado</span> ➔ <span>💰 Venta</span> ➔ <span style="color:#34d399; font-weight:800;">🏆 Comisión</span>
+            </div>
+          `
+        },
+        {
+          id: 'cap-3',
+          num: '03',
+          icon: '🎯',
+          title: 'No seas "un afiliado", crea tu propia marca',
+          subtitle: 'Elige tu especialidad y construye tu identidad',
+          contentHtml: `
+            <div class="manual-hero-header">
+              <span class="manual-tag">POSICIONAMIENTO</span>
+              <h2 class="manual-page-title">No seas "un afiliado", crea tu propia marca</h2>
+              <p class="manual-lead">Uno de los errores más comunes es crear una cuenta que parezca publicidad (ej: "Rumbo Pro Oficial", "Compra Rumbo Pro", "Únete ahora").</p>
+            </div>
+
+            <div class="manual-card-highlight">
+              <p><strong>Tu objetivo es diferente:</strong></p>
+              <p style="margin-top:0.4rem;">Rumbo Pro es lo que recomiendas. <strong>Tú eres la persona que atrae y genera confianza.</strong> Por eso cada afiliado debe construir su propia identidad.</p>
+            </div>
+
+            <h3 class="manual-subheading">Elige tu especialidad:</h3>
+            <p style="color:var(--text-silver); font-size:0.92rem; margin-bottom:1rem;">Rumbo Pro tiene diferentes áreas. Puedes elegir la que más te interese y construir tu contenido alrededor de ella:</p>
+
+            <div class="manual-roles-grid">
+              <div class="role-spec-card">
+                <div class="role-spec-badge">🛒 Juan | Ecommerce</div>
+                <p class="role-spec-text">Tiendas online. Productos ganadores. Ecommerce. Dropshipping. Marketing para tiendas.</p>
+              </div>
+
+              <div class="role-spec-card">
+                <div class="role-spec-badge">📱 Sofía | Marketing Digital</div>
+                <p class="role-spec-text">Marketing. Redes sociales. Contenido. Estrategias digitales. Publicidad.</p>
+              </div>
+
+              <div class="role-spec-card">
+                <div class="role-spec-badge">🎯 Mateo | Closer de Ventas</div>
+                <p class="role-spec-text">Ventas de alto valor. Comunicación. Negociación. Cierres. Psicología comercial.</p>
+              </div>
+
+              <div class="role-spec-card">
+                <div class="role-spec-badge">🤖 Lucas | IA</div>
+                <p class="role-spec-text">ChatGPT. Herramientas de IA. Automatización. Productividad. Creación de contenido.</p>
+              </div>
+
+              <div class="role-spec-card">
+                <div class="role-spec-badge">💰 Valentina | Afiliados</div>
+                <p class="role-spec-text">Marketing de afiliados. Redes sociales. Ventas. Contenido. Captación.</p>
+              </div>
+            </div>
+
+            <div class="manual-tip-box" style="margin-top:1.5rem;">
+              💡 <strong>Regla de oro:</strong> La idea es que cuando una persona vea tu perfil piense inmediatamente: <em>"Esta persona habla de esto y sabe de lo que habla."</em>
+            </div>
+          `
+        },
+        {
+          id: 'cap-4',
+          num: '04',
+          icon: '👤',
+          title: 'Crea tu perfil profesional',
+          subtitle: 'Optimización de foto, nombre, biografía e imagen personal',
+          contentHtml: `
+            <div class="manual-hero-header">
+              <span class="manual-tag">OPTIMIZACIÓN DE PERFIL</span>
+              <h2 class="manual-page-title">Crea tu perfil profesional</h2>
+              <p class="manual-lead">Tu perfil es tu carta de presentación. Cuando alguien llegue, debe entender rápidamente: quién eres, qué haces, qué enseñas, por qué debería seguirte y cómo puede contactarte.</p>
+            </div>
+
+            <div class="manual-sections-2col">
+              <div class="col-card">
+                <h4 class="col-card-title">📸 Foto de Perfil</h4>
+                <p class="col-card-text">Utiliza una fotografía clara y profesional. No necesitas ropa cara ni un fotógrafo. Busca: buena iluminación, fondo limpio, rostro visible, imagen de buena calidad, expresión natural. Si utilizas una marca, puedes utilizar un logo sencillo.</p>
+
+                <h4 class="col-card-title" style="margin-top:1.25rem;">🏷️ Tu Nombre</h4>
+                <p class="col-card-text">Una estructura sencilla es: <strong>Nombre + Especialidad</strong></p>
+                <div class="code-snippet-box">
+                  Juan | Ecommerce — Sofía | Marketing — Mateo | Ventas — Lucas | IA — Valentina | Afiliados
+                </div>
+                <p class="col-card-text" style="font-size:0.8rem; margin-top:0.4rem; color:#94a3b8;">Esto ayuda a que tu perfil sea fácilmente reconocible en las búsquedas.</p>
+              </div>
+
+              <div class="col-card">
+                <h4 class="col-card-title">📝 Tu Biografía</h4>
+                <p class="col-card-text">Tu biografía debe explicar qué haces y dirigir a la persona hacia el siguiente paso: <strong>Qué haces + qué enseñas + llamada a la acción</strong>.</p>
+
+                <div class="bio-template-box">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
+                    <strong>Ejemplo 1 (Marketing / IA):</strong>
+                    <button class="btn-copy-sm" onclick="copyText('📱 Marketing digital desde cero\\n🎯 Contenido + IA + ventas\\n🎓 Aprendiendo y compartiendo el proceso\\n👇 Hablemos')">Copiar</button>
+                  </div>
+                  <pre>📱 Marketing digital desde cero&#10;🎯 Contenido + IA + ventas&#10;🎓 Aprendiendo y compartiendo el proceso&#10;👇 Hablemos</pre>
+                </div>
+
+                <div class="bio-template-box" style="margin-top:0.75rem;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
+                    <strong>Ejemplo 2 (Ecommerce):</strong>
+                    <button class="btn-copy-sm" onclick="copyText('🛒 Ecommerce y marketing\\n📈 Estrategias para principiantes\\n🎓 Formación digital\\n👇 Escríbeme')">Copiar</button>
+                  </div>
+                  <pre>🛒 Ecommerce y marketing&#10;📈 Estrategias para principiantes&#10;🎓 Formación digital&#10;👇 Escríbeme</pre>
+                </div>
+
+                <div class="manual-tip-box" style="margin-top:0.75rem; border-color:rgba(239,68,68,0.4); background:rgba(239,68,68,0.08); color:#fca5a5;">
+                  ⚠️ <strong>Importante:</strong> No prometas ingresos garantizados.
+                </div>
+              </div>
+            </div>
+
+            <div class="manual-card-highlight" style="margin-top:1.5rem;">
+              <h4 style="color:#ffffff; font-weight:800; margin-bottom:0.5rem;">👔 Tu Imagen Personal y Confianza</h4>
+              <p>Las personas también compran confianza. Por eso debes cuidar cómo te presentas. Utiliza imágenes claras. Graba con buena iluminación y un fondo ordenado. No necesitas ropa costosa: simplemente intenta verte limpio, ordenado y coherente con tu marca.</p>
+              <p style="margin-top:0.5rem;">Habla claro, tranquilo, seguro y natural. <strong>No intentes parecer un "gurú".</strong> Es mucho mejor parecer una persona real que está aprendiendo, aplicando y compartiendo conocimientos con su comunidad.</p>
+            </div>
+          `
+        },
+        {
+          id: 'cap-5',
+          num: '05',
+          icon: '🎥',
+          title: 'Crea contenido que atraiga y venda',
+          subtitle: 'Los 5 tipos de contenido y la fórmula Gancho → Valor → CTA',
+          contentHtml: `
+            <div class="manual-hero-header">
+              <span class="manual-tag">ESTRATEGIA DE CONTENIDO</span>
+              <h2 class="manual-page-title">Crea contenido para tus redes</h2>
+              <p class="manual-lead">Tu contenido es el motor de tu sistema de afiliados. No publiques únicamente: "Compra Rumbo Pro". La gran mayoría de tu contenido debe aportar valor real.</p>
+            </div>
+
+            <h3 class="manual-subheading">Los 5 Tipos de Contenido Esenciales:</h3>
+            <div class="manual-content-types-grid">
+              <div class="content-type-card">
+                <span class="ct-num">1</span>
+                <h4 class="ct-title">Educación</h4>
+                <p class="ct-desc">Enseña algo práctico. Ejemplo: <em>"3 cosas que deberías tener en tu Instagram si quieres empezar a vender."</em></p>
+              </div>
+
+              <div class="content-type-card">
+                <span class="ct-num">2</span>
+                <h4 class="ct-title">Errores</h4>
+                <p class="ct-desc">Avisa lo que no hay que hacer. Ejemplo: <em>"3 errores que hacen que tu perfil parezca poco profesional."</em></p>
+              </div>
+
+              <div class="content-type-card">
+                <span class="ct-num">3</span>
+                <h4 class="ct-title">Tutoriales</h4>
+                <p class="ct-desc">Guías directas paso a paso. Ejemplo: <em>"Cómo crear un enlace directo de WhatsApp con mensaje personalizado."</em></p>
+              </div>
+
+              <div class="content-type-card">
+                <span class="ct-num">4</span>
+                <h4 class="ct-title">Experiencia</h4>
+                <p class="ct-desc">Muestra tu proceso de aprendizaje. Ejemplo: <em>"Esto es lo que estoy aprendiendo y aplicando sobre ecommerce esta semana."</em></p>
+              </div>
+
+              <div class="content-type-card highlight-cta">
+                <span class="ct-num">5</span>
+                <h4 class="ct-title">Promoción</h4>
+                <p class="ct-desc">Habla directo de la academia. Ejemplo: <em>"Si quieres aprender estas habilidades paso a paso, estoy dentro de una formación que te va a servir. Escríbeme y te cuento."</em></p>
+              </div>
+            </div>
+
+            <h3 class="manual-subheading" style="margin-top:2rem;">Estructura Maestra para Reels y TikToks:</h3>
+            <div class="reel-formula-box">
+              <div class="rf-step">
+                <div class="rf-badge">1. GANCHO (0-3 seg)</div>
+                <p class="rf-text">Los primeros segundos deben captar atención inmediata.</p>
+                <div class="rf-examples">
+                  <span>"Si quieres empezar en marketing digital, mira esto."</span>
+                  <span>"Nadie te explica esto cuando empiezas a vender por Instagram."</span>
+                  <span>"Si tienes un celular, puedes empezar a aprender estas habilidades hoy."</span>
+                </div>
+              </div>
+
+              <div class="rf-step">
+                <div class="rf-badge">2. VALOR (4-25 seg)</div>
+                <p class="rf-text">Explica <strong>una sola idea clara</strong>. No intentes meter 20 conceptos en 30 segundos.</p>
+              </div>
+
+              <div class="rf-step">
+                <div class="rf-badge">3. CTA / LLAMADA A LA ACCIÓN (25-30 seg)</div>
+                <p class="rf-text">Termina indicando exactamente qué hacer a continuación.</p>
+                <div class="rf-examples">
+                  <span>"Sígueme para más contenido como este."</span>
+                  <span>"Si quieres saber cómo estoy aprendiendo esto, escríbeme INFO."</span>
+                  <span>"Si quieres conocer la formación, mándame un mensaje por privado."</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="manual-card-highlight" style="margin-top:1.5rem;">
+              <h4 style="color:#ffffff; font-weight:800; margin-bottom:0.5rem;">📱 Cómo verte profesional en los videos</h4>
+              <p>No necesitas una cámara profesional. Tu celular es suficiente para empezar.</p>
+              <ul style="margin-top:0.5rem; line-height:1.7; padding-left:1.25rem;">
+                <li><strong>Antes de grabar:</strong> limpia el lente de la cámara, busca buena iluminación natural de frente, ordena el fondo, apoya el celular estable, mira directo al lente y habla claro.</li>
+                <li><strong>En edición:</strong> subtítulos dinámicos, recortes de silencios, textos clave, zooms sutiles y música de fondo suave. Lo importante es que sea fácil y entretenido de consumir.</li>
+              </ul>
+            </div>
+          `
+        },
+        {
+          id: 'cap-6',
+          num: '06',
+          icon: '🤖',
+          title: 'Cómo utilizar ChatGPT',
+          subtitle: 'Prompts listos para copiar y multiplicar tu producción de contenido',
+          contentHtml: `
+            <div class="manual-hero-header">
+              <span class="manual-tag">INTELIGENCIA ARTIFICIAL</span>
+              <h2 class="manual-page-title">Cómo utilizar ChatGPT para tu marca</h2>
+              <p class="manual-lead">ChatGPT puede ayudarte a producir contenido mucho más rápido: ideas de videos, guiones, títulos, biografías, ideas de historias, calendarios y respuestas para clientes.</p>
+            </div>
+
+            <div class="prompts-grid">
+              
+              <!-- Prompt 1 -->
+              <div class="prompt-box">
+                <div class="prompt-box-header">
+                  <span class="prompt-tag">PROMPT 1 — IDEAS DE CONTENIDO</span>
+                  <button class="btn-copy-sm" onclick="copyText('Dame 30 ideas de Reels sobre [mi especialidad] para personas principiantes. Divide las ideas entre educación, errores, tutoriales, experiencias y ventas. Para cada idea incluye un gancho y una llamada a la acción.')">📋 Copiar Prompt</button>
+                </div>
+                <div class="prompt-text">
+                  "Dame 30 ideas de Reels sobre <strong>[mi especialidad]</strong> para personas principiantes. Divide las ideas entre educación, errores, tutoriales, experiencias y ventas. Para cada idea incluye un gancho y una llamada a la acción."
+                </div>
+              </div>
+
+              <!-- Prompt 2 -->
+              <div class="prompt-box">
+                <div class="prompt-box-header">
+                  <span class="prompt-tag">PROMPT 2 — GUION DE REEL / TIKTOK</span>
+                  <button class="btn-copy-sm" onclick="copyText('Escribe un guion de 30 segundos sobre [tema]. Empieza con un gancho fuerte, explica una sola idea de forma sencilla y termina con una llamada a la acción para visitar mi perfil.')">📋 Copiar Prompt</button>
+                </div>
+                <div class="prompt-text">
+                  "Escribe un guion de 30 segundos sobre <strong>[tema]</strong>. Empieza con un gancho fuerte, explica una sola idea de forma sencilla y termina con una llamada a la acción para visitar mi perfil."
+                </div>
+              </div>
+
+              <!-- Prompt 3 -->
+              <div class="prompt-box">
+                <div class="prompt-box-header">
+                  <span class="prompt-tag">PROMPT 3 — AUDITORÍA DE INSTAGRAM</span>
+                  <button class="btn-copy-sm" onclick="copyText('Analiza mi perfil de Instagram y dime qué podría mejorar para que se vea más profesional y genere más conversaciones con potenciales clientes.')">📋 Copiar Prompt</button>
+                </div>
+                <div class="prompt-text">
+                  "Analiza mi perfil de Instagram y dime qué podría mejorar para que se vea más profesional y genere más conversaciones con potenciales clientes."
+                </div>
+              </div>
+
+            </div>
+
+            <div class="manual-tip-box" style="margin-top:1.5rem;">
+              💡 <strong>Consejo pro:</strong> No copies todo literalmente. Utiliza las respuestas de la IA como base y adapta las palabras a tu tono y personalidad natural.
+            </div>
+          `
+        },
+        {
+          id: 'cap-7',
+          num: '07',
+          icon: '💬',
+          title: 'Tu WhatsApp es tu canal de ventas',
+          subtitle: 'Configuración de WhatsApp Business, respuestas rápidas y etiquetas',
+          contentHtml: `
+            <div class="manual-hero-header">
+              <span class="manual-tag">CANAL DE CIERRE</span>
+              <h2 class="manual-page-title">Tu WhatsApp es tu canal de ventas</h2>
+              <p class="manual-lead">Tu perfil de redes sociales genera atención. Tu WhatsApp es donde ocurre la conversación y se cierran las comisiones. Por eso debes configurarlo profesionalmente.</p>
+            </div>
+
+            <div class="manual-sections-2col">
+              
+              <div class="col-card">
+                <h4 class="col-card-title">⚙️ Configura tu WhatsApp Business</h4>
+                <ul class="manual-checklist">
+                  <li><strong>NOMBRE:</strong> Utiliza el mismo nombre que en Instagram (ej: Lucas | IA). Esto genera coherencia y credibilidad.</li>
+                  <li><strong>FOTO:</strong> Utiliza exactamente la misma imagen de perfil.</li>
+                  <li><strong>DESCRIPCIÓN:</strong> Ejemplo: <em>"Ayudo a personas a aprender habilidades digitales y comercio online."</em></li>
+                  <li><strong>HORARIO:</strong> Indica cuándo normalmente respondes.</li>
+                  <li><strong>MENSAJE DE BIENVENIDA:</strong> <em>"¡Hola! 👋 Gracias por escribirme. Cuéntame, ¿qué te gustaría aprender?"</em> (La idea no es vender de inmediato, sino iniciar la conversación).</li>
+                  <li><strong>MENSAJE DE AUSENCIA:</strong> <em>"¡Hola! 👋 En este momento no estoy disponible, pero recibí tu mensaje y te responderé en cuanto me conecte."</em></li>
+                </ul>
+              </div>
+
+              <div class="col-card">
+                <h4 class="col-card-title">⚡ Respuestas Rápidas Guardadas</h4>
+                <p style="font-size:0.85rem; color:#94a3b8; margin-bottom:0.75rem;">Configura estas plantillas en tu WhatsApp Business para responder al instante:</p>
+
+                <div class="quick-reply-card">
+                  <div style="display:flex; justify-content:space-between;">
+                    <span class="qr-command">/info</span>
+                    <button class="btn-copy-sm" onclick="copyText('¡Claro! Te explico cómo funciona. ¿Qué área te interesa más aprender?')">Copiar</button>
+                  </div>
+                  <p class="qr-text">"¡Claro! Te explico cómo funciona. ¿Qué área te interesa más aprender?"</p>
+                </div>
+
+                <div class="quick-reply-card">
+                  <div style="display:flex; justify-content:space-between;">
+                    <span class="qr-command">/cursos</span>
+                    <button class="btn-copy-sm" onclick="copyText('Dentro de Rumbo Pro encontrarás diferentes áreas de formación digital (E-Commerce, Closer de Ventas, Hotmart y Community Manager). ¿Qué tema te llama más la atención?')">Copiar</button>
+                  </div>
+                  <p class="qr-text">"Dentro de Rumbo Pro encontrarás diferentes áreas de formación digital. ¿Qué tema te llama más la atención?"</p>
+                </div>
+
+                <div class="quick-reply-card">
+                  <div style="display:flex; justify-content:space-between;">
+                    <span class="qr-command">/como</span>
+                    <button class="btn-copy-sm" onclick="copyText('Primero quiero conocer qué estás buscando para poder explicarte la opción que mejor encaje contigo. ¿Ya tienes alguna experiencia o empezarías desde cero?')">Copiar</button>
+                  </div>
+                  <p class="qr-text">"Primero quiero conocer qué estás buscando para poder explicarte la opción que mejor encaje contigo."</p>
+                </div>
+
+                <div class="quick-reply-card">
+                  <div style="display:flex; justify-content:space-between;">
+                    <span class="qr-command">/afiliado</span>
+                    <button class="btn-copy-sm" onclick="copyText('También existe un programa de afiliados para quienes quieran recomendar la formación y generar comisiones por sus ventas, según las condiciones del programa.')">Copiar</button>
+                  </div>
+                  <p class="qr-text">"También existe un programa de afiliados para quienes quieran recomendar la formación y generar comisiones..."</p>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="manual-card-highlight" style="margin-top:1.5rem;">
+              <h4 style="color:#ffffff; font-weight:800; margin-bottom:0.5rem;">🏷️ Organiza tus Contactos con Etiquetas</h4>
+              <div class="tags-row">
+                <span class="label-tag" style="background:#10b98122; color:#34d399; border:1px solid #10b981;">🟢 Nuevo interesado</span>
+                <span class="label-tag" style="background:#f59e0b22; color:#fbbf24; border:1px solid #f59e0b;">🟡 Pidió información</span>
+                <span class="label-tag" style="background:#00c2ff22; color:#38bdf8; border:1px solid #00c2ff;">🔵 Interesado</span>
+                <span class="label-tag" style="background:#f9731622; color:#fb923c; border:1px solid #f97316;">🟠 Seguimiento</span>
+                <span class="label-tag" style="background:#a855f722; color:#c084fc; border:1px solid #a855f7;">🟣 Cliente / Venta</span>
+                <span class="label-tag" style="background:#64748b22; color:#94a3b8; border:1px solid #64748b;">⚪ No interesado</span>
+              </div>
+            </div>
+
+            <div class="manual-tip-box" style="margin-top:1.5rem;">
+              🔗 <strong>Crea tu enlace directo:</strong> La estructura básica es <code>https://wa.me/TUNUMERO</code> (código de país + número, sin espacios ni símbolos, ej: <code>https://wa.me/59899123456</code>). Colócalo en tu biografía de Instagram, TikTok y en tus historias con sticker de enlace.
+            </div>
+          `
+        },
+        {
+          id: 'cap-8',
+          num: '08',
+          icon: '🤝',
+          title: 'Cómo vender por WhatsApp y objeciones',
+          subtitle: 'Guion de conversación real y respuestas maestras',
+          contentHtml: `
+            <div class="manual-hero-header">
+              <span class="manual-tag">CONVERSIÓN Y CIERRES</span>
+              <h2 class="manual-page-title">Cómo conseguir ventas por WhatsApp</h2>
+              <p class="manual-lead">Tu sistema es: <strong>CONTENIDO ➔ PERFIL ➔ WHATSAPP</strong>. Esta es una de las habilidades más importantes. <strong>NO EMPIECES VENDIENDO.</strong> Primero conversa.</p>
+            </div>
+
+            <h3 class="manual-subheading">Los 5 Pasos de la Conversación:</h3>
+            <div class="steps-5-grid">
+              <div class="step-5-card">
+                <span class="s5-num">01</span>
+                <h4 class="s5-title">SALUDA</h4>
+                <p class="s5-text">"¡Hola! 👋 ¿Cómo estás? Gracias por escribirme."</p>
+              </div>
+
+              <div class="step-5-card">
+                <span class="s5-num">02</span>
+                <h4 class="s5-title">PREGUNTA</h4>
+                <p class="s5-text">"¿Qué fue lo que viste en mi video que más te interesó?"</p>
+              </div>
+
+              <div class="step-5-card">
+                <span class="s5-num">03</span>
+                <h4 class="s5-title">ENTIENDE</h4>
+                <p class="s5-text">"¿Ya tienes experiencia en esto o estás empezando desde cero?"</p>
+              </div>
+
+              <div class="step-5-card">
+                <span class="s5-num">04</span>
+                <h4 class="s5-title">DESCUBRE</h4>
+                <p class="s5-text">"¿Qué objetivo te gustaría conseguir con esto?"</p>
+              </div>
+
+              <div class="step-5-card highlight-s5">
+                <span class="s5-num">05</span>
+                <h4 class="s5-title">PRESENTA</h4>
+                <p class="s5-text">Explica Rumbo Pro conectado exactamente con lo que busca.</p>
+              </div>
+            </div>
+
+            <div class="manual-card-highlight" style="margin-top:1.5rem;">
+              <h4 style="color:#ffffff; font-weight:800; margin-bottom:0.3rem;">💡 Vende la solución, no el producto</h4>
+              <p>Si la persona quiere aprender ecommerce: habla de ecommerce. Si quiere ventas: habla de ventas. Si quiere IA: habla de IA. No le presentes 50 cosas que no pidió. Conecta su necesidad con la solución que ofrece la academia.</p>
+            </div>
+
+            <h3 class="manual-subheading" style="margin-top:2rem;">Ejemplo de Conversación Real:</h3>
+            <div class="chat-mockup-box">
+              <div class="chat-bubble user-msg">Hola, vi tu video sobre ecommerce.</div>
+              <div class="chat-bubble my-msg">¡Hola! 👋 ¿Qué tal? ¿Qué fue lo que más te llamó la atención?</div>
+              <div class="chat-bubble user-msg">Quiero empezar a vender online pero no tengo idea de cómo hacer una tienda.</div>
+              <div class="chat-bubble my-msg">¿Ya tienes algún producto pensado o empezarías 100% desde cero?</div>
+              <div class="chat-bubble user-msg">Desde cero total.</div>
+              <div class="chat-bubble my-msg">Genial. Entonces creo que te puede servir mucho la formación que estoy haciendo en Rumbo Pro. Explica desde las bases cómo crear la tienda, encontrar productos ganadores y conseguir clientes sin pagar publicidad. Si quieres, te explico cómo funciona y cómo puedes entrar.</div>
+            </div>
+
+            <h3 class="manual-subheading" style="margin-top:2rem;">Manejo Maestro de Objeciones Comunes:</h3>
+            <div class="faq-manual-grid">
+              <div class="obj-card">
+                <div class="obj-header">
+                  <strong>"Lo voy a pensar."</strong>
+                  <button class="btn-copy-sm" onclick="copyText('Claro, no hay ningún problema. ¿Hay algo específico que quieras pensar o alguna duda puntual que te haya quedado y te pueda ayudar a resolver?')">Copiar</button>
+                </div>
+                <p class="obj-reply">➔ Responde: <em>"Claro, no hay problema. ¿Hay algo específico que quieras pensar o alguna duda puntual que te pueda ayudar a resolver?"</em></p>
+              </div>
+
+              <div class="obj-card">
+                <div class="obj-header">
+                  <strong>"No tengo experiencia."</strong>
+                  <button class="btn-copy-sm" onclick="copyText('No te preocupes, justamente la formación está diseñada paso a paso para personas que empiezan desde cero total sin experiencia técnica.')">Copiar</button>
+                </div>
+                <p class="obj-reply">➔ Responde: <em>"No te preocupes, justamente la formación está diseñada paso a paso para personas que empiezan desde cero total."</em></p>
+              </div>
+
+              <div class="obj-card">
+                <div class="obj-header">
+                  <strong>"¿Cuánto dinero puedo ganar?"</strong>
+                  <button class="btn-copy-sm" onclick="copyText('No existe una cantidad fija ni garantizada. Los resultados dependen del tiempo que le dediques, de aplicar las estrategias y de tu constancia.')">Copiar</button>
+                </div>
+                <p class="obj-reply">➔ Responde: <em>"No existe una cantidad garantizada. Los resultados dependen del trabajo, constancia y aplicación de cada alumno."</em> (Nunca prometas números mágicos).</p>
+              </div>
+
+              <div class="obj-card">
+                <div class="obj-header">
+                  <strong>"No sé si esto es para mí."</strong>
+                  <button class="btn-copy-sm" onclick="copyText('Depende de lo que estés buscando. Cuéntame qué metas tienes hoy y te digo con total sinceridad si la formación encaja con lo que necesitas.')">Copiar</button>
+                </div>
+                <p class="obj-reply">➔ Responde: <em>"Depende de lo que estés buscando. Cuéntame qué metas tienes hoy y te digo con total sinceridad si la academia te sirve."</em></p>
+              </div>
+            </div>
+
+            <div class="manual-tip-box" style="margin-top:1.5rem;">
+              ⏳ <strong>Seguimiento sin spam:</strong> Si alguien mostró interés y pasaron 24-48 horas: <em>"Hola 👋 ¿Pudiste revisar la información? Si te quedó alguna consulta decime y te ayudo."</em> Si te dicen que no les interesa, agradéceles y respétalo.
+            </div>
+          `
+        },
+        {
+          id: 'cap-9',
+          num: '09',
+          icon: '📊',
+          title: 'Cómo promocionar y la regla 70/20/10',
+          subtitle: 'Estrategia de balance de contenido y calidad de audiencia',
+          contentHtml: `
+            <div class="manual-hero-header">
+              <span class="manual-tag">ESTRATEGIA DE VENTAS</span>
+              <h2 class="manual-page-title">Cómo promocionar Rumbo Pro</h2>
+              <p class="manual-lead">No publiques únicamente: 🔥 COMPRA RUMBO PRO 🔥. Es infinitamente mejor crear contenido relacionado con tu especialidad y aportar valor primero.</p>
+            </div>
+
+            <h3 class="manual-subheading">La Regla 70 / 20 / 10:</h3>
+            <div class="manual-tri-grid">
+              <div class="manual-tri-card" style="border-top:3px solid #00c2ff;">
+                <div class="stat-mini-num" style="color:#00c2ff; font-size:1.8rem;">70%</div>
+                <h4 class="tri-title">VALOR</h4>
+                <p class="tri-desc">Tutoriales, consejos prácticos y educación gratuita para ayudar a tu audiencia.</p>
+              </div>
+
+              <div class="manual-tri-card" style="border-top:3px solid #38bdf8;">
+                <div class="stat-mini-num" style="color:#38bdf8; font-size:1.8rem;">20%</div>
+                <h4 class="tri-title">CONFIANZA</h4>
+                <p class="tri-desc">Tu experiencia personal, tu proceso, tus reflexiones y aprendizajes reales.</p>
+              </div>
+
+              <div class="manual-tri-card" style="border-top:3px solid #facc15;">
+                <div class="stat-mini-num" style="color:#facc15; font-size:1.8rem;">10%</div>
+                <h4 class="tri-title">VENTA DIRECTA</h4>
+                <p class="tri-desc">Contenido y llamados a la acción relacionados directamente con Rumbo Pro.</p>
+              </div>
+            </div>
+
+            <div class="manual-card-highlight" style="margin-top:1.5rem;">
+              <h4 style="color:#ffffff; font-weight:800; margin-bottom:0.5rem;">🚀 No necesitas millones de seguidores</h4>
+              <p>No necesitas 100.000 seguidores para empezar a generar comisiones. Una cuenta pequeña puede generar excelentes ingresos si tiene: <strong>audiencia correcta + contenido útil + confianza + buenas conversaciones por WhatsApp</strong>.</p>
+              <p style="margin-top:0.5rem; color:#38bdf8; font-weight:700;">Es mucho mejor tener 500 personas realmente interesadas en aprender que 20.000 curiosos que no tienen interés en formarse.</p>
+            </div>
+          `
+        },
+        {
+          id: 'cap-10',
+          num: '10',
+          icon: '🧠',
+          title: 'La mentalidad del afiliado y objetivo final',
+          subtitle: 'Aprende. Crea. Conecta. Vende.',
+          contentHtml: `
+            <div class="manual-hero-header">
+              <span class="manual-tag">FILOSOFÍA DE ÉXITO</span>
+              <h2 class="manual-page-title">La Mentalidad del Afiliado Pro</h2>
+              <p class="manual-lead">No esperes resultados simplemente por registrarte. Ser afiliado significa trabajar con constancia en: contenido, comunicación, ventas y aprendizaje diario.</p>
+            </div>
+
+            <div class="manual-card-highlight">
+              <p>Algunas publicaciones funcionarán y se harán virales. Otras no. Algunas personas estarán interesadas de inmediato y otras no. <strong>Eso forma parte del proceso natural de los negocios digitales.</strong></p>
+              <p style="margin-top:0.4rem;">Tu trabajo es analizar métricas, mejorar tus videos y continuar con constancia.</p>
+            </div>
+
+            <h3 class="manual-subheading">Los 4 Pilares de Rumbo Pro:</h3>
+            <div class="principles-grid">
+              <div class="principle-card">
+                <span class="p-icon">🎯</span>
+                <h4>Tu especialidad</h4>
+                <p>Es tu identidad y tu diferencial.</p>
+              </div>
+
+              <div class="principle-card">
+                <span class="p-icon">📱</span>
+                <h4>Tus redes sociales</h4>
+                <p>Son tu escaparate al mundo.</p>
+              </div>
+
+              <div class="principle-card">
+                <span class="p-icon">🎥</span>
+                <h4>Tu contenido</h4>
+                <p>Es el imán que atrae y genera confianza.</p>
+              </div>
+
+              <div class="principle-card">
+                <span class="p-icon">💬</span>
+                <h4>Tu WhatsApp</h4>
+                <p>Es donde se construye la relación y se cierra la venta.</p>
+              </div>
+            </div>
+
+            <div class="manual-final-punchline">
+              <div class="punchline-badge">RUMBO PRO</div>
+              <h2 class="punchline-title">APRENDE. CREA. CONECTA. VENDE.</h2>
+              <p class="punchline-desc">Tu objetivo no es perseguir clientes. Tu objetivo es convertirte en la persona a la que tu público quiere preguntarle cómo empezar.</p>
+              <div class="punchline-mantra">
+                ESCUCHAR ➔ ENTENDER ➔ AYUDAR ➔ PRESENTAR ➔ VENDER
+              </div>
+            </div>
+          `
+        }
+      ];
+
+      let selectedCapId = chapters[0].id;
+
+      function renderChapterContent() {
+        const cur = chapters.find(c => c.id === selectedCapId) || chapters[0];
+        const curIdx = chapters.findIndex(c => c.id === cur.id);
+        const prevCap = curIdx > 0 ? chapters[curIdx - 1] : null;
+        const nextCap = curIdx < chapters.length - 1 ? chapters[curIdx + 1] : null;
+
+        const sidebarItems = chapters.map((c, idx) => {
+          const isActive = c.id === cur.id;
+          return `
+            <div class="manual-sidebar-item ${isActive ? 'active' : ''}" onclick="selectManualChapter('${c.id}')">
+              <div class="manual-sidebar-num">${c.num}</div>
+              <div class="manual-sidebar-info">
+                <div class="manual-sidebar-title">${c.title}</div>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        container.innerHTML = `
+          <div class="dashboard-container">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem;">
+              <div>
+                <a href="#/dashboard" class="btn-back" style="display:inline-flex; align-items:center; gap:0.4rem; color:var(--color-primary-light); text-decoration:none; font-weight:700; font-size:0.88rem; margin-bottom:0.5rem;">
+                  ← Volver al Dashboard
+                </a>
+                <h1 class="welcome-title" style="margin:0;">Manual del Afiliado RUMBO PRO</h1>
+              </div>
+              <div style="display:flex; align-items:center; gap:0.5rem;">
+                <span class="role-badge" style="background:rgba(234,179,8,0.2); color:#facc15; border:1px solid rgba(234,179,8,0.5);">Capítulo ${cur.num} de ${chapters.length}</span>
+              </div>
+            </div>
+
+            <!-- Main Manual Reader Layout -->
+            <div class="manual-layout-grid">
+              
+              <!-- Sidebar of 10 Chapters -->
+              <div class="manual-sidebar-card">
+                <div class="manual-sidebar-head">
+                  <span>📖 ÍNDICE DEL MANUAL</span>
+                </div>
+                <div class="manual-sidebar-list">
+                  ${sidebarItems}
+                </div>
+              </div>
+
+              <!-- Main Reading Canvas -->
+              <div class="manual-content-canvas">
+                ${cur.contentHtml}
+
+                <!-- Chapter Navigation Footer -->
+                <div class="manual-nav-footer">
+                  ${prevCap ? `
+                    <button class="btn-prev-lesson" onclick="selectManualChapter('${prevCap.id}')">
+                      ← Anterior: Cap. ${prevCap.num}
+                    </button>
+                  ` : '<div></div>'}
+
+                  ${nextCap ? `
+                    <button class="btn-next-lesson" onclick="selectManualChapter('${nextCap.id}')" style="background:linear-gradient(135deg, #eab308, #ca8a04); color:#0f172a; font-weight:800;">
+                      Siguiente: Cap. ${nextCap.num} →
+                    </button>
+                  ` : `
+                    <button class="btn-next-lesson" onclick="navigateTo('#/dashboard')" style="background:#10b981; color:#ffffff; font-weight:800;">
+                      ✓ Finalizar Manual
+                    </button>
+                  `}
+                </div>
+              </div>
+
+            </div>
+          </div>
+        `;
+      }
+
+      window.selectManualChapter = (id) => {
+        selectedCapId = id;
+        renderChapterContent();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      };
+
+      renderChapterContent();
+    }
+
+    // Helper to copy text to clipboard with feedback
+    window.copyText = (text) => {
+      navigator.clipboard.writeText(text).then(() => {
+        const toast = document.createElement('div');
+        toast.style.position = 'fixed';
+        toast.style.bottom = '2rem';
+        toast.style.right = '2rem';
+        toast.style.background = '#10b981';
+        toast.style.color = '#ffffff';
+        toast.style.padding = '0.75rem 1.25rem';
+        toast.style.borderRadius = '10px';
+        toast.style.fontWeight = '800';
+        toast.style.fontSize = '0.88rem';
+        toast.style.boxShadow = '0 10px 25px rgba(0,0,0,0.5)';
+        toast.style.zIndex = '9999';
+        toast.textContent = '¡Copiado al portapapeles! ✓';
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 2500);
+      });
+    };
 
     window.handleAdminUpdateUser = async (userId, newStatus) => {
       await window.rumboDB.updateUserStatus(userId, newStatus);
