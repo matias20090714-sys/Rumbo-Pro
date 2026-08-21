@@ -19,22 +19,31 @@ const INITIAL_COURSES = [
     title: 'E-COMMERCE / DROPSHIPPING',
     badge: 'FORMACION ONLINE',
     icon: '🛒',
-    description: 'Aprende los fundamentos para crear y desarrollar un negocio de comercio electronico y ventas online.',
+    description: 'Aprende los fundamentos para crear y escalar tu tienda online con TikTok Orgánico y Dropshipping (Formación MRW).',
     active: true,
     modules: [
       {
         id: 'mod-ecom-1',
-        title: 'Carpeta de Material y Grabaciones',
+        title: 'Carpeta Completa de E-Commerce (MRW)',
         lessons: [
-          {
-            id: 'les-ecom-101',
-            title: 'Carpeta Oficial de E-Commerce / Dropshipping',
-            duration: 'Carpeta Google Drive',
-            type: 'drive',
-            videoUrl: 'https://drive.google.com/embeddedfolderview?id=1a44KG1tc_PqjUEP4xPmM-NkGURACJGcz#list',
-            driveLink: 'https://drive.google.com/drive/folders/1a44KG1tc_PqjUEP4xPmM-NkGURACJGcz',
-            content: 'Accede a todos los materiales, videos y recursos del curso de E-Commerce / Dropshipping.'
-          }
+          { id: 'les-ecom-1', title: 'Módulo 1: Información básica', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1a44KG1tc_PqjUEP4xPmM-NkGURACJGcz#list', driveLink: 'https://drive.google.com/drive/folders/1a44KG1tc_PqjUEP4xPmM-NkGURACJGcz', content: 'Fundamentos y primeros pasos en el modelo de negocio.' },
+          { id: 'les-ecom-2', title: 'Módulo 2: Reglas Que Nadie Dice y Son la Clave del Éxito', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1a44KG1tc_PqjUEP4xPmM-NkGURACJGcz#list', driveLink: 'https://drive.google.com/drive/folders/1a44KG1tc_PqjUEP4xPmM-NkGURACJGcz', content: 'Claves estratégicas y errores a evitar.' },
+          { id: 'les-ecom-3', title: 'Módulo 3: Cuentas de TikTok Profesionales', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1a44KG1tc_PqjUEP4xPmM-NkGURACJGcz#list', driveLink: 'https://drive.google.com/drive/folders/1a44KG1tc_PqjUEP4xPmM-NkGURACJGcz', content: 'Configuración y optimización de cuentas comerciales en TikTok.' },
+          { id: 'les-ecom-4', title: 'Módulo 4: Vamos a Grabar ¿Qué Debo Hacer y Cómo', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1a44KG1tc_PqjUEP4xPmM-NkGURACJGcz#list', driveLink: 'https://drive.google.com/drive/folders/1a44KG1tc_PqjUEP4xPmM-NkGURACJGcz', content: 'Técnicas de grabación para productos ganadores.' },
+          { id: 'les-ecom-5', title: 'Módulo 5: Textos Para los Vídeos', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1a44KG1tc_PqjUEP4xPmM-NkGURACJGcz#list', driveLink: 'https://drive.google.com/drive/folders/1a44KG1tc_PqjUEP4xPmM-NkGURACJGcz', content: 'Copywriting y ganchos de alta retención.' },
+          { id: 'les-ecom-6', title: 'Módulo 6: Cosas Importantes Antes de Subir el Vídeo', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1a44KG1tc_PqjUEP4xPmM-NkGURACJGcz#list', driveLink: 'https://drive.google.com/drive/folders/1a44KG1tc_PqjUEP4xPmM-NkGURACJGcz', content: 'Checklist previo a la publicación.' },
+          { id: 'les-ecom-7', title: 'Módulo 7: Instagram Reels (2023)', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1a44KG1tc_PqjUEP4xPmM-NkGURACJGcz#list', driveLink: 'https://drive.google.com/drive/folders/1a44KG1tc_PqjUEP4xPmM-NkGURACJGcz', content: 'Distribución y viralización en Instagram Reels.' },
+          { id: 'les-ecom-8', title: 'Módulo 8: Youtube Shorts (2023)', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1a44KG1tc_PqjUEP4xPmM-NkGURACJGcz#list', driveLink: 'https://drive.google.com/drive/folders/1a44KG1tc_PqjUEP4xPmM-NkGURACJGcz', content: 'Estrategia de alcance orgánico con YouTube Shorts.' },
+          { id: 'les-ecom-9', title: 'Módulo 9: Hacemos Esto Después de Subir un TikTok', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1a44KG1tc_PqjUEP4xPmM-NkGURACJGcz#list', driveLink: 'https://drive.google.com/drive/folders/1a44KG1tc_PqjUEP4xPmM-NkGURACJGcz', content: 'Interacción y optimización post-publicación.' },
+          { id: 'les-ecom-10', title: 'Módulo 10: El Famoso Shadowban', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1a44KG1tc_PqjUEP4xPmM-NkGURACJGcz#list', driveLink: 'https://drive.google.com/drive/folders/1a44KG1tc_PqjUEP4xPmM-NkGURACJGcz', content: 'Cómo evitar y salir de restricciones de alcance.' },
+          { id: 'les-ecom-11', title: 'Módulo 11: Cuándo Debemos de Cambiar o Dejar de Vender un Producto', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1a44KG1tc_PqjUEP4xPmM-NkGURACJGcz#list', driveLink: 'https://drive.google.com/drive/folders/1a44KG1tc_PqjUEP4xPmM-NkGURACJGcz', content: 'Análisis de métricas y ciclo de vida de producto.' },
+          { id: 'les-ecom-12', title: 'Módulo 12: Mis Estrategias para Encontrar Productos para TikTok Orgánico', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1a44KG1tc_PqjUEP4xPmM-NkGURACJGcz#list', driveLink: 'https://drive.google.com/drive/folders/1a44KG1tc_PqjUEP4xPmM-NkGURACJGcz', content: 'Búsqueda e investigación de productos ganadores.' },
+          { id: 'les-ecom-13', title: 'Módulo 13: Productos con Envíos 24/48h (Almacén)', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1a44KG1tc_PqjUEP4xPmM-NkGURACJGcz#list', driveLink: 'https://drive.google.com/drive/folders/1a44KG1tc_PqjUEP4xPmM-NkGURACJGcz', content: 'Logística rápida y almacenes locales.' },
+          { id: 'les-ecom-14', title: 'Módulo 14: CJ Dropshipping', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1a44KG1tc_PqjUEP4xPmM-NkGURACJGcz#list', driveLink: 'https://drive.google.com/drive/folders/1a44KG1tc_PqjUEP4xPmM-NkGURACJGcz', content: 'Integración y abastecimiento con CJ Dropshipping.' },
+          { id: 'les-ecom-15', title: 'Módulo 15: Creamos Tienda Profesional Paso a Paso', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1a44KG1tc_PqjUEP4xPmM-NkGURACJGcz#list', driveLink: 'https://drive.google.com/drive/folders/1a44KG1tc_PqjUEP4xPmM-NkGURACJGcz', content: 'Construcción y diseño de tu tienda online.' },
+          { id: 'les-ecom-16', title: 'Módulo 16: Qué Hacemos Cuando Hemos Vendido', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1a44KG1tc_PqjUEP4xPmM-NkGURACJGcz#list', driveLink: 'https://drive.google.com/drive/folders/1a44KG1tc_PqjUEP4xPmM-NkGURACJGcz', content: 'Procesamiento de pedidos y atención al cliente.' },
+          { id: 'les-ecom-17', title: 'Módulo 17: Vender en EEUU con TikTok Orgánico', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1a44KG1tc_PqjUEP4xPmM-NkGURACJGcz#list', driveLink: 'https://drive.google.com/drive/folders/1a44KG1tc_PqjUEP4xPmM-NkGURACJGcz', content: 'Escalamiento internacional a mercado estadounidense.' },
+          { id: 'les-ecom-18', title: 'Módulo 18: BONUSTRACK', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1a44KG1tc_PqjUEP4xPmM-NkGURACJGcz#list', driveLink: 'https://drive.google.com/drive/folders/1a44KG1tc_PqjUEP4xPmM-NkGURACJGcz', content: 'Recursos extra y material complementario.' }
         ]
       }
     ]
@@ -44,22 +53,22 @@ const INITIAL_COURSES = [
     title: 'MARKETING DE AFILIADOS',
     badge: 'FORMACION ONLINE',
     icon: '💰',
-    description: 'Aprende como funciona el marketing de afiliados, como promocionar productos y desarrollar estrategias de contenido y ventas.',
+    description: 'Aprende el sistema de afiliación paso a paso (Escuela TU 1Millon).',
     active: true,
     modules: [
       {
         id: 'mod-afi-1',
-        title: 'Carpeta de Material y Grabaciones',
+        title: 'Carpeta Oficial Escuela Tu 1Millon',
         lessons: [
-          {
-            id: 'les-afi-101',
-            title: 'Carpeta Oficial de Marketing de Afiliados',
-            duration: 'Carpeta Google Drive',
-            type: 'drive',
-            videoUrl: 'https://drive.google.com/embeddedfolderview?id=104agUfbMBtEr25dVY2gjGRnf9o8OzhXD#list',
-            driveLink: 'https://drive.google.com/drive/folders/104agUfbMBtEr25dVY2gjGRnf9o8OzhXD',
-            content: 'Accede a todos los materiales, videos y recursos del curso de Marketing de Afiliados.'
-          }
+          { id: 'les-afi-1', title: '1. Cómo Funciona la Escuela Tu1millon', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=104agUfbMBtEr25dVY2gjGRnf9o8OzhXD#list', driveLink: 'https://drive.google.com/drive/folders/104agUfbMBtEr25dVY2gjGRnf9o8OzhXD', content: 'Visión general y estructura del modelo.' },
+          { id: 'les-afi-2', title: '2. Empieza Aquí 👇 Crea tu link de Afiliado', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=104agUfbMBtEr25dVY2gjGRnf9o8OzhXD#list', driveLink: 'https://drive.google.com/drive/folders/104agUfbMBtEr25dVY2gjGRnf9o8OzhXD', content: 'Generación y configuración de enlaces de afiliado.' },
+          { id: 'les-afi-3', title: '3. Mentorías en Vivo', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=104agUfbMBtEr25dVY2gjGRnf9o8OzhXD#list', driveLink: 'https://drive.google.com/drive/folders/104agUfbMBtEr25dVY2gjGRnf9o8OzhXD', content: 'Grabaciones y sesiones estratégicas.' },
+          { id: 'les-afi-4', title: '4. Intro a la Escuela Tu1millon', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=104agUfbMBtEr25dVY2gjGRnf9o8OzhXD#list', driveLink: 'https://drive.google.com/drive/folders/104agUfbMBtEr25dVY2gjGRnf9o8OzhXD', content: 'Mentalidad y bases operativas.' },
+          { id: 'les-afi-5', title: '5. #90Tu1millon', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=104agUfbMBtEr25dVY2gjGRnf9o8OzhXD#list', driveLink: 'https://drive.google.com/drive/folders/104agUfbMBtEr25dVY2gjGRnf9o8OzhXD', content: 'Plan de acción de 90 días.' },
+          { id: 'les-afi-6', title: '6. Nutrición y Entrenamiento', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=104agUfbMBtEr25dVY2gjGRnf9o8OzhXD#list', driveLink: 'https://drive.google.com/drive/folders/104agUfbMBtEr25dVY2gjGRnf9o8OzhXD', content: 'Disciplina física y mental del emprendedor.' },
+          { id: 'les-afi-7', title: '7. Curso Edición Video', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=104agUfbMBtEr25dVY2gjGRnf9o8OzhXD#list', driveLink: 'https://drive.google.com/drive/folders/104agUfbMBtEr25dVY2gjGRnf9o8OzhXD', content: 'Creación y edición de contenido para redes.' },
+          { id: 'les-afi-8', title: '8. Curso Twitter - Marketing, Cómo Crecer y Ventas', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=104agUfbMBtEr25dVY2gjGRnf9o8OzhXD#list', driveLink: 'https://drive.google.com/drive/folders/104agUfbMBtEr25dVY2gjGRnf9o8OzhXD', content: 'Estrategias de contenido y conversión en Twitter / X.' },
+          { id: 'les-afi-9', title: '9. Caso de Éxito: Mikel ($0 a 2K/mes en 4 meses)', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=104agUfbMBtEr25dVY2gjGRnf9o8OzhXD#list', driveLink: 'https://drive.google.com/drive/folders/104agUfbMBtEr25dVY2gjGRnf9o8OzhXD', content: 'Estudio de caso práctico de escalamiento.' }
         ]
       }
     ]
@@ -69,22 +78,21 @@ const INITIAL_COURSES = [
     title: 'CLOSER DE VENTAS',
     badge: 'FORMACION ONLINE',
     icon: '🎯',
-    description: 'Aprende tecnicas de comunicacion, negociacion y cierre de ventas para llamadas y conversaciones de alto valor.',
+    description: 'Formación profesional en cierre de ventas de alto valor (Universidad del Closer - Tino Mossu).',
     active: true,
     modules: [
       {
         id: 'mod-cls-1',
-        title: 'Carpeta de Material y Grabaciones',
+        title: 'Universidad del Closer',
         lessons: [
-          {
-            id: 'les-cls-101',
-            title: 'Carpeta Oficial de Closer de Ventas',
-            duration: 'Carpeta Google Drive',
-            type: 'drive',
-            videoUrl: 'https://drive.google.com/embeddedfolderview?id=1Lx5_7cC_AaTfWHnddgqYRvs6L8_9cr9d#list',
-            driveLink: 'https://drive.google.com/drive/folders/1Lx5_7cC_AaTfWHnddgqYRvs6L8_9cr9d',
-            content: 'Accede a todos los materiales, videos y recursos del curso de Closer de Ventas.'
-          }
+          { id: 'les-cls-1', title: '1. Profesionalismo cómo closer', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1Lx5_7cC_AaTfWHnddgqYRvs6L8_9cr9d#list', driveLink: 'https://drive.google.com/drive/folders/1Lx5_7cC_AaTfWHnddgqYRvs6L8_9cr9d', content: 'Postura, mentalidad y estándares del closer profesional.' },
+          { id: 'les-cls-2', title: '2. El proceso de venta', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1Lx5_7cC_AaTfWHnddgqYRvs6L8_9cr9d#list', driveLink: 'https://drive.google.com/drive/folders/1Lx5_7cC_AaTfWHnddgqYRvs6L8_9cr9d', content: 'Estructura paso a paso de una llamada de venta.' },
+          { id: 'les-cls-3', title: '3. Objeciones', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1Lx5_7cC_AaTfWHnddgqYRvs6L8_9cr9d#list', driveLink: 'https://drive.google.com/drive/folders/1Lx5_7cC_AaTfWHnddgqYRvs6L8_9cr9d', content: 'Manejo y resolución de objeciones comunes y complejas.' },
+          { id: 'les-cls-4', title: '4. Seguimiento de venta', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1Lx5_7cC_AaTfWHnddgqYRvs6L8_9cr9d#list', driveLink: 'https://drive.google.com/drive/folders/1Lx5_7cC_AaTfWHnddgqYRvs6L8_9cr9d', content: 'Estrategias de follow-up efectivo sin ser invasivo.' },
+          { id: 'les-cls-5', title: '5. Venta por Whatsapp', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1Lx5_7cC_AaTfWHnddgqYRvs6L8_9cr9d#list', driveLink: 'https://drive.google.com/drive/folders/1Lx5_7cC_AaTfWHnddgqYRvs6L8_9cr9d', content: 'Conversación, audio y cierre mediante mensajería directa.' },
+          { id: 'les-cls-6', title: '6. Cómo ganar entrevistas con expertos', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1Lx5_7cC_AaTfWHnddgqYRvs6L8_9cr9d#list', driveLink: 'https://drive.google.com/drive/folders/1Lx5_7cC_AaTfWHnddgqYRvs6L8_9cr9d', content: 'Prospección y acuerdos con creadores e infoproductores.' },
+          { id: 'les-cls-7', title: '7. Cómo ser el cerrador numero 1', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1Lx5_7cC_AaTfWHnddgqYRvs6L8_9cr9d#list', driveLink: 'https://drive.google.com/drive/folders/1Lx5_7cC_AaTfWHnddgqYRvs6L8_9cr9d', content: 'Hábitos y técnicas de rendimiento de élite.' },
+          { id: 'les-cls-8', title: '8. BONUS: Cómo cerrar en lanzamientos', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1Lx5_7cC_AaTfWHnddgqYRvs6L8_9cr9d#list', driveLink: 'https://drive.google.com/drive/folders/1Lx5_7cC_AaTfWHnddgqYRvs6L8_9cr9d', content: 'Dinámicas de cierre masivo durante eventos y lanzamientos.' }
         ]
       }
     ]
@@ -179,22 +187,29 @@ const INITIAL_COURSES = [
     title: 'HOTMART',
     badge: 'FORMACION ONLINE',
     icon: '🔥',
-    description: 'Aprende a utilizar la plataforma Hotmart, el funcionamiento de productos digitales, ventas y afiliacion.',
+    description: 'Ventas de productos digitales con tráfico orgánico (Método Fukuda - Poder Orgánico).',
     active: true,
     modules: [
       {
         id: 'mod-hot-1',
-        title: 'Carpeta de Material y Grabaciones',
+        title: 'Método Fukuda - Poder Orgánico',
         lessons: [
-          {
-            id: 'les-hot-101',
-            title: 'Carpeta Oficial de Hotmart',
-            duration: 'Carpeta Google Drive',
-            type: 'drive',
-            videoUrl: 'https://drive.google.com/embeddedfolderview?id=1MjLMShD3uJ_EEMFTEZJ-BwdXeIhYylOV#list',
-            driveLink: 'https://drive.google.com/drive/folders/1MjLMShD3uJ_EEMFTEZJ-BwdXeIhYylOV',
-            content: 'Accede a todos los materiales, videos y recursos del curso de Hotmart.'
-          }
+          { id: 'les-hot-1', title: '1. BIENVENIDOS', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1MjLMShD3uJ_EEMFTEZJ-BwdXeIhYylOV#list', driveLink: 'https://drive.google.com/drive/folders/1MjLMShD3uJ_EEMFTEZJ-BwdXeIhYylOV', content: 'Bienvenida y orientación general del curso.' },
+          { id: 'les-hot-2', title: '2. GRUPOS PRIVADOS', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1MjLMShD3uJ_EEMFTEZJ-BwdXeIhYylOV#list', driveLink: 'https://drive.google.com/drive/folders/1MjLMShD3uJ_EEMFTEZJ-BwdXeIhYylOV', content: 'Comunidades y canales de soporte.' },
+          { id: 'les-hot-3', title: '3. CONOCE TU PLATAFORMA', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1MjLMShD3uJ_EEMFTEZJ-BwdXeIhYylOV#list', driveLink: 'https://drive.google.com/drive/folders/1MjLMShD3uJ_EEMFTEZJ-BwdXeIhYylOV', content: 'Manejo y configuración de Hotmart.' },
+          { id: 'les-hot-4', title: '4. TUS HERRAMIENTAS', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1MjLMShD3uJ_EEMFTEZJ-BwdXeIhYylOV#list', driveLink: 'https://drive.google.com/drive/folders/1MjLMShD3uJ_EEMFTEZJ-BwdXeIhYylOV', content: 'Recursos y software para operar.' },
+          { id: 'les-hot-5', title: '5. INTRODUCCION AL TRAFICO ORGANICO', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1MjLMShD3uJ_EEMFTEZJ-BwdXeIhYylOV#list', driveLink: 'https://drive.google.com/drive/folders/1MjLMShD3uJ_EEMFTEZJ-BwdXeIhYylOV', content: 'Atracción de prospectos sin pagar publicidad.' },
+          { id: 'les-hot-6', title: '6. GATILLOS MENTALES Y COPYWRITING', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1MjLMShD3uJ_EEMFTEZJ-BwdXeIhYylOV#list', driveLink: 'https://drive.google.com/drive/folders/1MjLMShD3uJ_EEMFTEZJ-BwdXeIhYylOV', content: 'Persuasión escrita y disparadores psicológicos.' },
+          { id: 'les-hot-7', title: '7. VENTAS LOW TICKET', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1MjLMShD3uJ_EEMFTEZJ-BwdXeIhYylOV#list', driveLink: 'https://drive.google.com/drive/folders/1MjLMShD3uJ_EEMFTEZJ-BwdXeIhYylOV', content: 'Estrategias para comercializar productos de bajo costo.' },
+          { id: 'les-hot-8', title: '8. NICHO DEL DINERO $ - High Ticket', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1MjLMShD3uJ_EEMFTEZJ-BwdXeIhYylOV#list', driveLink: 'https://drive.google.com/drive/folders/1MjLMShD3uJ_EEMFTEZJ-BwdXeIhYylOV', content: 'Ofertas de alto valor en el sector de negocios y dinero.' },
+          { id: 'les-hot-9', title: '9. CASO DE ESTUDIO HIGH TICKET', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1MjLMShD3uJ_EEMFTEZJ-BwdXeIhYylOV#list', driveLink: 'https://drive.google.com/drive/folders/1MjLMShD3uJ_EEMFTEZJ-BwdXeIhYylOV', content: 'Desglose práctico de ventas de alto valor.' },
+          { id: 'les-hot-10', title: '10. CREACION DE COMUNIDAD', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1MjLMShD3uJ_EEMFTEZJ-BwdXeIhYylOV#list', driveLink: 'https://drive.google.com/drive/folders/1MjLMShD3uJ_EEMFTEZJ-BwdXeIhYylOV', content: 'Construcción y nutrición de audiencias leales.' },
+          { id: 'les-hot-11', title: '11. LANZAMIENTOS ORGÁNICOS', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1MjLMShD3uJ_EEMFTEZJ-BwdXeIhYylOV#list', driveLink: 'https://drive.google.com/drive/folders/1MjLMShD3uJ_EEMFTEZJ-BwdXeIhYylOV', content: 'Fórmula de lanzamiento paso a paso.' },
+          { id: 'les-hot-12', title: '12. BONO - FACEBOOK MASTERS', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1MjLMShD3uJ_EEMFTEZJ-BwdXeIhYylOV#list', driveLink: 'https://drive.google.com/drive/folders/1MjLMShD3uJ_EEMFTEZJ-BwdXeIhYylOV', content: 'Técnicas avanzadas en grupos y perfiles de Facebook.' },
+          { id: 'les-hot-13', title: '13. BONO ESPECIAL - REPOTENCIA TUS CUENTAS DE INSTAGRAM', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1MjLMShD3uJ_EEMFTEZJ-BwdXeIhYylOV#list', driveLink: 'https://drive.google.com/drive/folders/1MjLMShD3uJ_EEMFTEZJ-BwdXeIhYylOV', content: 'Crecimiento orgánico acelerado en Instagram.' },
+          { id: 'les-hot-14', title: '14. BONO ESPECIAL - VENTAS POR YOUTUBE', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1MjLMShD3uJ_EEMFTEZJ-BwdXeIhYylOV#list', driveLink: 'https://drive.google.com/drive/folders/1MjLMShD3uJ_EEMFTEZJ-BwdXeIhYylOV', content: 'Conversión de suscriptores y visualizaciones en ventas.' },
+          { id: 'les-hot-15', title: '15. BONO ESPECIAL - DISEÑO PUBLICITARIO PROFESIONAL', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1MjLMShD3uJ_EEMFTEZJ-BwdXeIhYylOV#list', driveLink: 'https://drive.google.com/drive/folders/1MjLMShD3uJ_EEMFTEZJ-BwdXeIhYylOV', content: 'Creativos y piezas gráficas de alto impacto.' },
+          { id: 'les-hot-16', title: '16. CLASES EN VIVO', duration: 'Carpeta Drive', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1MjLMShD3uJ_EEMFTEZJ-BwdXeIhYylOV#list', driveLink: 'https://drive.google.com/drive/folders/1MjLMShD3uJ_EEMFTEZJ-BwdXeIhYylOV', content: 'Sesiones de preguntas, respuestas y análisis en vivo.' }
         ]
       }
     ]
@@ -215,10 +230,9 @@ class RumboProDB {
   }
 
   async initDatabase() {
-    const CURRENT_VERSION = 'v7-clean-zero-progress';
+    const CURRENT_VERSION = 'v9-exact-drive-modules';
     if (localStorage.getItem('rumbopro_folders_version') !== CURRENT_VERSION) {
       localStorage.setItem(DB_KEY_COURSES, JSON.stringify(INITIAL_COURSES));
-      localStorage.setItem(DB_KEY_PROGRESS, JSON.stringify([]));
       localStorage.setItem('rumbopro_folders_version', CURRENT_VERSION);
     } else if (!localStorage.getItem(DB_KEY_COURSES)) {
       localStorage.setItem(DB_KEY_COURSES, JSON.stringify(INITIAL_COURSES));
