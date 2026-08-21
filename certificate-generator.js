@@ -3,7 +3,20 @@
    Signature: Pablo Xavier (Director & Fundador de RUMBO PRO)
    ========================================================================== */
 
-function openCertificateModal(certData) {
+async function openCertificateModal(rawCertData) {
+  let certData = rawCertData;
+  if (rawCertData && typeof rawCertData.then === 'function') {
+    certData = await rawCertData;
+  }
+
+  // Safe fallbacks to prevent any 'undefined'
+  const studentName = certData.userName || certData.user_name || 'Estudiante RUMBO PRO';
+  const courseTitle = certData.courseTitle || certData.course_title || 'Formación Profesional Digital';
+  const issueDate = certData.issueDate || certData.issue_date || new Date().toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' });
+  const certId = certData.id || ('RP-CERT-' + Math.random().toString(36).substring(2, 8).toUpperCase());
+  const signName = certData.signature || 'Pablo Xavier';
+  const directorTitle = certData.directorTitle || certData.director_title || 'Director & Fundador — RUMBO PRO';
+
   let modalContainer = document.getElementById('certificate-modal-overlay');
   if (!modalContainer) {
     modalContainer = document.createElement('div');
@@ -15,7 +28,7 @@ function openCertificateModal(certData) {
     <div class="cert-modal-backdrop" onclick="closeCertificateModal(event)">
       <div class="cert-modal-content" onclick="event.stopPropagation()">
         <div class="cert-modal-header">
-          <h2>CERTIFICADO DE FINALIZACIÓN</h2>
+          <h2>CERTIFICADO OFICIAL DE FINALIZACIÓN</h2>
           <button class="cert-close-btn" onclick="closeCertificateModal()">&times;</button>
         </div>
 
@@ -38,32 +51,32 @@ function openCertificateModal(certData) {
             <!-- Main Text -->
             <div class="cert-body-section">
               <p class="cert-label-grant">OTORGA EL PRESENTE CERTIFICADO DE EXCELENCIA A</p>
-              <h1 class="cert-student-name">${certData.userName}</h1>
+              <h1 class="cert-student-name">${studentName}</h1>
               <p class="cert-label-completion">Por haber completado satisfactoriamente el 100% de la formación técnica y práctica en:</p>
-              <h2 class="cert-course-title">${certData.courseTitle}</h2>
+              <h2 class="cert-course-title">${courseTitle}</h2>
             </div>
 
             <!-- Meta & Signatures -->
             <div class="cert-footer-section">
               <div class="cert-meta-item">
                 <span class="cert-meta-label">FECHA DE EMISIÓN</span>
-                <span class="cert-meta-val">${certData.issueDate}</span>
+                <span class="cert-meta-val">${issueDate}</span>
               </div>
 
               <div class="cert-signature-box">
-                <div class="cert-signature-line">Pablo Xavier</div>
-                <span class="cert-sign-name">Pablo Xavier</span>
-                <span class="cert-sign-title">Director & Fundador — RUMBO PRO</span>
+                <div class="cert-signature-line">${signName}</div>
+                <span class="cert-sign-name">${signName}</span>
+                <span class="cert-sign-title">${directorTitle}</span>
               </div>
 
               <div class="cert-meta-item">
                 <span class="cert-meta-label">CÓDIGO DE VERIFICACIÓN</span>
-                <span class="cert-meta-val cert-code">${certData.id}</span>
+                <span class="cert-meta-val cert-code">${certId}</span>
               </div>
             </div>
 
             <div class="cert-verify-link-footer">
-              Verificable en: www.rumbopro.com/verificar (ID: ${certData.id})
+              Verificable en: www.rumbopro.com/#/verificar (ID: ${certId})
             </div>
           </div>
         </div>
