@@ -49,31 +49,6 @@ const INITIAL_COURSES = [
     ]
   },
   {
-    id: 'course-afiliados',
-    title: 'MARKETING DE AFILIADOS',
-    badge: 'FORMACION ONLINE',
-    icon: '💰',
-    description: 'Aprende el sistema de afiliación paso a paso (Escuela TU 1Millon).',
-    active: true,
-    modules: [
-      {
-        id: 'mod-afi-1',
-        title: 'Escuela Tu 1Millon',
-        lessons: [
-          { id: 'les-afi-1', title: '1. Cómo Funciona la Escuela Tu1millon', duration: 'Clase en Video', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=14XweGlDCGif9VXzT3zTtYRLXnW9HZBPu#grid', driveLink: 'https://drive.google.com/drive/folders/14XweGlDCGif9VXzT3zTtYRLXnW9HZBPu', content: 'Visión general y estructura del modelo.' },
-          { id: 'les-afi-2', title: '2. Empieza Aquí 👇 Crea tu link de Afiliado', duration: 'Clase en Video', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=16po1jUbzp6yES4ogkVtnYq0NwFM-doVM#grid', driveLink: 'https://drive.google.com/drive/folders/16po1jUbzp6yES4ogkVtnYq0NwFM-doVM', content: 'Generación y configuración de enlaces de afiliado.' },
-          { id: 'les-afi-3', title: '3. Mentorías en Vivo', duration: 'Clase en Video', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1_UEP3NeQe76ODYdKucMZ7IFFekMZWLgm#grid', driveLink: 'https://drive.google.com/drive/folders/1_UEP3NeQe76ODYdKucMZ7IFFekMZWLgm', content: 'Grabaciones y sesiones estratégicas.' },
-          { id: 'les-afi-4', title: '4. Intro a la Escuela Tu1millon', duration: 'Clase en Video', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1kMXpRH2dO9cmkq9PBTMqgLCG0w3qSylk#grid', driveLink: 'https://drive.google.com/drive/folders/1kMXpRH2dO9cmkq9PBTMqgLCG0w3qSylk', content: 'Mentalidad y bases operativas.' },
-          { id: 'les-afi-5', title: '5. #90Tu1millon', duration: 'Clase en Video', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1qxDUScykIgL0ofuJI9Xm9SitAiqb6C5Q#grid', driveLink: 'https://drive.google.com/drive/folders/1qxDUScykIgL0ofuJI9Xm9SitAiqb6C5Q', content: 'Plan de acción de 90 días.' },
-          { id: 'les-afi-6', title: '6. Nutrición y Entrenamiento', duration: 'Clase en Video', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1UigwhOudV2nMGOwb49ZBHUV_s3vRfphf#grid', driveLink: 'https://drive.google.com/drive/folders/1UigwhOudV2nMGOwb49ZBHUV_s3vRfphf', content: 'Disciplina física y mental del emprendedor.' },
-          { id: 'les-afi-7', title: '7. Curso Edición Video', duration: 'Clase en Video', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=17Zqws7tl3Qsz7DPmXbEu7rbAUaCWTxgu#grid', driveLink: 'https://drive.google.com/drive/folders/17Zqws7tl3Qsz7DPmXbEu7rbAUaCWTxgu', content: 'Creación y edición de contenido para redes.' },
-          { id: 'les-afi-8', title: '8. Curso Twitter - Marketing, Cómo Crecer y Ventas', duration: 'Clase en Video', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1xC23EWUnCUoCLX54M7rBj9-3tgefT2oS#grid', driveLink: 'https://drive.google.com/drive/folders/1xC23EWUnCUoCLX54M7rBj9-3tgefT2oS', content: 'Estrategias de contenido y conversión en Twitter / X.' },
-          { id: 'les-afi-9', title: '9. Caso de Éxito: Mikel ($0 a 2K/mes en 4 meses)', duration: 'Clase en Video', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1nh1VsfXRU-StsaNNgtZVE63WcbTc2k7X#grid', driveLink: 'https://drive.google.com/drive/folders/1nh1VsfXRU-StsaNNgtZVE63WcbTc2k7X', content: 'Estudio de caso práctico de escalamiento.' }
-        ]
-      }
-    ]
-  },
-  {
     id: 'course-closer',
     title: 'CLOSER DE VENTAS',
     badge: 'FORMACION ONLINE',
