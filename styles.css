@@ -44,6 +44,10 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+button, a, input, select, textarea, .header-wa-btn, .btn-cta-large, .btn-primary, .btn-secondary, .floating-wa-btn {
+  touch-action: manipulation;
+}
+
 html {
   scroll-behavior: smooth;
   font-size: 16px;
