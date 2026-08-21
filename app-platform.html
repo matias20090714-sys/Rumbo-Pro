@@ -424,6 +424,9 @@
         });
       });
 
+      // Strict Natural Numerical Sorting (1, 2, 3 ... 9, 10, 11, 12, etc.)
+      allLessons.sort((a, b) => (a.title || '').localeCompare((b.title || ''), undefined, { numeric: true, sensitivity: 'base' }));
+
       if (allLessons.length === 0) {
         container.innerHTML = `<div class="dashboard-container"><h2>Este curso aún no tiene material publicado.</h2><a href="#/dashboard" class="btn-continue-course" style="display:inline-block; margin-top:1rem;">Volver al Dashboard</a></div>`;
         return;
