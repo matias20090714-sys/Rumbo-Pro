@@ -34,18 +34,22 @@
   <script src="certificate-generator.js"></script>
   <script>
     // Router & View Controller Logic
-    document.addEventListener('DOMContentLoaded', async () => {
+    document.addEventListener('DOMContentLoaded', () => {
       window.addEventListener('hashchange', renderCurrentRoute);
 
-      // Initialize Cloud DB & Subscribe to Real-Time Cloud Updates
+      // 1. Render immediately with 0ms delay from local store
+      renderCurrentRoute();
+
+      // 2. Initialize Cloud Sync & Real-Time in the background
       if (window.rumboDB) {
-        await window.rumboDB.initDatabase();
+        window.rumboDB.initDatabase().then(() => {
+          renderCurrentRoute();
+        }).catch(err => console.warn('Background sync:', err));
+
         window.rumboDB.subscribeToLiveUpdates(() => {
           renderCurrentRoute();
         });
       }
-
-      renderCurrentRoute();
     });
 
     function navigateTo(route) {
