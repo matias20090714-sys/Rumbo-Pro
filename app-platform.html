@@ -664,9 +664,9 @@
       `;
     }
 
-    window.handleGenerateCert = (userId, courseId) => {
+    window.handleGenerateCert = async (userId, courseId) => {
       try {
-        const cert = window.rumboDB.generateCertificate(userId, courseId);
+        const cert = await window.rumboDB.generateCertificate(userId, courseId);
         openCertificateModal(cert);
       } catch (err) {
         alert(err.message);
