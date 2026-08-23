@@ -2382,6 +2382,53 @@ button, a, input, select, textarea,
   color: #ffffff;
 }
 
+.idea-filter-tabs {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.6rem;
+  margin-bottom: 1.25rem;
+  scrollbar-width: thin;
+}
+
+.idea-filter-btn {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid var(--border-light);
+  color: var(--text-silver);
+  font-family: var(--font-heading);
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.45rem 0.95rem;
+  border-radius: 20px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.idea-filter-btn:hover {
+  background: rgba(0, 194, 255, 0.15);
+  border-color: rgba(0, 194, 255, 0.45);
+  color: #ffffff;
+}
+
+.idea-filter-btn.active {
+  background: linear-gradient(135deg, rgba(0, 194, 255, 0.3), rgba(0, 102, 255, 0.3));
+  border-color: #00c2ff;
+  color: #38bdf8;
+  box-shadow: 0 0 14px rgba(0, 194, 255, 0.35);
+}
+
+.idea-stats-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 0.85rem;
+  padding-top: 0.75rem;
+  border-top: 1px dashed rgba(255, 255, 255, 0.08);
+}
+
 @media (max-width: 768px) {
   .daily-idea-header {
     flex-direction: column;
