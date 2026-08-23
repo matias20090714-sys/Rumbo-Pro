@@ -352,13 +352,21 @@ class RumboProDB {
       throw new Error('Credenciales incorrectas. Verifica tu email y contrasena.');
     }
 
-    const session = { userId: user.id, loginAt: new Date().toISOString() };
+    const session = {
+      userId: user.id,
+      loginAt: new Date().toISOString(),
+      sessionId: 'sess_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9)
+    };
     localStorage.setItem(DB_KEY_SESSION, JSON.stringify(session));
     return user;
   }
 
+  getCurrentSession() {
+    return JSON.parse(localStorage.getItem(DB_KEY_SESSION) || 'null');
+  }
+
   getCurrentUser() {
-    const session = JSON.parse(localStorage.getItem(DB_KEY_SESSION) || 'null');
+    const session = this.getCurrentSession();
     if (!session) return null;
     const users = this.getUsers();
     return users.find(u => u.id === session.userId) || null;

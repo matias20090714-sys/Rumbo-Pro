@@ -2252,85 +2252,138 @@
         ]
       },
 
-      // Internal Tracker Storage Helper (guarantees NO repetitions across sessions)
-      getTracker: function(userId) {
-        const key = 'rumbo_idea_tracker_' + (userId || 'default');
-        try {
-          const raw = localStorage.getItem(key);
-          if (raw) {
-            const data = JSON.parse(raw);
-            if (!Array.isArray(data.seenIds)) data.seenIds = [];
-            if (!data.currentNiche) data.currentNiche = 'all';
-            if (typeof data.counter !== 'number') data.counter = 0;
-            return data;
-          }
-        } catch (e) {
-          console.error(e);
+      // Helper PRNG with 32-bit Hash for deterministic, isolated user queues
+      hashString: function(str) {
+        let hash = 0;
+        const s = String(str || 'default_student');
+        for (let i = 0; i < s.length; i++) {
+          hash = ((hash << 5) - hash) + s.charCodeAt(i);
+          hash |= 0;
         }
-        return { seenIds: [], currentNiche: 'all', counter: 0, activeIdea: null };
+        return Math.abs(hash) || 123456789;
       },
 
-      saveTracker: function(userId, tracker) {
-        const key = 'rumbo_idea_tracker_' + (userId || 'default');
-        localStorage.setItem(key, JSON.stringify(tracker));
+      createPRNG: function(seed) {
+        let a = seed;
+        return function() {
+          let t = a += 0x6D2B79F5;
+          t = Math.imul(t ^ t >>> 15, t | 1);
+          t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+          return ((t ^ t >>> 14) >>> 0) / 4294967296;
+        };
       },
 
-      // Get next unseen idea with 100% guarantee of no duplicates
+      // User & Login-Session Isolated Storage Helper
+      getTracker: function(userId) {
+        const uId = String(userId || 'guest_user');
+        const lifetimeKey = 'rumbo_user_seen_' + uId;
+        const sessionKey = 'rumbo_user_session_' + uId;
+        
+        let lifetimeSeen = [];
+        try {
+          lifetimeSeen = JSON.parse(localStorage.getItem(lifetimeKey) || '[]');
+          if (!Array.isArray(lifetimeSeen)) lifetimeSeen = [];
+        } catch (e) {
+          lifetimeSeen = [];
+        }
+
+        let sessionData = { lastSessionId: '', activeIdea: null, sessionCounter: 0, currentNiche: 'all' };
+        try {
+          const raw = localStorage.getItem(sessionKey);
+          if (raw) sessionData = { ...sessionData, ...JSON.parse(raw) };
+        } catch (e) {}
+
+        // Check if user has started a new login session
+        let isNewLogin = false;
+        if (window.rumboDB && typeof window.rumboDB.getCurrentSession === 'function') {
+          const currentSess = window.rumboDB.getCurrentSession();
+          if (currentSess && currentSess.sessionId && currentSess.sessionId !== sessionData.lastSessionId) {
+            sessionData.lastSessionId = currentSess.sessionId;
+            sessionData.activeIdea = null; // Force new idea on every fresh login!
+            sessionData.sessionCounter = 0;
+            isNewLogin = true;
+          }
+        }
+
+        return {
+          userId: uId,
+          lifetimeKey: lifetimeKey,
+          sessionKey: sessionKey,
+          lifetimeSeen: lifetimeSeen,
+          sessionData: sessionData,
+          isNewLogin: isNewLogin
+        };
+      },
+
+      saveTracker: function(tracker) {
+        try {
+          localStorage.setItem(tracker.lifetimeKey, JSON.stringify(tracker.lifetimeSeen));
+          localStorage.setItem(tracker.sessionKey, JSON.stringify(tracker.sessionData));
+        } catch (e) {
+          console.error('Error saving idea tracker', e);
+        }
+      },
+
+      // Get next unseen idea isolated per user & per login session
       getUniqueIdea: function(userId, requestedNiche, forceNext = false) {
         const tracker = this.getTracker(userId);
-        const niche = requestedNiche || tracker.currentNiche || 'all';
-        tracker.currentNiche = niche;
+        const niche = requestedNiche || tracker.sessionData.currentNiche || 'all';
+        tracker.sessionData.currentNiche = niche;
 
-        // If not forcing next and we already have an active idea for this niche, return it
-        if (!forceNext && tracker.activeIdea && (niche === 'all' || tracker.activeIdea.nicheCategory === niche)) {
+        // If not forcing next and we have an active idea for this session & niche, keep showing it
+        if (!forceNext && !tracker.isNewLogin && tracker.sessionData.activeIdea && (niche === 'all' || tracker.sessionData.activeIdea.nicheCategory === niche)) {
           return {
-            idea: tracker.activeIdea,
-            number: tracker.counter || 1,
-            seenTotal: tracker.seenIds.length,
-            niche: niche
+            idea: tracker.sessionData.activeIdea,
+            sessionNumber: tracker.sessionData.sessionCounter || 1,
+            lifetimeTotal: tracker.lifetimeSeen.length,
+            niche: niche,
+            isNewLogin: false
           };
         }
 
-        // 1. Check handcrafted templates pool
+        // Seed PRNG uniquely using (User ID Hash + Session Identifier + Counter)
+        const userSeed = this.hashString(tracker.userId);
+        const sessionSeed = this.hashString(tracker.sessionData.lastSessionId || 'init_sess');
+        const counterSeed = (tracker.sessionData.sessionCounter || 0) * 9973;
+        const prng = this.createPRNG(userSeed ^ sessionSeed ^ counterSeed);
+
+        // 1. Find unvisited handcrafted templates for this user
         let pool = this.templates.filter(t => {
           const matchesNiche = (niche === 'all' || t.nicheCategory === niche);
-          const notSeen = !tracker.seenIds.includes(t.id);
+          const notSeen = !tracker.lifetimeSeen.includes(t.id);
           return matchesNiche && notSeen;
         });
 
         let selectedIdea = null;
 
         if (pool.length > 0) {
-          // Pick a random unshown template from pool
-          const randomIndex = Math.floor(Math.random() * pool.length);
-          selectedIdea = pool[randomIndex];
+          // Shuffle pool deterministically using user's PRNG so each user gets a completely different sequence
+          const poolIndex = Math.floor(prng() * pool.length);
+          selectedIdea = pool[poolIndex];
         } else {
-          // 2. Templates exhausted for this category -> Generate via Combinatorial Matrix!
-          let attempts = 0;
-          let comboId = '';
+          // 2. Templates exhausted for this user/niche -> Generate unique combinatorial script!
           const m = this.matrix;
-
-          // Pick niche
           let comboNicheObj = m.niches.find(n => n.key === niche);
           if (!comboNicheObj || niche === 'all') {
-            comboNicheObj = m.niches[Math.floor(Math.random() * m.niches.length)];
+            const nicheIdx = Math.floor(prng() * m.niches.length);
+            comboNicheObj = m.niches[nicheIdx];
           }
 
-          while (attempts < 50) {
-            const hIdx = Math.floor(Math.random() * m.hooks.length);
-            const bIdx = Math.floor(Math.random() * m.bodies.length);
-            const cIdx = Math.floor(Math.random() * m.ctas.length);
-            const brIdx = Math.floor(Math.random() * m.brolls.length);
-            const cpIdx = Math.floor(Math.random() * m.captions.length);
+          let attempts = 0;
+          while (attempts < 100) {
+            const hIdx = Math.floor(prng() * m.hooks.length);
+            const bIdx = Math.floor(prng() * m.bodies.length);
+            const cIdx = Math.floor(prng() * m.ctas.length);
+            const brIdx = Math.floor(prng() * m.brolls.length);
+            const cpIdx = Math.floor(prng() * m.captions.length);
 
-            comboId = `combo-${comboNicheObj.key}-${hIdx}-${bIdx}-${cIdx}-${brIdx}`;
-            
-            if (!tracker.seenIds.includes(comboId)) {
+            const comboId = `combo-${comboNicheObj.key}-${hIdx}-${bIdx}-${cIdx}-${brIdx}`;
+            if (!tracker.lifetimeSeen.includes(comboId)) {
               selectedIdea = {
                 id: comboId,
                 nicheCategory: comboNicheObj.key,
                 niche: comboNicheObj.name,
-                type: 'Estrategia Combinatoria Avanzada',
+                type: 'Estrategia Combinatoria Exclusiva',
                 hook: m.hooks[hIdx],
                 body: m.bodies[bIdx],
                 cta: m.ctas[cIdx],
@@ -2342,34 +2395,37 @@
             attempts++;
           }
 
-          // Fallback if theoretical collision limit is hit
+          // Fallback if needed
           if (!selectedIdea) {
-            const timeStampId = 'dyn-' + Date.now();
+            const dynamicId = `dyn-${tracker.userId}-${Date.now()}`;
             selectedIdea = {
-              id: timeStampId,
+              id: dynamicId,
               nicheCategory: comboNicheObj.key,
               niche: comboNicheObj.name,
-              type: 'Generación Dinámica Exclusiva',
-              hook: m.hooks[Math.floor(Math.random() * m.hooks.length)],
-              body: m.bodies[Math.floor(Math.random() * m.bodies.length)],
-              cta: m.ctas[Math.floor(Math.random() * m.ctas.length)],
-              broll: m.brolls[Math.floor(Math.random() * m.brolls.length)],
-              caption: m.captions[Math.floor(Math.random() * m.captions.length)]
+              type: 'Generación Dinámica Única',
+              hook: m.hooks[Math.floor(prng() * m.hooks.length)],
+              body: m.bodies[Math.floor(prng() * m.bodies.length)],
+              cta: m.ctas[Math.floor(prng() * m.ctas.length)],
+              broll: m.brolls[Math.floor(prng() * m.brolls.length)],
+              caption: m.captions[Math.floor(prng() * m.captions.length)]
             };
           }
         }
 
-        // Record as seen
-        tracker.seenIds.push(selectedIdea.id);
-        tracker.counter = (tracker.counter || 0) + 1;
-        tracker.activeIdea = selectedIdea;
-        this.saveTracker(userId, tracker);
+        // Record lifetime seen ID (never repeated for this user)
+        if (!tracker.lifetimeSeen.includes(selectedIdea.id)) {
+          tracker.lifetimeSeen.push(selectedIdea.id);
+        }
+        tracker.sessionData.sessionCounter = (tracker.sessionData.sessionCounter || 0) + 1;
+        tracker.sessionData.activeIdea = selectedIdea;
+        this.saveTracker(tracker);
 
         return {
           idea: selectedIdea,
-          number: tracker.counter,
-          seenTotal: tracker.seenIds.length,
-          niche: niche
+          sessionNumber: tracker.sessionData.sessionCounter,
+          lifetimeTotal: tracker.lifetimeSeen.length,
+          niche: niche,
+          isNewLogin: tracker.isNewLogin
         };
       },
 
@@ -2381,9 +2437,9 @@
         const data = this.getUniqueIdea(userId, customNiche, forceNext);
         const idea = data.idea;
 
-        // Update tags
+        // Update tag with user isolation info
         if (numberTag) {
-          numberTag.textContent = `Guion #${data.number} • ${idea.niche}`;
+          numberTag.textContent = `Guion #${data.sessionNumber} • ${idea.niche}`;
         }
 
         // Update active class on filter tab buttons (both in dashboard & full view)
@@ -2408,7 +2464,9 @@
             <div class="idea-meta-row">
               <span class="idea-niche-pill">${idea.niche}</span>
               <span class="idea-type-pill">⚡ ${idea.type}</span>
-              <span class="idea-type-pill" style="border-color:rgba(16,185,129,0.4); color:#34d399;">✨ 100% Único & Sin Repetición</span>
+              <span class="idea-type-pill" style="border-color:rgba(16,185,129,0.45); color:#34d399; font-weight:800;">
+                ✨ Idea Exclusiva para tu Usuario (Sin Repetición)
+              </span>
             </div>
 
             <!-- Hook Section -->
@@ -2445,7 +2503,7 @@
 
             <!-- Action Bar -->
             <div class="idea-bottom-bar">
-              <button class="btn-copy-script" onclick="window.rumboIdeaEngine.copyFullScript('${idea.id}')">
+              <button class="btn-copy-script" onclick="window.rumboIdeaEngine.copyFullScript('${idea.id}', '${userId}')">
                 📋 Copiar Guion Completo
               </button>
               <button class="btn-another-inline" onclick="handleGenerateNextIdea('${userId}')">
@@ -2454,19 +2512,19 @@
             </div>
 
             <div class="idea-stats-bar">
-              <span>🎯 Guiones generados en tu sesión: <strong>#${data.number}</strong></span>
-              <span>🔒 Motor con memoria inteligente activa</span>
+              <span>🎯 Guion de esta sesión: <strong>#${data.sessionNumber}</strong> • Total vistos en tu historial: <strong>${data.lifetimeTotal}</strong></span>
+              <span>🔒 Cola de ideas 100% individual por usuario</span>
             </div>
 
           </div>
         `;
       },
 
-      copyFullScript: function(templateId) {
-        const tracker = this.getTracker();
+      copyFullScript: function(templateId, userId) {
+        const tracker = this.getTracker(userId);
         let t = this.templates.find(x => x.id === templateId);
-        if (!t && tracker.activeIdea && tracker.activeIdea.id === templateId) {
-          t = tracker.activeIdea;
+        if (!t && tracker.sessionData && tracker.sessionData.activeIdea && tracker.sessionData.activeIdea.id === templateId) {
+          t = tracker.sessionData.activeIdea;
         }
         if (!t) return;
 
@@ -2484,7 +2542,7 @@
     // UI Handlers for generating next idea & switching niche tabs
     window.handleGenerateNextIdea = (userId) => {
       const tracker = window.rumboIdeaEngine.getTracker(userId);
-      window.rumboIdeaEngine.renderIdeaForUser(userId, tracker.currentNiche, true);
+      window.rumboIdeaEngine.renderIdeaForUser(userId, tracker.sessionData.currentNiche, true);
       
       const box = document.getElementById('daily-idea-widget');
       if (box) {
