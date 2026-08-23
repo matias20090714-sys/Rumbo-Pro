@@ -314,7 +314,8 @@ class RumboProDB {
     const pendingSales = referrals.filter(u => u.status === 'PENDIENTE');
 
     const salesCount = approvedSales.length;
-    const COMMISSION_PER_SALE = 45; // $45 USD por venta
+    const RUMBOPRO_PRICE_USD = 97; // Precio oficial: 3.900 UYU (~$97 USD)
+    const COMMISSION_PER_SALE = 87; // 90% de comisión ($87 USD por venta)
     const totalEarnedUsd = salesCount * COMMISSION_PER_SALE;
 
     // Affiliate Ranks (Sales Milestones Tracking — 90% Commission & Full Platform Access for All)
@@ -323,7 +324,7 @@ class RumboProDB {
       name: 'Rango Rookie',
       icon: '🥉',
       badgeClass: 'tier-bronze',
-      commissionRate: '90% ($45 USD/venta)',
+      commissionRate: '90% ($87 USD/venta)',
       salesNeededForNext: 3,
       nextTierName: 'Rango Pro (3 ventas)',
       progressPercentage: Math.min(100, Math.round((salesCount / 3) * 100)),
@@ -337,7 +338,7 @@ class RumboProDB {
         name: 'Rango Legend',
         icon: '💎',
         badgeClass: 'tier-diamond',
-        commissionRate: '90% ($45 USD/venta)',
+        commissionRate: '90% ($87 USD/venta)',
         salesNeededForNext: 0,
         nextTierName: 'Hito Máximo Alcanzado 🏆',
         progressPercentage: 100,
@@ -350,7 +351,7 @@ class RumboProDB {
         name: 'Rango Master',
         icon: '🥇',
         badgeClass: 'tier-gold',
-        commissionRate: '90% ($45 USD/venta)',
+        commissionRate: '90% ($87 USD/venta)',
         salesNeededForNext: 25,
         nextTierName: 'Rango Legend (25 ventas)',
         progressPercentage: Math.min(100, Math.round(((salesCount - 10) / 15) * 100)),
@@ -363,7 +364,7 @@ class RumboProDB {
         name: 'Rango Pro',
         icon: '🥈',
         badgeClass: 'tier-silver',
-        commissionRate: '90% ($45 USD/venta)',
+        commissionRate: '90% ($87 USD/venta)',
         salesNeededForNext: 10,
         nextTierName: 'Rango Master (10 ventas)',
         progressPercentage: Math.min(100, Math.round(((salesCount - 3) / 7) * 100)),
@@ -378,6 +379,7 @@ class RumboProDB {
       salesCount: salesCount,
       pendingCount: pendingSales.length,
       totalEarnedUsd: totalEarnedUsd,
+      priceUsd: RUMBOPRO_PRICE_USD,
       commissionPerSale: COMMISSION_PER_SALE,
       tier: tier,
       referralsList: referrals
