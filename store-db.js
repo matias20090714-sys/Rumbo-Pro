@@ -317,17 +317,17 @@ class RumboProDB {
     const COMMISSION_PER_SALE = 45; // $45 USD por venta
     const totalEarnedUsd = salesCount * COMMISSION_PER_SALE;
 
-    // Affiliate Tiers Calculation
+    // Affiliate Tiers Calculation (90% Flat Commission across all levels + Extra VIP Rank Perks)
     let tier = {
       id: 'tier-bronze',
       name: 'Afiliado Rookie',
       icon: '🥉',
       badgeClass: 'tier-bronze',
-      commissionRate: '50% ($45 USD/venta)',
+      commissionRate: '90% ($45 USD/venta)',
       salesNeededForNext: 3,
       nextTierName: 'Afiliado Builder Pro (3 ventas)',
       progressPercentage: Math.min(100, Math.round((salesCount / 3) * 100)),
-      perks: ['Enlace oficial de afiliado', 'Acceso al Manual de 10 Capítulos', 'Comisiones directas del 50%']
+      perks: ['90% de comisión directa en dólares', 'Enlace personal de afiliado', 'Acceso al Manual de 10 Capítulos', 'Generador de ideas de contenido']
     };
 
     if (salesCount >= 25) {
@@ -336,11 +336,11 @@ class RumboProDB {
         name: 'Afiliado Diamond Legend',
         icon: '💎',
         badgeClass: 'tier-diamond',
-        commissionRate: '80% ($75 USD/venta)',
+        commissionRate: '90% ($45 USD/venta)',
         salesNeededForNext: 0,
         nextTierName: 'Nivel Máximo Alcanzado 🏆',
         progressPercentage: 100,
-        perks: ['Comisión máxima del 80%', 'Mentoría 1 a 1 de escalamiento', 'Insignia Diamante en la academia', 'Retiros prioritarios en 24h']
+        perks: ['90% de comisión directa', 'Mentoría 1 a 1 de escalamiento', 'Insignia Diamante Oficial en la academia', 'Retiros prioritarios de ganancias']
       };
     } else if (salesCount >= 10) {
       tier = {
@@ -348,11 +348,11 @@ class RumboProDB {
         name: 'Afiliado Gold Closer',
         icon: '🥇',
         badgeClass: 'tier-gold',
-        commissionRate: '70% ($65 USD/venta)',
+        commissionRate: '90% ($45 USD/venta)',
         salesNeededForNext: 25,
         nextTierName: 'Afiliado Diamond Legend (25 ventas)',
         progressPercentage: Math.min(100, Math.round(((salesCount - 10) / 15) * 100)),
-        perks: ['Comisión preferencial del 70%', 'Acceso al Círculo Privado de Closers', 'Guiones de venta exclusivos']
+        perks: ['90% de comisión directa', 'Acceso al Círculo Privado de Closers VIP', 'Llamadas grupales mensuales', 'Guiones exclusivos de venta']
       };
     } else if (salesCount >= 3) {
       tier = {
@@ -360,11 +360,11 @@ class RumboProDB {
         name: 'Afiliado Builder Pro',
         icon: '🥈',
         badgeClass: 'tier-silver',
-        commissionRate: '60% ($55 USD/venta)',
+        commissionRate: '90% ($45 USD/venta)',
         salesNeededForNext: 10,
         nextTierName: 'Afiliado Gold Closer (10 ventas)',
         progressPercentage: Math.min(100, Math.round(((salesCount - 3) / 7) * 100)),
-        perks: ['Comisión aumentada del 60%', 'Insignia Builder Pro', 'Soporte prioritario de ventas']
+        perks: ['90% de comisión directa', 'Insignia Builder Pro en la comunidad', 'Plantillas de cierre y objeciones VIP', 'Soporte prioritario']
       };
     }
 
