@@ -386,6 +386,59 @@ class RumboProDB {
     };
   }
 
+  getTopAffiliatesLeaderboard(limit = 10) {
+    const allUsers = this.getUsers();
+    const affiliates = allUsers.filter(u => u.role !== 'ADMINISTRADOR');
+    const clicksObj = JSON.parse(localStorage.getItem('rumbopro_db_affiliate_clicks') || '{}');
+
+    const leaderboard = affiliates.map(u => {
+      const referrals = allUsers.filter(ref => ref.referredBy === u.id || ref.referred_by === u.id);
+      const approvedSales = referrals.filter(ref => ref.status === 'APROBADO');
+      const pendingSales = referrals.filter(ref => ref.status === 'PENDIENTE');
+      const salesCount = approvedSales.length;
+      const totalEarnedUsd = salesCount * 87;
+      const totalVolumeUsd = salesCount * 97;
+      const clicks = clicksObj[u.id] || 0;
+
+      let tierName = '🥉 Rookie';
+      let tierBadge = 'tier-bronze';
+      if (salesCount >= 25) {
+        tierName = '💎 Legend';
+        tierBadge = 'tier-diamond';
+      } else if (salesCount >= 10) {
+        tierName = '🥇 Master';
+        tierBadge = 'tier-gold';
+      } else if (salesCount >= 3) {
+        tierName = '🥈 Pro';
+        tierBadge = 'tier-silver';
+      }
+
+      return {
+        id: u.id,
+        firstName: u.firstName,
+        lastName: u.lastName,
+        email: u.email,
+        salesCount: salesCount,
+        pendingCount: pendingSales.length,
+        totalReferrals: referrals.length,
+        clicks: clicks,
+        totalEarnedUsd: totalEarnedUsd,
+        totalVolumeUsd: totalVolumeUsd,
+        tierName: tierName,
+        tierBadge: tierBadge,
+        registeredAt: u.registeredAt
+      };
+    });
+
+    leaderboard.sort((a, b) => {
+      if (b.salesCount !== a.salesCount) return b.salesCount - a.salesCount;
+      if (b.totalReferrals !== a.totalReferrals) return b.totalReferrals - a.totalReferrals;
+      return b.clicks - a.clicks;
+    });
+
+    return leaderboard.slice(0, limit);
+  }
+
   async registerUser(userData) {
     if (!this.supabase) this.initSupabaseClient();
 

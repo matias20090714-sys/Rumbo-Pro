@@ -994,6 +994,13 @@
     function renderAdminView(container, user) {
       const users = window.rumboDB.getUsers();
       const courses = window.rumboDB.getCourses();
+      const topAffiliates = window.rumboDB.getTopAffiliatesLeaderboard(10);
+
+      // Aggregate Affiliate Stats
+      const totalAffiliateSales = topAffiliates.reduce((sum, a) => sum + a.salesCount, 0);
+      const totalAffiliateRevenue = totalAffiliateSales * 97;
+      const totalAffiliateCommissions = totalAffiliateSales * 87;
+      const totalAffiliateClicks = topAffiliates.reduce((sum, a) => sum + a.clicks, 0);
 
       // 1. Pending users
       const pendingUsers = users.filter(u => u.status === 'PENDIENTE');
@@ -1001,6 +1008,35 @@
       const approvedUsers = users.filter(u => u.status === 'APROBADO');
       // 3. Suspended or Rejected users
       const otherUsers = users.filter(u => u.status === 'SUSPENDIDO' || u.status === 'RECHAZADO');
+
+      // Leaderboard rows
+      let leaderboardRows = topAffiliates.map((aff, idx) => {
+        let posBadgeClass = 'rank-pos-default';
+        let posIcon = `#${idx + 1}`;
+        if (idx === 0) { posBadgeClass = 'rank-pos-1'; posIcon = '🥇 1'; }
+        else if (idx === 1) { posBadgeClass = 'rank-pos-2'; posIcon = '🥈 2'; }
+        else if (idx === 2) { posBadgeClass = 'rank-pos-3'; posIcon = '🥉 3'; }
+
+        return `
+          <tr>
+            <td>
+              <span class="rank-pos-badge ${posBadgeClass}">${posIcon}</span>
+            </td>
+            <td>
+              <div style="font-weight:800; color:#ffffff;">${aff.firstName} ${aff.lastName}</div>
+              <div style="font-size:0.78rem; color:var(--text-muted);">${aff.email}</div>
+            </td>
+            <td>
+              <span class="tier-badge-pill ${aff.tierBadge}" style="font-size:0.75rem;">${aff.tierName}</span>
+            </td>
+            <td style="color:#38bdf8; font-weight:700;">${aff.clicks}</td>
+            <td style="color:#a78bfa; font-weight:700;">${aff.totalReferrals}</td>
+            <td style="color:#34d399; font-weight:900; font-size:0.95rem;">${aff.salesCount}</td>
+            <td style="color:#ffffff; font-weight:800;">$${aff.totalVolumeUsd} USD</td>
+            <td style="color:#facc15; font-weight:900;">$${aff.totalEarnedUsd} USD</td>
+          </tr>
+        `;
+      }).join('');
 
       let pendingRows = pendingUsers.map(u => `
         <tr>
@@ -1071,10 +1107,72 @@
           <div class="welcome-header">
             <span class="badge-pill" style="background:rgba(0,194,255,0.15); color:#38bdf8; border-color:rgba(0,194,255,0.4); margin-bottom:0.5rem; display:inline-block;">PANEL DE CONTROL</span>
             <h1 class="welcome-title">Panel de Administración</h1>
-            <p class="welcome-sub">Gestión integral de usuarios, aprobación de accesos y estados de alumnos en RUMBO PRO.</p>
+            <p class="welcome-sub">Gestión integral de usuarios, ranking de afiliados y control de ventas en RUMBO PRO.</p>
           </div>
 
-          <!-- SECTION 1: SOLICITUDES PENDIENTES -->
+          <!-- ADMIN QUICK STATS SUMMARY -->
+          <div class="affiliate-stats-grid" style="margin-bottom:2.5rem;">
+            <div class="aff-stat-card">
+              <span class="aff-stat-label">AFILIADOS ACTIVOS</span>
+              <div class="aff-stat-num" style="color:#38bdf8;">${topAffiliates.length}</div>
+            </div>
+            <div class="aff-stat-card">
+              <span class="aff-stat-label">CLICS TOTALES EN LINKS</span>
+              <div class="aff-stat-num" style="color:#a78bfa;">${totalAffiliateClicks}</div>
+            </div>
+            <div class="aff-stat-card">
+              <span class="aff-stat-label">VENTAS DE AFILIADOS</span>
+              <div class="aff-stat-num" style="color:#34d399;">${totalAffiliateSales}</div>
+            </div>
+            <div class="aff-stat-card">
+              <span class="aff-stat-label">FACTURACIÓN POR AFILIADOS</span>
+              <div class="aff-stat-num" style="color:#facc15;">$${totalAffiliateRevenue} USD</div>
+            </div>
+          </div>
+
+          <!-- SECTION 1: RANKING TOP 10 AFILIADOS -->
+          <div class="admin-section-block" style="margin-bottom:2.5rem; border:1px solid rgba(250,204,21,0.35); box-shadow:0 15px 40px rgba(0,0,0,0.5);">
+            <div class="admin-section-header">
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+                <div style="display:flex; align-items:center; gap:0.6rem;">
+                  <span style="font-size:1.4rem;">🏆</span>
+                  <div>
+                    <h2 class="courses-section-title" style="margin:0; color:#facc15;">Ranking Top 10 de Afiliados</h2>
+                    <p style="font-size:0.85rem; color:var(--text-muted); margin-top:0.2rem;">Tus mejores afiliados ordenados por ventas confirmadas, clics y comisiones generadas.</p>
+                  </div>
+                </div>
+                <span class="admin-count-badge" style="background:rgba(234,179,8,0.2); color:#facc15; border:1px solid rgba(234,179,8,0.5); font-weight:800;">Top ${topAffiliates.length}</span>
+              </div>
+            </div>
+
+            <div class="admin-table-container">
+              ${topAffiliates.length > 0 ? `
+                <table class="admin-table">
+                  <thead>
+                    <tr>
+                      <th style="width:60px;">Puesto</th>
+                      <th>Afiliado / Email</th>
+                      <th>Rango</th>
+                      <th>Clics</th>
+                      <th>Leads</th>
+                      <th>Ventas</th>
+                      <th>Facturado ($97)</th>
+                      <th>Comisión (90%)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${leaderboardRows}
+                  </tbody>
+                </table>
+              ` : `
+                <div class="admin-empty-state">
+                  <span>🌱</span> Aún no hay alumnos con actividad de afiliados registrada.
+                </div>
+              `}
+            </div>
+          </div>
+
+          <!-- SECTION 2: SOLICITUDES PENDIENTES -->
           <div class="admin-section-block">
             <div class="admin-section-header">
               <div style="display:flex; align-items:center; gap:0.6rem;">
