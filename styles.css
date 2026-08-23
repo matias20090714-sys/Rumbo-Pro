@@ -1741,10 +1741,40 @@ section {
 
 @media (max-width: 768px) {
   .quiz-container-card {
-    padding: 1.75rem 1.25rem;
+    padding: 1.5rem 1rem;
+    border-radius: 18px;
   }
   .quiz-result-title {
-    font-size: 1.45rem;
+    font-size: 1.35rem;
+  }
+  .quiz-opt-btn {
+    padding: 0.9rem 1rem;
+    font-size: 0.88rem;
+  }
+  .hero-headline {
+    font-size: 1.85rem !important;
+  }
+  .hero-subhead {
+    font-size: 0.95rem !important;
+  }
+  .challenge-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .quiz-step-title {
+    font-size: 1.15rem;
+  }
+  .quiz-opt-btn {
+    padding: 0.8rem 0.85rem;
+    font-size: 0.84rem;
+  }
+  .floating-wa-btn {
+    bottom: 1rem;
+    right: 1rem;
+    padding: 0.75rem 1rem;
+    font-size: 0.85rem;
   }
 }
 
