@@ -151,12 +151,12 @@ document.addEventListener('DOMContentLoaded', () => {
         ]
       },
       {
-        title: 'Pregunta 3 de 7: ¿Con cuánto presupuesto quieres arrancar tu proyecto?',
-        desc: 'Todos los modelos se pueden iniciar sin deudas ni riesgos innecesarios.',
+        title: 'Pregunta 3 de 7: ¿En cuánto tiempo te gustaría conseguir tus primeros ingresos o comisiones?',
+        desc: 'Cada habilidad tiene una velocidad de monetización diferente según su estructura.',
         options: [
-          { icon: '💸', text: '$0 USD — Quiero arrancar 100% en orgánico sin gastar en inventario ni anuncios', weights: { hotmart: 4, closer: 3, cm: 2, ecom: -2 } },
-          { icon: '💵', text: '$30 a $80 USD — Puedo costear herramientas básicas o dominios web', weights: { cm: 3, hotmart: 2, closer: 2, ecom: 2 } },
-          { icon: '💳', text: '$150+ USD — Quiero montar una estructura con tienda propia o marca formal', weights: { ecom: 4, cm: 2, closer: 2, hotmart: 1 } }
+          { icon: '⚡', text: 'En mis primeros 7 a 14 días — Busco la ruta más directa con resultados casi inmediatos.', weights: { closer: 4, hotmart: 3, cm: 1, ecom: 1 } },
+          { icon: '📈', text: 'En 30 a 45 días — Dispuesto a crear una base sólida y un flujo constante de ingresos.', weights: { cm: 3, hotmart: 3, closer: 2, ecom: 2 } },
+          { icon: '🏢', text: 'A mediano plazo (60+ días) — Quiero construir una marca escalable o tienda a largo plazo.', weights: { ecom: 4, cm: 3, closer: 1, hotmart: 1 } }
         ]
       },
       {
@@ -202,7 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
         badge: '🎯 TU RUTA RECOMENDADA (COINCIDENCIA 98%)',
         title: '🔥 Hotmart (Método Fukuda)',
         desc: 'El modelo perfecto para iniciar desde cero, sin mostrar tu cara y sin comprar stock. Aprendes a viralizar clips en TikTok y llevar a las personas directo a tu WhatsApp para generar comisiones en dólares del 60% al 80%.',
-        perks: ['💸 Inversión inicial $0', '👤 Formato Faceless (sin mostrar cara)', '📱 100% desde tu celular', '📈 Potencial: $300 a $1,200 USD/mes'],
+        perks: ['🔥 Método 100% Orgánico', '👤 Formato Faceless (sin mostrar cara)', '📱 100% desde tu celular', '📈 Potencial: $300 a $1,200 USD/mes'],
         courseHash: '#/curso/course-hotmart'
       },
       closer: {
