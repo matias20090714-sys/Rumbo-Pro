@@ -12,7 +12,7 @@
   <!-- Header Navigation Bar -->
   <nav class="platform-nav">
     <div class="platform-nav-inner">
-      <a href="#/dashboard" class="platform-logo">
+      <a href="index.html" class="platform-logo" id="nav-brand-logo">
         <img src="assets/logo.jpg" alt="Logo Rumbo Pro" class="platform-logo-img">
         <span>RUMBO PRO</span>
       </a>
@@ -57,15 +57,30 @@
     }
 
     function renderCurrentRoute() {
-      const hash = window.location.hash || '#/dashboard';
-      const currentUser = window.rumboDB.getCurrentUser();
-      const container = document.getElementById('app-view-container');
-      const navContainer = document.getElementById('nav-menu-container');
+      let hash = window.location.hash;
+      const currentUser = window.rumboDB ? window.rumboDB.getCurrentUser() : null;
 
-      // Update Navigation Header
+      // Smart initial route resolution: if unauthenticated, go straight to login without flashing dashboard
+      if (!hash || hash === '#' || hash === '#/') {
+        hash = currentUser ? '#/dashboard' : '#/login';
+        if (window.location.hash !== hash) {
+          window.location.hash = hash;
+          return;
+        }
+      }
+
+      const container = document.getElementById('app-view-container');
+      const brandLogo = document.getElementById('nav-brand-logo');
+
+      // Set Brand Link destination
+      if (brandLogo) {
+        brandLogo.href = currentUser ? '#/dashboard' : 'index.html';
+      }
+
+      // Update Navigation Header (Strictly clean on login / register / unauthenticated)
       renderNavMenu(currentUser, hash);
 
-      // Public Routes
+      // Public / Auth Routes
       if (hash.startsWith('#/verificar')) {
         renderVerifyCertificatesView(container);
         return;
@@ -81,7 +96,7 @@
         return;
       }
 
-      // Protection Guard: If not logged in, redirect to login
+      // Protection Guard: If not logged in, immediately render login view
       if (!currentUser) {
         navigateTo('#/login');
         return;
@@ -118,11 +133,16 @@
 
     function renderNavMenu(user, currentHash) {
       const navContainer = document.getElementById('nav-menu-container');
-      if (!user) {
+      if (!navContainer) return;
+
+      const isAuthPage = currentHash === '#/login' || currentHash === '#/registro' || currentHash.startsWith('#/verificar');
+
+      // For unauthenticated users or on Login/Register screens: Keep the header clean and minimalist
+      if (!user || isAuthPage) {
         navContainer.innerHTML = `
-          <a href="#/login" class="platform-menu-link ${currentHash === '#/login' ? 'active' : ''}">Iniciar Sesión</a>
-          <a href="#/registro" class="platform-menu-link ${currentHash === '#/registro' ? 'active' : ''}">Registrarse</a>
-          <a href="#/verificar" class="platform-menu-link ${currentHash.startsWith('#/verificar') ? 'active' : ''}">Verificar Certificado</a>
+          <a href="index.html" class="btn-back-home">
+            ← Volver a la Web
+          </a>
         `;
         return;
       }
