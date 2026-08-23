@@ -35,6 +35,16 @@
   <script>
     // Router & View Controller Logic
     document.addEventListener('DOMContentLoaded', () => {
+      // Capture affiliate ref code if present in URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const refCode = urlParams.get('ref');
+      if (refCode) {
+        localStorage.setItem('rumbopro_ref_code', refCode);
+        if (window.rumboDB && typeof window.rumboDB.recordAffiliateClick === 'function') {
+          window.rumboDB.recordAffiliateClick(refCode);
+        }
+      }
+
       window.addEventListener('hashchange', renderCurrentRoute);
 
       // 1. Render immediately with 0ms delay from local store
@@ -2132,103 +2142,299 @@
 
       let selectedCapId = chapters[0].id;
 
-      function renderChapterContent() {
-        const cur = chapters.find(c => c.id === selectedCapId) || chapters[0];
-        const curIdx = chapters.findIndex(c => c.id === cur.id);
-        const prevCap = curIdx > 0 ? chapters[curIdx - 1] : null;
-        const nextCap = curIdx < chapters.length - 1 ? chapters[curIdx + 1] : null;
+      function renderMainView() {
+        if (currentAffiliateTab === 'dashboard') {
+          // --- TAB 1: DASHBOARD & METRICS ---
+          const referralsHtml = affStats.referralsList.length === 0 ? `
+            <div class="admin-empty-state">
+              <div style="font-size:2.2rem; margin-bottom:0.5rem;">🌱</div>
+              <p style="font-weight:700; color:#ffffff;">Aún no tienes alumnos registrados con tu enlace.</p>
+              <p style="font-size:0.85rem; color:#94a3b8; margin-top:0.3rem;">¡Comparte tu link en tu biografía de TikTok o estados de WhatsApp para sumar tus primeros prospectos!</p>
+            </div>
+          ` : `
+            <div class="admin-table-container">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Alumno Referido</th>
+                    <th>Email</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                    <th>Comisión</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${affStats.referralsList.map(ref => `
+                    <tr>
+                      <td><strong>${ref.firstName} ${ref.lastName}</strong></td>
+                      <td style="color:#94a3b8; font-size:0.8rem;">${ref.email}</td>
+                      <td style="color:#94a3b8; font-size:0.8rem;">${new Date(ref.registeredAt || Date.now()).toLocaleDateString('es-ES')}</td>
+                      <td>
+                        <span class="role-badge" style="background:${ref.status === 'APROBADO' ? 'rgba(16,185,129,0.15)' : 'rgba(245,158,11,0.15)'}; color:${ref.status === 'APROBADO' ? '#34d399' : '#fbbf24'};">
+                          ${ref.status === 'APROBADO' ? 'VENTA CONFIRMADA ✓' : 'PENDIENTE DE PAGO ⏳'}
+                        </span>
+                      </td>
+                      <td style="font-weight:800; color:${ref.status === 'APROBADO' ? '#34d399' : '#94a3b8'};">
+                        ${ref.status === 'APROBADO' ? `$${affStats.commissionPerSale} USD` : '$0 USD (En espera)'}
+                      </td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          `;
 
-        const sidebarItems = chapters.map((c, idx) => {
-          const isActive = c.id === cur.id;
-          return `
-            <div class="manual-sidebar-item ${isActive ? 'active' : ''}" onclick="selectManualChapter('${c.id}')">
-              <div class="manual-sidebar-num">${c.num}</div>
-              <div class="manual-sidebar-info">
-                <div class="manual-sidebar-title">${c.title}</div>
+          container.innerHTML = `
+            <div class="dashboard-container">
+              <!-- Header -->
+              <div class="welcome-header">
+                <span class="badge-pill" style="background:rgba(234,179,8,0.2); color:#facc15; border-color:rgba(234,179,8,0.5);">PROGRAMA OFICIAL DE AFILIADOS</span>
+                <h1 class="welcome-title">Panel del Afiliado RUMBO PRO 💰</h1>
+                <p class="welcome-sub">Monitorea tus clics, alumnos registrados, comisiones acumuladas y escala de nivel con tus ventas.</p>
+              </div>
+
+              <!-- Sub-Navigation Tabs -->
+              <div class="affiliate-tab-nav">
+                <button class="affiliate-tab-btn active" onclick="switchAffiliateSubTab('dashboard')">
+                  📊 Mi Panel de Ventas & Rangos
+                </button>
+                <button class="affiliate-tab-btn" onclick="switchAffiliateSubTab('manual')">
+                  📖 Manual de Estrategia (10 Capítulos)
+                </button>
+              </div>
+
+              <!-- Rank Status Hero Banner -->
+              <div class="affiliate-hero-card">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:1.5rem;">
+                  <div style="display:flex; align-items:center; gap:0.75rem;">
+                    <span style="font-size:2.5rem;">${affStats.tier.icon}</span>
+                    <div>
+                      <div style="display:flex; align-items:center; gap:0.5rem;">
+                        <h2 style="font-size:1.4rem; font-weight:900; color:#ffffff; margin:0;">${affStats.tier.name}</h2>
+                        <span class="tier-badge-pill ${affStats.tier.badgeClass}">${affStats.tier.commissionRate}</span>
+                      </div>
+                      <p style="font-size:0.85rem; color:#facc15; font-weight:700; margin-top:0.25rem;">
+                        ${affStats.tier.salesNeededForNext > 0 ? `Siguiente Rango: ${affStats.tier.nextTierName}` : '¡Has alcanzado la máxima comisión de afiliado!'}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div>
+                    <span style="font-size:0.8rem; color:#94a3b8; font-weight:700;">PROGRESO DE NIVEL</span>
+                    <div style="font-size:1.1rem; font-weight:800; color:#ffffff; text-align:right;">${affStats.tier.progressPercentage}%</div>
+                  </div>
+                </div>
+
+                <!-- Progress Track -->
+                <div class="progress-track" style="height:12px; margin-bottom:1rem;">
+                  <div class="progress-fill is-100" style="width:${affStats.tier.progressPercentage}%; background:linear-gradient(90deg, #eab308, #facc15);"></div>
+                </div>
+
+                <!-- Unlocked Perks for this Tier -->
+                <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+                  ${affStats.tier.perks.map(p => `
+                    <span class="badge-tag-unlocked" style="background:rgba(250,204,21,0.15); border-color:rgba(250,204,21,0.4); color:#facc15;">
+                      ✓ ${p}
+                    </span>
+                  `).join('')}
+                </div>
+              </div>
+
+              <!-- 4 Stat Metric Cards -->
+              <div class="affiliate-stats-grid">
+                <div class="aff-stat-card">
+                  <span class="aff-stat-label">CLICS EN TU ENLACE</span>
+                  <div class="aff-stat-num" style="color:#38bdf8;">${affStats.clicks}</div>
+                </div>
+                <div class="aff-stat-card">
+                  <span class="aff-stat-label">LEADS / REGISTRADOS</span>
+                  <div class="aff-stat-num" style="color:#a78bfa;">${affStats.referralsCount}</div>
+                </div>
+                <div class="aff-stat-card">
+                  <span class="aff-stat-label">VENTAS APROBADAS</span>
+                  <div class="aff-stat-num" style="color:#34d399;">${affStats.salesCount}</div>
+                </div>
+                <div class="aff-stat-card">
+                  <span class="aff-stat-label">COMISIONES TOTALES</span>
+                  <div class="aff-stat-num" style="color:#facc15;">$${affStats.totalEarnedUsd} USD</div>
+                </div>
+              </div>
+
+              <!-- Personal Affiliate Link Box -->
+              <div class="manual-card-highlight" style="background:radial-gradient(circle at top left, rgba(0,194,255,0.12), transparent 70%), var(--bg-surface); border-color:rgba(0,194,255,0.4); margin-bottom:2rem;">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1.25rem;">
+                  <div>
+                    <span class="badge-pill" style="background:rgba(0,194,255,0.15); color:#38bdf8; border-color:rgba(0,194,255,0.4); font-weight:800; font-size:0.75rem;">TU ENLACE ÚNICO DE AFILIADO</span>
+                    <h3 style="font-size:1.15rem; font-weight:800; color:#ffffff; margin:0.35rem 0;">Recomendá Rumbo Pro y cobrá tus comisiones en dólares</h3>
+                    <code style="display:inline-block; margin-top:0.35rem; background:rgba(0,0,0,0.5); padding:0.4rem 0.85rem; border-radius:8px; font-size:0.85rem; color:#38bdf8; border:1px solid rgba(0,194,255,0.25);">https://rumbo-pro.vercel.app?ref=${user.id}</code>
+                  </div>
+                  <div style="display:flex; gap:0.6rem; flex-wrap:wrap;">
+                    <button class="btn-primary" style="padding:0.65rem 1.15rem; font-size:0.85rem;" onclick="copyAffiliateLink('${user.id}')">
+                      📋 Copiar Mi Link
+                    </button>
+                    <a href="https://wa.me/?text=${encodeURIComponent('¡Hola! Te recomiendo la academia RUMBO PRO donde me estoy formando en habilidades digitales: https://rumbo-pro.vercel.app?ref=' + user.id)}" target="_blank" class="header-wa-btn" style="padding:0.65rem 1.15rem; font-size:0.85rem; background:#25d366; color:#ffffff; border:none; text-decoration:none; font-weight:700; border-radius:10px;">
+                      💬 Enviar por WhatsApp
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Referrals Table -->
+              <div class="admin-section-block" style="margin-bottom:2.5rem;">
+                <div class="admin-section-header">
+                  <div style="display:flex; align-items:center; gap:0.6rem;">
+                    <span style="font-size:1.2rem;">👥</span>
+                    <h3 style="font-size:1.15rem; font-weight:800; color:#ffffff; margin:0;">Tus Alumnos Referidos</h3>
+                    <span class="admin-count-badge" style="background:rgba(0,194,255,0.15); color:#38bdf8; border:1px solid rgba(0,194,255,0.4);">${affStats.referralsList.length}</span>
+                  </div>
+                </div>
+                ${referralsHtml}
+              </div>
+
+              <!-- Ranks Roadmap Explanation -->
+              <div class="manual-card-highlight" style="background:var(--bg-surface); border-color:var(--border-light);">
+                <h3 style="font-size:1.2rem; font-weight:800; color:#ffffff; margin-bottom:0.4rem;">🏆 Escala de Rangos y Premios para Afiliados</h3>
+                <p style="font-size:0.85rem; color:#94a3b8; margin-bottom:1.5rem;">Cuantas más ventas generes con tu enlace, mayor será tu porcentaje de comisión y mayores beneficios desbloquearás:</p>
+
+                <div class="tier-roadmap-grid">
+                  <div class="tier-card ${affStats.salesCount < 3 ? 'active-tier' : ''}">
+                    <span style="font-size:1.6rem;">🥉</span>
+                    <h4 class="tier-card-title">Afiliado Rookie</h4>
+                    <div class="tier-card-sales">0 a 2 ventas</div>
+                    <ul class="tier-card-perks">
+                      <li>✓ 50% de comisión ($45 USD/v)</li>
+                      <li>✓ Acceso al generador de ideas</li>
+                      <li>✓ Soporte general</li>
+                    </ul>
+                  </div>
+
+                  <div class="tier-card ${affStats.salesCount >= 3 && affStats.salesCount < 10 ? 'active-tier' : ''}">
+                    <span style="font-size:1.6rem;">🥈</span>
+                    <h4 class="tier-card-title">Afiliado Builder Pro</h4>
+                    <div class="tier-card-sales">3 a 9 ventas</div>
+                    <ul class="tier-card-perks">
+                      <li>✓ 60% de comisión ($55 USD/v)</li>
+                      <li>✓ Insignia Builder Pro</li>
+                      <li>✓ Plantillas de cierre VIP</li>
+                    </ul>
+                  </div>
+
+                  <div class="tier-card ${affStats.salesCount >= 10 && affStats.salesCount < 25 ? 'active-tier' : ''}">
+                    <span style="font-size:1.6rem;">🥇</span>
+                    <h4 class="tier-card-title">Afiliado Gold Closer</h4>
+                    <div class="tier-card-sales">10 a 24 ventas</div>
+                    <ul class="tier-card-perks">
+                      <li>✓ 70% de comisión ($65 USD/v)</li>
+                      <li>✓ Círculo Privado de Closers</li>
+                      <li>✓ Guiones exclusivos de lanzamiento</li>
+                    </ul>
+                  </div>
+
+                  <div class="tier-card ${affStats.salesCount >= 25 ? 'active-tier' : ''}">
+                    <span style="font-size:1.6rem;">💎</span>
+                    <h4 class="tier-card-title">Afiliado Diamond</h4>
+                    <div class="tier-card-sales">25+ ventas</div>
+                    <ul class="tier-card-perks">
+                      <li>✓ 80% de comisión ($75 USD/v)</li>
+                      <li>✓ Mentoría directa 1 a 1</li>
+                      <li>✓ Pagos prioritarios en 24h</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          `;
+        } else {
+          // --- TAB 2: MANUAL OF 10 CHAPTERS ---
+          const cur = chapters.find(c => c.id === selectedCapId) || chapters[0];
+          const curIdx = chapters.findIndex(c => c.id === cur.id);
+          const prevCap = curIdx > 0 ? chapters[curIdx - 1] : null;
+          const nextCap = curIdx < chapters.length - 1 ? chapters[curIdx + 1] : null;
+
+          const sidebarItems = chapters.map((c) => {
+            const isActive = c.id === cur.id;
+            return `
+              <div class="manual-sidebar-item ${isActive ? 'active' : ''}" onclick="selectManualChapter('${c.id}')">
+                <div class="manual-sidebar-num">${c.num}</div>
+                <div class="manual-sidebar-info">
+                  <div class="manual-sidebar-title">${c.title}</div>
+                </div>
+              </div>
+            `;
+          }).join('');
+
+          container.innerHTML = `
+            <div class="dashboard-container">
+              <!-- Header -->
+              <div class="welcome-header">
+                <span class="badge-pill" style="background:rgba(234,179,8,0.2); color:#facc15; border-color:rgba(234,179,8,0.5);">FORMACIÓN ESTRATÉGICA</span>
+                <h1 class="welcome-title">Manual de Estrategia del Afiliado 📖</h1>
+                <p class="welcome-sub">El paso a paso práctico para crear tu marca, atraer prospectos y cerrar ventas desde tu celular.</p>
+              </div>
+
+              <!-- Sub-Navigation Tabs -->
+              <div class="affiliate-tab-nav">
+                <button class="affiliate-tab-btn" onclick="switchAffiliateSubTab('dashboard')">
+                  📊 Mi Panel de Ventas & Rangos
+                </button>
+                <button class="affiliate-tab-btn active" onclick="switchAffiliateSubTab('manual')">
+                  📖 Manual de Estrategia (10 Capítulos)
+                </button>
+              </div>
+
+              <!-- Main Manual Reader Layout -->
+              <div class="manual-layout-grid">
+                
+                <!-- Sidebar -->
+                <div class="manual-sidebar-card">
+                  <div class="manual-sidebar-head">
+                    <span>📖 ÍNDICE DEL MANUAL</span>
+                  </div>
+                  <div class="manual-sidebar-list">
+                    ${sidebarItems}
+                  </div>
+                </div>
+
+                <!-- Reading Canvas -->
+                <div class="manual-content-canvas">
+                  ${cur.contentHtml}
+
+                  <!-- Chapter Navigation Footer -->
+                  <div class="manual-nav-footer">
+                    ${prevCap ? `
+                      <button class="btn-prev-lesson" onclick="selectManualChapter('${prevCap.id}')">
+                        ← Anterior: Cap. ${prevCap.num}
+                      </button>
+                    ` : '<div></div>'}
+
+                    ${nextCap ? `
+                      <button class="btn-next-lesson" onclick="selectManualChapter('${nextCap.id}')" style="background:linear-gradient(135deg, #eab308, #ca8a04); color:#0f172a; font-weight:800;">
+                        Siguiente: Cap. ${nextCap.num} →
+                      </button>
+                    ` : `
+                      <button class="btn-next-lesson" onclick="switchAffiliateSubTab('dashboard')" style="background:#10b981; color:#ffffff; font-weight:800;">
+                        ✓ Volver al Panel de Afiliado
+                      </button>
+                    `}
+                  </div>
+                </div>
+
               </div>
             </div>
           `;
-        }).join('');
-
-        container.innerHTML = `
-          <div class="dashboard-container">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem;">
-              <div>
-                <a href="#/dashboard" class="btn-back" style="display:inline-flex; align-items:center; gap:0.4rem; color:var(--color-primary-light); text-decoration:none; font-weight:700; font-size:0.88rem; margin-bottom:0.5rem;">
-                  ← Volver al Dashboard
-                </a>
-                <h1 class="welcome-title" style="margin:0;">Manual del Afiliado RUMBO PRO</h1>
-              </div>
-              <div style="display:flex; align-items:center; gap:0.5rem;">
-                <span class="role-badge" style="background:rgba(234,179,8,0.2); color:#facc15; border:1px solid rgba(234,179,8,0.5);">Capítulo ${cur.num} de ${chapters.length}</span>
-              </div>
-            </div>
-
-            <!-- Personal Affiliate Link Generator Banner -->
-            <div class="manual-card-highlight" style="background:radial-gradient(circle at top left, rgba(234,179,8,0.15), transparent 70%), var(--bg-surface); border-color:rgba(250,204,21,0.5); margin-bottom:2rem;">
-              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1.25rem;">
-                <div>
-                  <span class="badge-pill" style="background:rgba(234,179,8,0.2); color:#facc15; border-color:rgba(234,179,8,0.5); font-weight:800; font-size:0.75rem;">TU ENLACE PERSONAL DE AFILIADO</span>
-                  <h3 style="font-size:1.2rem; font-weight:800; color:#ffffff; margin:0.35rem 0;">Recomendá Rumbo Pro y cobrá tus comisiones</h3>
-                  <p style="font-size:0.85rem; color:#cbd5e1;">Cualquier persona que se registre con tu enlace personal quedará registrada con tu ID.</p>
-                  <code style="display:inline-block; margin-top:0.5rem; background:rgba(0,0,0,0.4); padding:0.35rem 0.75rem; border-radius:6px; font-size:0.8rem; color:#38bdf8; border:1px solid rgba(255,255,255,0.08);">https://rumbo-pro.vercel.app?ref=${user.id}</code>
-                </div>
-                <div style="display:flex; gap:0.6rem; flex-wrap:wrap;">
-                  <button class="btn-primary" style="padding:0.65rem 1.15rem; font-size:0.85rem;" onclick="copyAffiliateLink('${user.id}')">
-                    📋 Copiar Mi Link
-                  </button>
-                  <a href="https://wa.me/?text=${encodeURIComponent('¡Hola! Te recomiendo la academia RUMBO PRO donde me estoy formando en habilidades digitales: https://rumbo-pro.vercel.app?ref=' + user.id)}" target="_blank" class="header-wa-btn" style="padding:0.65rem 1.15rem; font-size:0.85rem; background:#25d366; color:#ffffff; border:none; text-decoration:none; font-weight:700; border-radius:10px;">
-                    💬 Enviar por WhatsApp
-                  </a>
-                </div>
-              </div>
-            </div>
-
-            <!-- Main Manual Reader Layout -->
-            <div class="manual-layout-grid">
-              
-              <!-- Sidebar of 10 Chapters -->
-              <div class="manual-sidebar-card">
-                <div class="manual-sidebar-head">
-                  <span>📖 ÍNDICE DEL MANUAL</span>
-                </div>
-                <div class="manual-sidebar-list">
-                  ${sidebarItems}
-                </div>
-              </div>
-
-              <!-- Main Reading Canvas -->
-              <div class="manual-content-canvas">
-                ${cur.contentHtml}
-
-                <!-- Chapter Navigation Footer -->
-                <div class="manual-nav-footer">
-                  ${prevCap ? `
-                    <button class="btn-prev-lesson" onclick="selectManualChapter('${prevCap.id}')">
-                      ← Anterior: Cap. ${prevCap.num}
-                    </button>
-                  ` : '<div></div>'}
-
-                  ${nextCap ? `
-                    <button class="btn-next-lesson" onclick="selectManualChapter('${nextCap.id}')" style="background:linear-gradient(135deg, #eab308, #ca8a04); color:#0f172a; font-weight:800;">
-                      Siguiente: Cap. ${nextCap.num} →
-                    </button>
-                  ` : `
-                    <button class="btn-next-lesson" onclick="navigateTo('#/dashboard')" style="background:#10b981; color:#ffffff; font-weight:800;">
-                      ✓ Finalizar Manual
-                    </button>
-                  `}
-                </div>
-              </div>
-
-            </div>
-          </div>
-        `;
+        }
       }
+
+      window.switchAffiliateSubTab = (tab) => {
+        currentAffiliateTab = tab;
+        renderMainView();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      };
 
       window.selectManualChapter = (id) => {
         selectedCapId = id;
-        renderChapterContent();
+        renderMainView();
         window.scrollTo({ top: 0, behavior: 'smooth' });
       };
 
@@ -2239,7 +2445,7 @@
         });
       };
 
-      renderChapterContent();
+      renderMainView();
     }
 
     // Helper to copy text to clipboard with feedback

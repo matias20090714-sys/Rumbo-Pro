@@ -2974,5 +2974,170 @@ button, a, input, select, textarea,
   color: #38bdf8;
 }
 
+/* ==========================================================================
+   AFFILIATE DASHBOARD & RANKS (EXCLUSIVO PARA ALUMNOS AFILIADOS)
+   ========================================================================== */
+.affiliate-tab-nav {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--border-light);
+  padding-bottom: 0.75rem;
+}
+
+.affiliate-tab-btn {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-light);
+  color: var(--text-muted);
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 0.75rem 1.4rem;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.affiliate-tab-btn:hover {
+  background: rgba(0, 194, 255, 0.1);
+  color: #ffffff;
+}
+
+.affiliate-tab-btn.active {
+  background: linear-gradient(135deg, rgba(234, 179, 8, 0.25), rgba(202, 138, 4, 0.2));
+  border-color: #facc15;
+  color: #facc15;
+  box-shadow: 0 0 15px rgba(250, 204, 21, 0.15);
+}
+
+.affiliate-hero-card {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(24, 24, 27, 0.95));
+  border: 1px solid rgba(250, 204, 21, 0.35);
+  border-radius: 20px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+}
+
+.tier-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.tier-badge-pill.tier-bronze {
+  background: rgba(205, 127, 50, 0.2);
+  color: #d97706;
+  border: 1px solid rgba(205, 127, 50, 0.4);
+}
+
+.tier-badge-pill.tier-silver {
+  background: rgba(148, 163, 184, 0.2);
+  color: #e2e8f0;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+}
+
+.tier-badge-pill.tier-gold {
+  background: rgba(234, 179, 8, 0.2);
+  color: #facc15;
+  border: 1px solid rgba(234, 179, 8, 0.5);
+}
+
+.tier-badge-pill.tier-diamond {
+  background: rgba(0, 194, 255, 0.2);
+  color: #38bdf8;
+  border: 1px solid rgba(0, 194, 255, 0.5);
+  box-shadow: 0 0 12px rgba(0, 194, 255, 0.3);
+}
+
+.affiliate-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.aff-stat-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: 14px;
+  padding: 1.25rem 1.4rem;
+  text-align: left;
+}
+
+.aff-stat-num {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #ffffff;
+  margin-top: 0.25rem;
+}
+
+.aff-stat-label {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+.tier-roadmap-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.tier-card {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid var(--border-light);
+  border-radius: 14px;
+  padding: 1.25rem;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.tier-card.active-tier {
+  border-color: #facc15;
+  background: radial-gradient(circle at top, rgba(250, 204, 21, 0.1), transparent 70%), var(--bg-surface);
+  box-shadow: 0 0 20px rgba(250, 204, 21, 0.15);
+}
+
+.tier-card-title {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0.5rem 0 0.2rem;
+}
+
+.tier-card-sales {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.tier-card-perks {
+  list-style: none;
+  font-size: 0.78rem;
+  color: var(--text-silver);
+  line-height: 1.5;
+}
+
+.tier-card-perks li {
+  margin-bottom: 0.35rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
 
 

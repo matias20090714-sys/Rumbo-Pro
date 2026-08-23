@@ -3,6 +3,16 @@
    ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
+  // 0. Capture Affiliate Referral Code if present in URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const refCode = urlParams.get('ref');
+  if (refCode) {
+    localStorage.setItem('rumbopro_ref_code', refCode);
+    const clicksObj = JSON.parse(localStorage.getItem('rumbopro_db_affiliate_clicks') || '{}');
+    clicksObj[refCode] = (clicksObj[refCode] || 0) + 1;
+    localStorage.setItem('rumbopro_db_affiliate_clicks', JSON.stringify(clicksObj));
+  }
+
   // 1. Scroll Reveal Animations
   const revealElements = document.querySelectorAll('.reveal-on-scroll');
   

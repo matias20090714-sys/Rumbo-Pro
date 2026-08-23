@@ -296,10 +296,96 @@ class RumboProDB {
     return JSON.parse(localStorage.getItem(DB_KEY_USERS) || '[]');
   }
 
+  recordAffiliateClick(affiliateId) {
+    if (!affiliateId) return;
+    const clicks = JSON.parse(localStorage.getItem('rumbopro_db_affiliate_clicks') || '{}');
+    clicks[affiliateId] = (clicks[affiliateId] || 0) + 1;
+    localStorage.setItem('rumbopro_db_affiliate_clicks', JSON.stringify(clicks));
+  }
+
+  getAffiliateStats(userId) {
+    const users = this.getUsers();
+    const clicksObj = JSON.parse(localStorage.getItem('rumbopro_db_affiliate_clicks') || '{}');
+    const totalClicks = clicksObj[userId] || 0;
+
+    // Find all users referred by this user
+    const referrals = users.filter(u => u.referredBy === userId || u.referred_by === userId);
+    const approvedSales = referrals.filter(u => u.status === 'APROBADO');
+    const pendingSales = referrals.filter(u => u.status === 'PENDIENTE');
+
+    const salesCount = approvedSales.length;
+    const COMMISSION_PER_SALE = 45; // $45 USD por venta
+    const totalEarnedUsd = salesCount * COMMISSION_PER_SALE;
+
+    // Affiliate Tiers Calculation
+    let tier = {
+      id: 'tier-bronze',
+      name: 'Afiliado Rookie',
+      icon: '🥉',
+      badgeClass: 'tier-bronze',
+      commissionRate: '50% ($45 USD/venta)',
+      salesNeededForNext: 3,
+      nextTierName: 'Afiliado Builder Pro (3 ventas)',
+      progressPercentage: Math.min(100, Math.round((salesCount / 3) * 100)),
+      perks: ['Enlace oficial de afiliado', 'Acceso al Manual de 10 Capítulos', 'Comisiones directas del 50%']
+    };
+
+    if (salesCount >= 25) {
+      tier = {
+        id: 'tier-diamond',
+        name: 'Afiliado Diamond Legend',
+        icon: '💎',
+        badgeClass: 'tier-diamond',
+        commissionRate: '80% ($75 USD/venta)',
+        salesNeededForNext: 0,
+        nextTierName: 'Nivel Máximo Alcanzado 🏆',
+        progressPercentage: 100,
+        perks: ['Comisión máxima del 80%', 'Mentoría 1 a 1 de escalamiento', 'Insignia Diamante en la academia', 'Retiros prioritarios en 24h']
+      };
+    } else if (salesCount >= 10) {
+      tier = {
+        id: 'tier-gold',
+        name: 'Afiliado Gold Closer',
+        icon: '🥇',
+        badgeClass: 'tier-gold',
+        commissionRate: '70% ($65 USD/venta)',
+        salesNeededForNext: 25,
+        nextTierName: 'Afiliado Diamond Legend (25 ventas)',
+        progressPercentage: Math.min(100, Math.round(((salesCount - 10) / 15) * 100)),
+        perks: ['Comisión preferencial del 70%', 'Acceso al Círculo Privado de Closers', 'Guiones de venta exclusivos']
+      };
+    } else if (salesCount >= 3) {
+      tier = {
+        id: 'tier-silver',
+        name: 'Afiliado Builder Pro',
+        icon: '🥈',
+        badgeClass: 'tier-silver',
+        commissionRate: '60% ($55 USD/venta)',
+        salesNeededForNext: 10,
+        nextTierName: 'Afiliado Gold Closer (10 ventas)',
+        progressPercentage: Math.min(100, Math.round(((salesCount - 3) / 7) * 100)),
+        perks: ['Comisión aumentada del 60%', 'Insignia Builder Pro', 'Soporte prioritario de ventas']
+      };
+    }
+
+    return {
+      clicks: totalClicks,
+      referralsCount: referrals.length,
+      salesCount: salesCount,
+      pendingCount: pendingSales.length,
+      totalEarnedUsd: totalEarnedUsd,
+      commissionPerSale: COMMISSION_PER_SALE,
+      tier: tier,
+      referralsList: referrals
+    };
+  }
+
   async registerUser(userData) {
     if (!this.supabase) this.initSupabaseClient();
 
     const cleanEmail = userData.email.trim().toLowerCase();
+    const refCode = userData.referredBy || localStorage.getItem('rumbopro_ref_code') || null;
+
     const newUser = {
       id: 'user-' + Date.now(),
       first_name: userData.firstName.trim(),
@@ -312,20 +398,24 @@ class RumboProDB {
 
     // 1. Cloud insert
     if (this.supabase) {
-      const { data, error } = await this.supabase
-        .from('rumbopro_users')
-        .insert([newUser])
-        .select();
+      try {
+        const { data, error } = await this.supabase
+          .from('rumbopro_users')
+          .insert([newUser])
+          .select();
 
-      if (error) {
-        if (error.code === '23505' || error.message.includes('unique')) {
-          throw new Error('El correo electronico ya se encuentra registrado.');
+        if (error) {
+          if (error.code === '23505' || error.message.includes('unique')) {
+            throw new Error('El correo electronico ya se encuentra registrado.');
+          }
+          throw new Error(error.message || 'Error al registrar usuario en la nube.');
         }
-        throw new Error(error.message || 'Error al registrar usuario en la nube.');
+      } catch (err) {
+        if (err.message && err.message.includes('ya se encuentra')) throw err;
       }
     }
 
-    // 2. Local Cache Update
+    // 2. Local Cache Update with referral attribution
     const users = this.getUsers();
     users.push({
       id: newUser.id,
@@ -335,6 +425,7 @@ class RumboProDB {
       password: newUser.password,
       role: newUser.role,
       status: newUser.status,
+      referredBy: refCode,
       registeredAt: new Date().toISOString()
     });
     localStorage.setItem(DB_KEY_USERS, JSON.stringify(users));
