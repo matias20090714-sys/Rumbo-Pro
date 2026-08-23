@@ -1530,3 +1530,221 @@ section {
   transform: translateY(0);
 }
 
+/* ==========================================================================
+   INTERACTIVE QUIZ / TEST VOCACIONAL DIGITAL
+   ========================================================================== */
+.section-quiz {
+  padding: 5rem 0;
+  position: relative;
+  background: radial-gradient(circle at 50% 50%, rgba(0, 194, 255, 0.08), transparent 70%);
+}
+
+.quiz-container-card {
+  background: linear-gradient(145deg, rgba(15, 23, 42, 0.95), rgba(9, 14, 26, 0.98));
+  border: 1px solid rgba(0, 194, 255, 0.35);
+  border-radius: 24px;
+  padding: 2.5rem 2rem;
+  max-width: 780px;
+  margin: 0 auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 30px rgba(0, 194, 255, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.quiz-progress-bar-bg {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  margin-bottom: 2rem;
+  overflow: hidden;
+}
+
+.quiz-progress-bar-fill {
+  height: 100%;
+  width: 33%;
+  background: linear-gradient(90deg, #0066ff, #00c2ff);
+  transition: width 0.35s ease;
+  border-radius: 10px;
+}
+
+.quiz-step-title {
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+  line-height: 1.35;
+}
+
+.quiz-step-desc {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+}
+
+.quiz-options-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.85rem;
+  margin-bottom: 1.5rem;
+}
+
+.quiz-opt-btn {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-light);
+  border-radius: 14px;
+  padding: 1.1rem 1.25rem;
+  text-align: left;
+  color: var(--text-silver);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.quiz-opt-btn:hover {
+  background: rgba(0, 194, 255, 0.12);
+  border-color: rgba(0, 194, 255, 0.5);
+  color: #ffffff;
+  transform: translateX(4px);
+}
+
+.quiz-opt-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.quiz-result-card {
+  text-align: center;
+  padding: 1.5rem 0;
+  animation: fadeInQuiz 0.4s ease;
+}
+
+@keyframes fadeInQuiz {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.quiz-result-badge {
+  display: inline-block;
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  font-size: 0.82rem;
+  font-weight: 800;
+  padding: 0.35rem 1rem;
+  border-radius: 20px;
+  margin-bottom: 1rem;
+  letter-spacing: 0.05em;
+}
+
+.quiz-result-title {
+  font-family: var(--font-heading);
+  font-size: 1.85rem;
+  font-weight: 900;
+  color: #ffffff;
+  margin-bottom: 0.75rem;
+}
+
+.quiz-result-desc {
+  font-size: 0.96rem;
+  color: #cbd5e1;
+  line-height: 1.6;
+  max-width: 580px;
+  margin: 0 auto 1.75rem;
+}
+
+.quiz-result-perks {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.quiz-perk-item {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-light);
+  padding: 0.6rem 1rem;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  color: #93c5fd;
+  font-weight: 700;
+}
+
+/* ==========================================================================
+   SECCIÓN RETO 7 DÍAS — TUS PRIMEROS $100 USD
+   ========================================================================== */
+.section-challenge {
+  padding: 5rem 0;
+  position: relative;
+}
+
+.challenge-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.25rem;
+  margin-top: 2.5rem;
+}
+
+.challenge-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 18px;
+  padding: 1.75rem 1.5rem;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.challenge-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(0, 194, 255, 0.4);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+}
+
+.challenge-day-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, rgba(0, 194, 255, 0.2), rgba(0, 102, 255, 0.2));
+  color: #38bdf8;
+  border: 1px solid rgba(0, 194, 255, 0.45);
+  font-size: 0.76rem;
+  font-weight: 800;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  margin-bottom: 1rem;
+}
+
+.challenge-day-badge.highlight-day {
+  background: rgba(250, 204, 21, 0.2);
+  color: #facc15;
+  border-color: rgba(250, 204, 21, 0.5);
+}
+
+.challenge-title {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+}
+
+.challenge-text {
+  font-size: 0.88rem;
+  color: var(--text-silver);
+  line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  .quiz-container-card {
+    padding: 1.75rem 1.25rem;
+  }
+  .quiz-result-title {
+    font-size: 1.45rem;
+  }
+}
+
