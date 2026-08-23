@@ -317,54 +317,58 @@ class RumboProDB {
     const COMMISSION_PER_SALE = 45; // $45 USD por venta
     const totalEarnedUsd = salesCount * COMMISSION_PER_SALE;
 
-    // Affiliate Tiers Calculation (90% Flat Commission across all levels + Extra VIP Rank Perks)
+    // Affiliate Ranks (Sales Milestones Tracking — 90% Commission & Full Platform Access for All)
     let tier = {
-      id: 'tier-bronze',
-      name: 'Afiliado Rookie',
+      id: 'tier-rookie',
+      name: 'Rango Rookie',
       icon: '🥉',
       badgeClass: 'tier-bronze',
       commissionRate: '90% ($45 USD/venta)',
       salesNeededForNext: 3,
-      nextTierName: 'Afiliado Builder Pro (3 ventas)',
+      nextTierName: 'Rango Pro (3 ventas)',
       progressPercentage: Math.min(100, Math.round((salesCount / 3) * 100)),
-      perks: ['90% de comisión directa en dólares', 'Enlace personal de afiliado', 'Acceso al Manual de 10 Capítulos', 'Generador de ideas de contenido']
+      salesRange: '0 a 2 ventas',
+      tagline: 'Fase Inicial de Afiliado'
     };
 
     if (salesCount >= 25) {
       tier = {
-        id: 'tier-diamond',
-        name: 'Afiliado Diamond Legend',
+        id: 'tier-legend',
+        name: 'Rango Legend',
         icon: '💎',
         badgeClass: 'tier-diamond',
         commissionRate: '90% ($45 USD/venta)',
         salesNeededForNext: 0,
-        nextTierName: 'Nivel Máximo Alcanzado 🏆',
+        nextTierName: 'Hito Máximo Alcanzado 🏆',
         progressPercentage: 100,
-        perks: ['90% de comisión directa', 'Mentoría 1 a 1 de escalamiento', 'Insignia Diamante Oficial en la academia', 'Retiros prioritarios de ganancias']
+        salesRange: '25+ ventas',
+        tagline: 'Afiliado Referente'
       };
     } else if (salesCount >= 10) {
       tier = {
-        id: 'tier-gold',
-        name: 'Afiliado Gold Closer',
+        id: 'tier-master',
+        name: 'Rango Master',
         icon: '🥇',
         badgeClass: 'tier-gold',
         commissionRate: '90% ($45 USD/venta)',
         salesNeededForNext: 25,
-        nextTierName: 'Afiliado Diamond Legend (25 ventas)',
+        nextTierName: 'Rango Legend (25 ventas)',
         progressPercentage: Math.min(100, Math.round(((salesCount - 10) / 15) * 100)),
-        perks: ['90% de comisión directa', 'Acceso al Círculo Privado de Closers VIP', 'Llamadas grupales mensuales', 'Guiones exclusivos de venta']
+        salesRange: '10 a 24 ventas',
+        tagline: 'Afiliado Avanzado'
       };
     } else if (salesCount >= 3) {
       tier = {
-        id: 'tier-silver',
-        name: 'Afiliado Builder Pro',
+        id: 'tier-pro',
+        name: 'Rango Pro',
         icon: '🥈',
         badgeClass: 'tier-silver',
         commissionRate: '90% ($45 USD/venta)',
         salesNeededForNext: 10,
-        nextTierName: 'Afiliado Gold Closer (10 ventas)',
+        nextTierName: 'Rango Master (10 ventas)',
         progressPercentage: Math.min(100, Math.round(((salesCount - 3) / 7) * 100)),
-        perks: ['90% de comisión directa', 'Insignia Builder Pro en la comunidad', 'Plantillas de cierre y objeciones VIP', 'Soporte prioritario']
+        salesRange: '3 a 9 ventas',
+        tagline: 'Afiliado Activo'
       };
     }
 

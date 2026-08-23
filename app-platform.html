@@ -2211,16 +2211,16 @@
                     <div>
                       <div style="display:flex; align-items:center; gap:0.5rem;">
                         <h2 style="font-size:1.4rem; font-weight:900; color:#ffffff; margin:0;">${affStats.tier.name}</h2>
-                        <span class="tier-badge-pill ${affStats.tier.badgeClass}">${affStats.tier.commissionRate}</span>
+                        <span class="tier-badge-pill ${affStats.tier.badgeClass}">90% de Comisión</span>
                       </div>
                       <p style="font-size:0.85rem; color:#facc15; font-weight:700; margin-top:0.25rem;">
-                        ${affStats.tier.salesNeededForNext > 0 ? `Siguiente Rango: ${affStats.tier.nextTierName}` : '¡Has alcanzado la máxima comisión de afiliado!'}
+                        ${affStats.tier.salesNeededForNext > 0 ? `Siguiente Hito: ${affStats.tier.nextTierName} (${affStats.salesCount}/${affStats.tier.salesNeededForNext} ventas)` : '¡Hito Máximo de Ventas Alcanzado!'}
                       </p>
                     </div>
                   </div>
 
                   <div>
-                    <span style="font-size:0.8rem; color:#94a3b8; font-weight:700;">PROGRESO DE NIVEL</span>
+                    <span style="font-size:0.8rem; color:#94a3b8; font-weight:700;">PROGRESO DEL HITO</span>
                     <div style="font-size:1.1rem; font-weight:800; color:#ffffff; text-align:right;">${affStats.tier.progressPercentage}%</div>
                   </div>
                 </div>
@@ -2230,13 +2230,9 @@
                   <div class="progress-fill is-100" style="width:${affStats.tier.progressPercentage}%; background:linear-gradient(90deg, #eab308, #facc15);"></div>
                 </div>
 
-                <!-- Unlocked Perks for this Tier -->
-                <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
-                  ${affStats.tier.perks.map(p => `
-                    <span class="badge-tag-unlocked" style="background:rgba(250,204,21,0.15); border-color:rgba(250,204,21,0.4); color:#facc15;">
-                      ✓ ${p}
-                    </span>
-                  `).join('')}
+                <!-- Equal Access Note -->
+                <div style="font-size:0.82rem; color:#cbd5e1; background:rgba(0,0,0,0.3); padding:0.6rem 0.9rem; border-radius:8px; border:1px solid rgba(255,255,255,0.06);">
+                  ✨ <strong>Mismos beneficios para todos:</strong> 90% de comisión directa ($45 USD por venta) + Acceso ilimitado al Manual, Generador de Ideas y Simulador.
                 </div>
               </div>
 
@@ -2293,51 +2289,51 @@
 
               <!-- Ranks Roadmap Explanation -->
               <div class="manual-card-highlight" style="background:var(--bg-surface); border-color:var(--border-light);">
-                <h3 style="font-size:1.2rem; font-weight:800; color:#ffffff; margin-bottom:0.4rem;">🏆 Escala de Rangos & Premios Exclusivos (Comisión Fija del 90%)</h3>
-                <p style="font-size:0.85rem; color:#94a3b8; margin-bottom:1.5rem;">En Rumbo Pro ganas el <strong>90% de comisión directa en todas tus ventas ($45 USD por venta)</strong> desde el primer día. Al acumular ventas, desbloqueas insignias, grupos VIP y mentorías:</p>
+                <h3 style="font-size:1.2rem; font-weight:800; color:#ffffff; margin-bottom:0.4rem;">🏆 Hitos de Ventas para Afiliados (Conteo de Logros)</h3>
+                <p style="font-size:0.85rem; color:#94a3b8; margin-bottom:1.5rem;">Todos los afiliados cuentan con los mismos beneficios completos y <strong>90% de comisión fija ($45 USD por venta)</strong>. Los rangos sirven para medir tu volumen de ventas acumuladas:</p>
 
                 <div class="tier-roadmap-grid">
                   <div class="tier-card ${affStats.salesCount < 3 ? 'active-tier' : ''}">
                     <span style="font-size:1.6rem;">🥉</span>
-                    <h4 class="tier-card-title">Afiliado Rookie</h4>
+                    <h4 class="tier-card-title">Rango Rookie</h4>
                     <div class="tier-card-sales">0 a 2 ventas</div>
                     <ul class="tier-card-perks">
-                      <li>✓ <strong>90% de comisión directa</strong> ($45 USD/v)</li>
-                      <li>✓ Acceso al Generador de Ideas</li>
-                      <li>✓ Manual del Afiliado completo</li>
+                      <li>📊 Hito: Fase de Arranque</li>
+                      <li>💵 $0 a $90 USD acumulados</li>
+                      <li>⚡ 90% de comisión fija</li>
                     </ul>
                   </div>
 
                   <div class="tier-card ${affStats.salesCount >= 3 && affStats.salesCount < 10 ? 'active-tier' : ''}">
                     <span style="font-size:1.6rem;">🥈</span>
-                    <h4 class="tier-card-title">Afiliado Builder Pro</h4>
+                    <h4 class="tier-card-title">Rango Pro</h4>
                     <div class="tier-card-sales">3 a 9 ventas</div>
                     <ul class="tier-card-perks">
-                      <li>✓ <strong>90% de comisión directa</strong> ($45 USD/v)</li>
-                      <li>✓ Insignia Builder Pro en la comunidad</li>
-                      <li>✓ Bóveda de Guiones y Cierres VIP</li>
+                      <li>📊 Hito: Afiliado Activo</li>
+                      <li>💵 $135 a $405 USD acumulados</li>
+                      <li>⚡ 90% de comisión fija</li>
                     </ul>
                   </div>
 
                   <div class="tier-card ${affStats.salesCount >= 10 && affStats.salesCount < 25 ? 'active-tier' : ''}">
                     <span style="font-size:1.6rem;">🥇</span>
-                    <h4 class="tier-card-title">Afiliado Gold Closer</h4>
+                    <h4 class="tier-card-title">Rango Master</h4>
                     <div class="tier-card-sales">10 a 24 ventas</div>
                     <ul class="tier-card-perks">
-                      <li>✓ <strong>90% de comisión directa</strong> ($45 USD/v)</li>
-                      <li>✓ Círculo Privado de Closers VIP</li>
-                      <li>✓ Llamadas grupales mensuales</li>
+                      <li>📊 Hito: Afiliado Avanzado</li>
+                      <li>💵 $450 a $1,080 USD acumulados</li>
+                      <li>⚡ 90% de comisión fija</li>
                     </ul>
                   </div>
 
                   <div class="tier-card ${affStats.salesCount >= 25 ? 'active-tier' : ''}">
                     <span style="font-size:1.6rem;">💎</span>
-                    <h4 class="tier-card-title">Afiliado Diamond Legend</h4>
+                    <h4 class="tier-card-title">Rango Legend</h4>
                     <div class="tier-card-sales">25+ ventas</div>
                     <ul class="tier-card-perks">
-                      <li>✓ <strong>90% de comisión directa</strong> ($45 USD/v)</li>
-                      <li>✓ Mentoría 1 a 1 de escalamiento</li>
-                      <li>✓ Retiros prioritarios de ganancias</li>
+                      <li>📊 Hito: Afiliado Referente</li>
+                      <li>💵 $1,125+ USD acumulados</li>
+                      <li>⚡ 90% de comisión fija</li>
                     </ul>
                   </div>
                 </div>
