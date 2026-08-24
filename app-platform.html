@@ -87,6 +87,19 @@
         brandLogo.href = currentUser ? '#/dashboard' : 'index.html';
       }
 
+      // Open Access & Effective User Strategy:
+      // If logged in, use currentUser. If not, provide an active guest student profile so anyone can explore and learn freely!
+      const guestUser = {
+        id: 'invitado',
+        firstName: 'Estudiante',
+        lastName: 'Rumbo Pro',
+        email: 'invitado@rumbopro.com',
+        role: 'ALUMNO',
+        status: 'APROBADO'
+      };
+
+      const activeUser = currentUser || guestUser;
+
       // Update Navigation Header (Strictly clean on login / register / unauthenticated)
       renderNavMenu(currentUser, hash);
 
@@ -106,44 +119,38 @@
         return;
       }
 
-      // Protection Guard: If not logged in, immediately render login view
-      if (!currentUser) {
-        navigateTo('#/login');
-        return;
-      }
-
-      // Check User Status (PENDIENTE / RECHAZADO / SUSPENDIDO)
-      if (currentUser.role !== 'ADMINISTRADOR' && currentUser.status !== 'APROBADO') {
+      // Check User Status only if explicitly rejected
+      if (currentUser && (currentUser.status === 'RECHAZADO' || currentUser.status === 'SUSPENDIDO') && currentUser.role !== 'ADMINISTRADOR') {
         renderPendingView(container, currentUser);
         return;
       }
 
-      // Protected Student / Admin Routes
-      if (hash === '#/dashboard') {
-        renderDashboardView(container, currentUser);
-      } else if (hash === '#/ideas-diarias' || hash === '#/ideas') {
-        renderDailyIdeasFullView(container, currentUser);
-      } else if (hash === '#/simulador-ventas' || hash === '#/simulador' || hash === '#/objeciones') {
-        renderSalesSimulatorView(container, currentUser);
-      } else if (hash === '#/calculadora' || hash === '#/proyeccion') {
-        renderEarningsCalculatorView(container, currentUser);
-      } else if (hash === '#/recursos' || hash === '#/plantillas') {
-        renderResourcesVaultView(container, currentUser);
-      } else if (hash === '#/afiliados' || hash === '#/manual-afiliado') {
-        renderAfiliadosManualView(container, currentUser);
+      // Protected & Open Routes (Accessible to all students, users and guests)
+      if (hash === '#/afiliados' || hash === '#/manual-afiliado') {
+        renderAfiliadosManualView(container, activeUser);
       } else if (hash.startsWith('#/curso/')) {
         const courseId = hash.replace('#/curso/', '');
-        renderCoursePlayerView(container, currentUser, courseId);
+        renderCoursePlayerView(container, activeUser, courseId);
+      } else if (hash === '#/dashboard') {
+        renderDashboardView(container, activeUser);
+      } else if (hash === '#/ideas-diarias' || hash === '#/ideas') {
+        renderDailyIdeasFullView(container, activeUser);
+      } else if (hash === '#/simulador-ventas' || hash === '#/simulador' || hash === '#/objeciones') {
+        renderSalesSimulatorView(container, activeUser);
+      } else if (hash === '#/calculadora' || hash === '#/proyeccion') {
+        renderEarningsCalculatorView(container, activeUser);
+      } else if (hash === '#/recursos' || hash === '#/plantillas') {
+        renderResourcesVaultView(container, activeUser);
       } else if (hash === '#/certificados') {
-        renderCertificatesView(container, currentUser);
+        renderCertificatesView(container, activeUser);
       } else if (hash === '#/admin') {
-        if (currentUser.role !== 'ADMINISTRADOR') {
+        if (!currentUser || currentUser.role !== 'ADMINISTRADOR') {
           navigateTo('#/dashboard');
           return;
         }
         renderAdminView(container, currentUser);
       } else {
-        renderDashboardView(container, currentUser);
+        renderDashboardView(container, activeUser);
       }
     }
 
@@ -153,13 +160,25 @@
 
       const isAuthPage = currentHash === '#/login' || currentHash === '#/registro' || currentHash.startsWith('#/verificar');
 
-      // For unauthenticated users or on Login/Register screens: Keep the header clean and minimalist
-      if (!user || isAuthPage) {
-        navContainer.innerHTML = `
-          <a href="index.html" class="btn-back-home">
-            ← Volver a la Web
-          </a>
-        `;
+      // For unauthenticated users:
+      if (!user) {
+        if (isAuthPage) {
+          navContainer.innerHTML = `
+            <a href="index.html" class="btn-back-home">
+              ← Volver a la Web
+            </a>
+          `;
+        } else {
+          navContainer.innerHTML = `
+            <a href="#/dashboard" class="platform-menu-link ${currentHash === '#/dashboard' ? 'active' : ''}">Mis Cursos</a>
+            <a href="#/afiliados" class="platform-menu-link ${currentHash.startsWith('#/afiliados') ? 'active' : ''}" style="color:#facc15; font-weight:700;">Afiliados 💰</a>
+            <a href="#/login" class="platform-menu-link ${currentHash === '#/login' ? 'active' : ''}">Iniciar Sesión</a>
+            <a href="#/registro" class="platform-menu-link ${currentHash === '#/registro' ? 'active' : ''}" style="background:rgba(0,194,255,0.15); color:#00c2ff; font-weight:700; border-radius:8px; padding:0.4rem 0.85rem; border:1px solid rgba(0,194,255,0.3);">Registrarse</a>
+            <a href="index.html" class="btn-back-home" style="margin-left:0.3rem;">
+              ← Web
+            </a>
+          `;
+        }
         return;
       }
 
@@ -771,7 +790,14 @@
 
         container.innerHTML = `
           <div class="player-top-header">
-            <a href="#/dashboard" class="btn-back-dashboard">← Volver al Panel Principal</a>
+            <div style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap;">
+              <a href="#/dashboard" class="btn-back-dashboard">← Volver al Panel Principal</a>
+              ${course.id === 'course-affiliate' ? `
+                <a href="#/afiliados" class="btn-primary" style="font-size:0.82rem; padding:0.45rem 1rem; text-decoration:none; display:inline-flex; align-items:center; gap:0.4rem; background:linear-gradient(135deg, #eab308, #ca8a04); color:#0f172a; font-weight:800; border-radius:8px;">
+                  💰 Abrir Panel & Manual Interactivo ↗
+                </a>
+              ` : ''}
+            </div>
             <div style="display:flex; align-items:center; gap:0.65rem;">
               <span class="role-badge" style="font-size:0.85rem; padding:0.4rem 0.9rem; background:${isCourseFinished ? 'rgba(16,185,129,0.2)' : 'rgba(0,194,255,0.15)'}; color:${isCourseFinished ? '#34d399' : '#00c2ff'}; border-color:${isCourseFinished ? '#10b981' : 'var(--border-accent)'};">
                 ${isCourseFinished ? '🏆 CURSO COMPLETADO AL 100%' : `Progreso del Curso: ${stats.percentage}%`}
@@ -2238,9 +2264,11 @@
         }
       ];
 
+      let currentAffiliateTab = 'dashboard';
       let selectedCapId = chapters[0].id;
 
       function renderMainView() {
+        const affStats = window.rumboDB.getAffiliateStats(user.id);
         if (currentAffiliateTab === 'dashboard') {
           // --- TAB 1: DASHBOARD & METRICS ---
           const referralsHtml = affStats.referralsList.length === 0 ? `
@@ -2366,17 +2394,29 @@
               <div class="manual-card-highlight" style="background:radial-gradient(circle at top left, rgba(0,194,255,0.12), transparent 70%), var(--bg-surface); border-color:rgba(0,194,255,0.4); margin-bottom:2rem;">
                 <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1.25rem;">
                   <div>
-                    <span class="badge-pill" style="background:rgba(0,194,255,0.15); color:#38bdf8; border-color:rgba(0,194,255,0.4); font-weight:800; font-size:0.75rem;">TU ENLACE ÚNICO DE AFILIADO</span>
+                    <span class="badge-pill" style="background:rgba(0,194,255,0.15); color:#38bdf8; border-color:rgba(0,194,255,0.4); font-weight:800; font-size:0.75rem;">${user.id === 'invitado' ? 'PROGRAMA DE AFILIADOS' : 'TU ENLACE ÚNICO DE AFILIADO'}</span>
                     <h3 style="font-size:1.15rem; font-weight:800; color:#ffffff; margin:0.35rem 0;">Recomendá Rumbo Pro y cobrá tus comisiones en dólares</h3>
-                    <code style="display:inline-block; margin-top:0.35rem; background:rgba(0,0,0,0.5); padding:0.4rem 0.85rem; border-radius:8px; font-size:0.85rem; color:#38bdf8; border:1px solid rgba(0,194,255,0.25);">https://rumbo-pro.vercel.app?ref=${user.id}</code>
+                    ${user.id === 'invitado' ? `
+                      <p style="font-size:0.85rem; color:#cbd5e1; margin-top:0.35rem;">
+                        💡 <strong>Acceso Abierto:</strong> Para registrar comisiones automáticas a tu nombre y tener tu link personal, <a href="#/registro" style="color:#facc15; font-weight:800; text-decoration:underline;">creá tu cuenta gratuita</a> o <a href="#/login" style="color:#38bdf8; font-weight:800; text-decoration:underline;">iniciá sesión</a>.
+                      </p>
+                    ` : `
+                      <code style="display:inline-block; margin-top:0.35rem; background:rgba(0,0,0,0.5); padding:0.4rem 0.85rem; border-radius:8px; font-size:0.85rem; color:#38bdf8; border:1px solid rgba(0,194,255,0.25);">https://rumbo-pro.vercel.app?ref=${user.id}</code>
+                    `}
                   </div>
                   <div style="display:flex; gap:0.6rem; flex-wrap:wrap;">
-                    <button class="btn-primary" style="padding:0.65rem 1.15rem; font-size:0.85rem;" onclick="copyAffiliateLink('${user.id}')">
-                      📋 Copiar Mi Link
-                    </button>
-                    <a href="https://wa.me/?text=${encodeURIComponent('¡Hola! Te recomiendo la academia RUMBO PRO donde me estoy formando en habilidades digitales: https://rumbo-pro.vercel.app?ref=' + user.id)}" target="_blank" class="header-wa-btn" style="padding:0.65rem 1.15rem; font-size:0.85rem; background:#25d366; color:#ffffff; border:none; text-decoration:none; font-weight:700; border-radius:10px;">
-                      💬 Enviar por WhatsApp
-                    </a>
+                    ${user.id === 'invitado' ? `
+                      <a href="#/registro" class="btn-primary" style="padding:0.65rem 1.15rem; font-size:0.85rem; text-decoration:none; display:inline-flex; align-items:center; gap:0.4rem; background:linear-gradient(135deg,#eab308,#ca8a04); color:#0f172a; font-weight:800; border-radius:8px;">
+                        🚀 Crear Cuenta y Obtener Mi Link
+                      </a>
+                    ` : `
+                      <button class="btn-primary" style="padding:0.65rem 1.15rem; font-size:0.85rem;" onclick="copyAffiliateLink('${user.id}')">
+                        📋 Copiar Mi Link
+                      </button>
+                      <a href="https://wa.me/?text=${encodeURIComponent('¡Hola! Te recomiendo la academia RUMBO PRO donde me estoy formando en habilidades digitales: https://rumbo-pro.vercel.app?ref=' + user.id)}" target="_blank" class="header-wa-btn" style="padding:0.65rem 1.15rem; font-size:0.85rem; background:#25d366; color:#ffffff; border:none; text-decoration:none; font-weight:700; border-radius:10px;">
+                        💬 Enviar por WhatsApp
+                      </a>
+                    `}
                   </div>
                 </div>
               </div>

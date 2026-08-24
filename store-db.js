@@ -188,6 +188,32 @@ const INITIAL_COURSES = [
         ]
       }
     ]
+  },
+  {
+    id: 'course-affiliate',
+    title: 'MARKETING DE AFILIADOS & ESTRATEGIA',
+    badge: 'FORMACION ONLINE',
+    icon: '💰',
+    description: 'Aprende a crear tu marca, atraer prospectos con contenido orgánico, cerrar ventas por WhatsApp y generar 90% de comisión por venta.',
+    active: true,
+    modules: [
+      {
+        id: 'mod-aff-1',
+        title: 'Programa y Manual del Afiliado',
+        lessons: [
+          { id: 'les-aff-1', title: '01. Introducción y el Proceso de 8 Pasos', duration: 'Lectura y Estrategia', type: 'page', videoUrl: 'https://abc-marketing-de-afiliados-lyc-2026.netlify.app/gracias', driveLink: 'https://abc-marketing-de-afiliados-lyc-2026.netlify.app/gracias', content: 'Cómo crear tu marca, atraer personas, vender y generar comisiones desde tu celular.' },
+          { id: 'les-aff-2', title: '02. ¿Cómo Gana Dinero un Afiliado?', duration: 'Modelo de Negocio', type: 'page', videoUrl: 'https://abc-marketing-de-afiliados-lyc-2026.netlify.app/gracias', driveLink: 'https://abc-marketing-de-afiliados-lyc-2026.netlify.app/gracias', content: 'El modelo de recomendación, ventas y comisiones fijas ($87 USD / 3.900 UYU).' },
+          { id: 'les-aff-3', title: '03. No seas "un afiliado", crea tu propia marca', duration: 'Marca Personal', type: 'page', videoUrl: 'https://abc-marketing-de-afiliados-lyc-2026.netlify.app/gracias', driveLink: 'https://abc-marketing-de-afiliados-lyc-2026.netlify.app/gracias', content: 'Construir confianza y autoridad para que las personas quieran aprender contigo.' },
+          { id: 'les-aff-4', title: '04. Elige tu Rol o Especialidad', duration: 'Especialización', type: 'page', videoUrl: 'https://abc-marketing-de-afiliados-lyc-2026.netlify.app/gracias', driveLink: 'https://abc-marketing-de-afiliados-lyc-2026.netlify.app/gracias', content: 'Cómo posicionarte en Ecommerce, Ventas, Redes Sociales o IA.' },
+          { id: 'les-aff-5', title: '05. Cómo Crear Contenido que Atraiga Personas', duration: 'Contenido Orgánico', type: 'page', videoUrl: 'https://abc-marketing-de-afiliados-lyc-2026.netlify.app/gracias', driveLink: 'https://abc-marketing-de-afiliados-lyc-2026.netlify.app/gracias', content: 'Estructura de videos, ganchos de alta retención y llamados a la acción efectivos.' },
+          { id: 'les-aff-6', title: '06. Cómo Llevar Personas a WhatsApp', duration: 'Conversión', type: 'page', videoUrl: 'https://abc-marketing-de-afiliados-lyc-2026.netlify.app/gracias', driveLink: 'https://abc-marketing-de-afiliados-lyc-2026.netlify.app/gracias', content: 'Enlace en biografía, historias magnéticas y respuestas automáticas.' },
+          { id: 'les-aff-7', title: '07. Qué Responder Cuando te Escriben', duration: 'Cierre de Ventas', type: 'page', videoUrl: 'https://abc-marketing-de-afiliados-lyc-2026.netlify.app/gracias', driveLink: 'https://abc-marketing-de-afiliados-lyc-2026.netlify.app/gracias', content: 'Estructura de conversación, notas de voz persuasivas y manejo de objeciones.' },
+          { id: 'les-aff-8', title: '08. Cómo Presentar Rumbo Pro de Forma Correcta', duration: 'Presentación', type: 'page', videoUrl: 'https://abc-marketing-de-afiliados-lyc-2026.netlify.app/gracias', driveLink: 'https://abc-marketing-de-afiliados-lyc-2026.netlify.app/gracias', content: 'Transmitir el valor real de la academia sin presionar y enviar tu enlace de afiliado.' },
+          { id: 'les-aff-9', title: '09. Errores Comunes que Debes Evitar', duration: 'Optimización', type: 'page', videoUrl: 'https://abc-marketing-de-afiliados-lyc-2026.netlify.app/gracias', driveLink: 'https://abc-marketing-de-afiliados-lyc-2026.netlify.app/gracias', content: 'Los 7 errores frecuentes que frenan las ventas de un afiliado novato.' },
+          { id: 'les-aff-10', title: '10. La Mentalidad del Afiliado Pro y Hitos de Ventas', duration: 'Mentalidad y Logros', type: 'page', videoUrl: 'https://abc-marketing-de-afiliados-lyc-2026.netlify.app/gracias', driveLink: 'https://abc-marketing-de-afiliados-lyc-2026.netlify.app/gracias', content: 'Constancia, disciplina diaria y cómo escalar de Rookie a Legend con 90% de comisión.' }
+        ]
+      }
+    ]
   }
 ];
 
@@ -205,13 +231,29 @@ class RumboProDB {
   }
 
   async initDatabase() {
-    const CURRENT_VERSION = 'v9-exact-drive-modules';
+    const CURRENT_VERSION = 'v11-affiliate-open-access';
     if (localStorage.getItem('rumbopro_folders_version') !== CURRENT_VERSION) {
       localStorage.setItem(DB_KEY_COURSES, JSON.stringify(INITIAL_COURSES));
       localStorage.setItem('rumbopro_folders_version', CURRENT_VERSION);
     } else if (!localStorage.getItem(DB_KEY_COURSES)) {
       localStorage.setItem(DB_KEY_COURSES, JSON.stringify(INITIAL_COURSES));
     }
+
+    // Auto-approve local accounts so all users can access courses and features immediately
+    const localUsers = this.getUsers();
+    if (localUsers.length > 0) {
+      let updated = false;
+      localUsers.forEach(u => {
+        if (u.status !== 'APROBADO' && u.status !== 'RECHAZADO') {
+          u.status = 'APROBADO';
+          updated = true;
+        }
+      });
+      if (updated) {
+        localStorage.setItem(DB_KEY_USERS, JSON.stringify(localUsers));
+      }
+    }
+
     // Sync latest from Supabase
     await this.syncFromCloud();
   }
@@ -231,7 +273,7 @@ class RumboProDB {
           email: u.email,
           password: u.password,
           role: u.role,
-          status: u.status,
+          status: u.status === 'RECHAZADO' ? 'RECHAZADO' : 'APROBADO',
           registeredAt: u.registered_at
         }));
         localStorage.setItem(DB_KEY_USERS, JSON.stringify(formattedUsers));
@@ -452,7 +494,7 @@ class RumboProDB {
       email: cleanEmail,
       password: userData.password,
       role: 'ALUMNO',
-      status: 'PENDIENTE'
+      status: 'APROBADO'
     };
 
     // 1. Cloud insert
