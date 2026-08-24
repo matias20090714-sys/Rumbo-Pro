@@ -231,27 +231,12 @@ class RumboProDB {
   }
 
   async initDatabase() {
-    const CURRENT_VERSION = 'v11-affiliate-open-access';
+    const CURRENT_VERSION = 'v12-affiliate-protected';
     if (localStorage.getItem('rumbopro_folders_version') !== CURRENT_VERSION) {
       localStorage.setItem(DB_KEY_COURSES, JSON.stringify(INITIAL_COURSES));
       localStorage.setItem('rumbopro_folders_version', CURRENT_VERSION);
     } else if (!localStorage.getItem(DB_KEY_COURSES)) {
       localStorage.setItem(DB_KEY_COURSES, JSON.stringify(INITIAL_COURSES));
-    }
-
-    // Auto-approve local accounts so all users can access courses and features immediately
-    const localUsers = this.getUsers();
-    if (localUsers.length > 0) {
-      let updated = false;
-      localUsers.forEach(u => {
-        if (u.status !== 'APROBADO' && u.status !== 'RECHAZADO') {
-          u.status = 'APROBADO';
-          updated = true;
-        }
-      });
-      if (updated) {
-        localStorage.setItem(DB_KEY_USERS, JSON.stringify(localUsers));
-      }
     }
 
     // Sync latest from Supabase
@@ -273,7 +258,8 @@ class RumboProDB {
           email: u.email,
           password: u.password,
           role: u.role,
-          status: u.status === 'RECHAZADO' ? 'RECHAZADO' : 'APROBADO',
+          status: u.status || 'PENDIENTE',
+          referredBy: u.referred_by || u.referredBy || null,
           registeredAt: u.registered_at
         }));
         localStorage.setItem(DB_KEY_USERS, JSON.stringify(formattedUsers));
@@ -494,7 +480,7 @@ class RumboProDB {
       email: cleanEmail,
       password: userData.password,
       role: 'ALUMNO',
-      status: 'APROBADO'
+      status: 'PENDIENTE'
     };
 
     // 1. Cloud insert

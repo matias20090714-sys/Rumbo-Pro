@@ -87,19 +87,6 @@
         brandLogo.href = currentUser ? '#/dashboard' : 'index.html';
       }
 
-      // Open Access & Effective User Strategy:
-      // If logged in, use currentUser. If not, provide an active guest student profile so anyone can explore and learn freely!
-      const guestUser = {
-        id: 'invitado',
-        firstName: 'Estudiante',
-        lastName: 'Rumbo Pro',
-        email: 'invitado@rumbopro.com',
-        role: 'ALUMNO',
-        status: 'APROBADO'
-      };
-
-      const activeUser = currentUser || guestUser;
-
       // Update Navigation Header (Strictly clean on login / register / unauthenticated)
       renderNavMenu(currentUser, hash);
 
@@ -119,38 +106,44 @@
         return;
       }
 
-      // Check User Status only if explicitly rejected
-      if (currentUser && (currentUser.status === 'RECHAZADO' || currentUser.status === 'SUSPENDIDO') && currentUser.role !== 'ADMINISTRADOR') {
+      // Protection Guard: If not logged in, immediately redirect to login view
+      if (!currentUser) {
+        navigateTo('#/login');
+        return;
+      }
+
+      // Check User Status: Must be approved by administrator (or be administrator)
+      if (currentUser.role !== 'ADMINISTRADOR' && currentUser.status !== 'APROBADO') {
         renderPendingView(container, currentUser);
         return;
       }
 
-      // Protected & Open Routes (Accessible to all students, users and guests)
-      if (hash === '#/afiliados' || hash === '#/manual-afiliado') {
-        renderAfiliadosManualView(container, activeUser);
+      // Protected Platform Routes for ALL registered students
+      if (hash === '#/dashboard') {
+        renderDashboardView(container, currentUser);
+      } else if (hash === '#/ideas-diarias' || hash === '#/ideas') {
+        renderDailyIdeasFullView(container, currentUser);
+      } else if (hash === '#/simulador-ventas' || hash === '#/simulador' || hash === '#/objeciones') {
+        renderSalesSimulatorView(container, currentUser);
+      } else if (hash === '#/calculadora' || hash === '#/proyeccion') {
+        renderEarningsCalculatorView(container, currentUser);
+      } else if (hash === '#/recursos' || hash === '#/plantillas') {
+        renderResourcesVaultView(container, currentUser);
+      } else if (hash === '#/afiliados' || hash === '#/manual-afiliado') {
+        renderAfiliadosManualView(container, currentUser);
       } else if (hash.startsWith('#/curso/')) {
         const courseId = hash.replace('#/curso/', '');
-        renderCoursePlayerView(container, activeUser, courseId);
-      } else if (hash === '#/dashboard') {
-        renderDashboardView(container, activeUser);
-      } else if (hash === '#/ideas-diarias' || hash === '#/ideas') {
-        renderDailyIdeasFullView(container, activeUser);
-      } else if (hash === '#/simulador-ventas' || hash === '#/simulador' || hash === '#/objeciones') {
-        renderSalesSimulatorView(container, activeUser);
-      } else if (hash === '#/calculadora' || hash === '#/proyeccion') {
-        renderEarningsCalculatorView(container, activeUser);
-      } else if (hash === '#/recursos' || hash === '#/plantillas') {
-        renderResourcesVaultView(container, activeUser);
+        renderCoursePlayerView(container, currentUser, courseId);
       } else if (hash === '#/certificados') {
-        renderCertificatesView(container, activeUser);
+        renderCertificatesView(container, currentUser);
       } else if (hash === '#/admin') {
-        if (!currentUser || currentUser.role !== 'ADMINISTRADOR') {
+        if (currentUser.role !== 'ADMINISTRADOR') {
           navigateTo('#/dashboard');
           return;
         }
         renderAdminView(container, currentUser);
       } else {
-        renderDashboardView(container, activeUser);
+        renderDashboardView(container, currentUser);
       }
     }
 
@@ -160,25 +153,13 @@
 
       const isAuthPage = currentHash === '#/login' || currentHash === '#/registro' || currentHash.startsWith('#/verificar');
 
-      // For unauthenticated users:
-      if (!user) {
-        if (isAuthPage) {
-          navContainer.innerHTML = `
-            <a href="index.html" class="btn-back-home">
-              ← Volver a la Web
-            </a>
-          `;
-        } else {
-          navContainer.innerHTML = `
-            <a href="#/dashboard" class="platform-menu-link ${currentHash === '#/dashboard' ? 'active' : ''}">Mis Cursos</a>
-            <a href="#/afiliados" class="platform-menu-link ${currentHash.startsWith('#/afiliados') ? 'active' : ''}" style="color:#facc15; font-weight:700;">Afiliados 💰</a>
-            <a href="#/login" class="platform-menu-link ${currentHash === '#/login' ? 'active' : ''}">Iniciar Sesión</a>
-            <a href="#/registro" class="platform-menu-link ${currentHash === '#/registro' ? 'active' : ''}" style="background:rgba(0,194,255,0.15); color:#00c2ff; font-weight:700; border-radius:8px; padding:0.4rem 0.85rem; border:1px solid rgba(0,194,255,0.3);">Registrarse</a>
-            <a href="index.html" class="btn-back-home" style="margin-left:0.3rem;">
-              ← Web
-            </a>
-          `;
-        }
+      // For unauthenticated users, auth screens, or pending/unapproved users: Keep the header clean and minimalist
+      if (!user || isAuthPage || (user.role !== 'ADMINISTRADOR' && user.status !== 'APROBADO')) {
+        navContainer.innerHTML = `
+          <a href="index.html" class="btn-back-home">
+            ← Volver a la Web
+          </a>
+        `;
         return;
       }
 
