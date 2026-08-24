@@ -77,81 +77,21 @@ const INITIAL_COURSES = [
     title: 'COMMUNITY MANAGER',
     badge: 'FORMACION ONLINE',
     icon: '📱',
-    description: 'Aprende a gestionar redes sociales, crear contenido estrategico y desarrollar marcas digitales. 5 modulos especializados.',
+    description: 'Aprende a gestionar redes sociales, crear contenido estratégico con IA y desarrollar marcas digitales.',
     active: true,
     modules: [
       {
         id: 'mod-cm-1',
-        title: 'Módulo 1 — Trabaja en Digital',
+        title: 'Módulo 1 — Plataforma Community Manager',
         lessons: [
           {
             id: 'les-cm-101',
-            title: 'Trabaja en Digital',
+            title: 'Acceso a la Formación Community Manager',
             duration: 'Módulo Web',
             type: 'page',
             videoUrl: 'https://trabaja-en-digital-lyc-2026.netlify.app/gracias',
             driveLink: 'https://trabaja-en-digital-lyc-2026.netlify.app/gracias',
-            content: 'Formacion sobre como trabajar en el mundo digital.'
-          }
-        ]
-      },
-      {
-        id: 'mod-cm-2',
-        title: 'Módulo 2 — Incógnito Pro',
-        lessons: [
-          {
-            id: 'les-cm-201',
-            title: 'Incógnito Pro',
-            duration: 'Módulo Web',
-            type: 'page',
-            videoUrl: 'https://incognito-pro-lyc-2026.netlify.app/gracias',
-            driveLink: 'https://incognito-pro-lyc-2026.netlify.app/gracias',
-            content: 'Estrategias de contenido anonimo y marca personal.'
-          }
-        ]
-      },
-      {
-        id: 'mod-cm-3',
-        title: 'Módulo 3 — Creador Pro',
-        lessons: [
-          {
-            id: 'les-cm-301',
-            title: 'Creador Pro',
-            duration: 'Módulo Web',
-            type: 'page',
-            videoUrl: 'https://creador-pro-lyc-2026.netlify.app/gracias',
-            driveLink: 'https://creador-pro-lyc-2026.netlify.app/gracias',
-            content: 'Formacion para creadores de contenido digital y edicion de video.'
-          }
-        ]
-      },
-      {
-        id: 'mod-cm-4',
-        title: 'Módulo 4 — ABC Marketing de Afiliados',
-        lessons: [
-          {
-            id: 'les-cm-401',
-            title: 'ABC Marketing de Afiliados',
-            duration: 'Módulo Web',
-            type: 'page',
-            videoUrl: 'https://abc-marketing-de-afiliados-lyc-2026.netlify.app/gracias',
-            driveLink: 'https://abc-marketing-de-afiliados-lyc-2026.netlify.app/gracias',
-            content: 'Fundamentos del marketing de afiliados aplicados a redes sociales.'
-          }
-        ]
-      },
-      {
-        id: 'mod-cm-5',
-        title: 'Módulo 5 — Domina la IA',
-        lessons: [
-          {
-            id: 'les-cm-501',
-            title: 'Domina la IA',
-            duration: 'Módulo Web',
-            type: 'page',
-            videoUrl: 'https://domina-la-ia-lyc-2026.netlify.app/gracias',
-            driveLink: 'https://domina-la-ia-lyc-2026.netlify.app/gracias',
-            content: 'Uso de inteligencia artificial para crear contenido y automatizar procesos.'
+            content: 'Formación interactiva completa sobre gestión de redes, creación de contenido con IA y marcas digitales.'
           }
         ]
       }
@@ -188,32 +128,6 @@ const INITIAL_COURSES = [
         ]
       }
     ]
-  },
-  {
-    id: 'course-affiliate',
-    title: 'MARKETING DE AFILIADOS & ESTRATEGIA',
-    badge: 'FORMACION ONLINE',
-    icon: '💰',
-    description: 'Aprende a crear tu marca, atraer prospectos con contenido orgánico, cerrar ventas por WhatsApp y generar 90% de comisión por venta.',
-    active: true,
-    modules: [
-      {
-        id: 'mod-aff-1',
-        title: 'Programa y Manual del Afiliado',
-        lessons: [
-          { id: 'les-aff-1', title: '01. Introducción y el Proceso de 8 Pasos', duration: 'Lectura y Estrategia', type: 'page', videoUrl: 'https://abc-marketing-de-afiliados-lyc-2026.netlify.app/gracias', driveLink: 'https://abc-marketing-de-afiliados-lyc-2026.netlify.app/gracias', content: 'Cómo crear tu marca, atraer personas, vender y generar comisiones desde tu celular.' },
-          { id: 'les-aff-2', title: '02. ¿Cómo Gana Dinero un Afiliado?', duration: 'Modelo de Negocio', type: 'page', videoUrl: 'https://abc-marketing-de-afiliados-lyc-2026.netlify.app/gracias', driveLink: 'https://abc-marketing-de-afiliados-lyc-2026.netlify.app/gracias', content: 'El modelo de recomendación, ventas y comisiones fijas ($87 USD / 3.900 UYU).' },
-          { id: 'les-aff-3', title: '03. No seas "un afiliado", crea tu propia marca', duration: 'Marca Personal', type: 'page', videoUrl: 'https://abc-marketing-de-afiliados-lyc-2026.netlify.app/gracias', driveLink: 'https://abc-marketing-de-afiliados-lyc-2026.netlify.app/gracias', content: 'Construir confianza y autoridad para que las personas quieran aprender contigo.' },
-          { id: 'les-aff-4', title: '04. Elige tu Rol o Especialidad', duration: 'Especialización', type: 'page', videoUrl: 'https://abc-marketing-de-afiliados-lyc-2026.netlify.app/gracias', driveLink: 'https://abc-marketing-de-afiliados-lyc-2026.netlify.app/gracias', content: 'Cómo posicionarte en Ecommerce, Ventas, Redes Sociales o IA.' },
-          { id: 'les-aff-5', title: '05. Cómo Crear Contenido que Atraiga Personas', duration: 'Contenido Orgánico', type: 'page', videoUrl: 'https://abc-marketing-de-afiliados-lyc-2026.netlify.app/gracias', driveLink: 'https://abc-marketing-de-afiliados-lyc-2026.netlify.app/gracias', content: 'Estructura de videos, ganchos de alta retención y llamados a la acción efectivos.' },
-          { id: 'les-aff-6', title: '06. Cómo Llevar Personas a WhatsApp', duration: 'Conversión', type: 'page', videoUrl: 'https://abc-marketing-de-afiliados-lyc-2026.netlify.app/gracias', driveLink: 'https://abc-marketing-de-afiliados-lyc-2026.netlify.app/gracias', content: 'Enlace en biografía, historias magnéticas y respuestas automáticas.' },
-          { id: 'les-aff-7', title: '07. Qué Responder Cuando te Escriben', duration: 'Cierre de Ventas', type: 'page', videoUrl: 'https://abc-marketing-de-afiliados-lyc-2026.netlify.app/gracias', driveLink: 'https://abc-marketing-de-afiliados-lyc-2026.netlify.app/gracias', content: 'Estructura de conversación, notas de voz persuasivas y manejo de objeciones.' },
-          { id: 'les-aff-8', title: '08. Cómo Presentar Rumbo Pro de Forma Correcta', duration: 'Presentación', type: 'page', videoUrl: 'https://abc-marketing-de-afiliados-lyc-2026.netlify.app/gracias', driveLink: 'https://abc-marketing-de-afiliados-lyc-2026.netlify.app/gracias', content: 'Transmitir el valor real de la academia sin presionar y enviar tu enlace de afiliado.' },
-          { id: 'les-aff-9', title: '09. Errores Comunes que Debes Evitar', duration: 'Optimización', type: 'page', videoUrl: 'https://abc-marketing-de-afiliados-lyc-2026.netlify.app/gracias', driveLink: 'https://abc-marketing-de-afiliados-lyc-2026.netlify.app/gracias', content: 'Los 7 errores frecuentes que frenan las ventas de un afiliado novato.' },
-          { id: 'les-aff-10', title: '10. La Mentalidad del Afiliado Pro y Hitos de Ventas', duration: 'Mentalidad y Logros', type: 'page', videoUrl: 'https://abc-marketing-de-afiliados-lyc-2026.netlify.app/gracias', driveLink: 'https://abc-marketing-de-afiliados-lyc-2026.netlify.app/gracias', content: 'Constancia, disciplina diaria y cómo escalar de Rookie a Legend con 90% de comisión.' }
-        ]
-      }
-    ]
   }
 ];
 
@@ -231,14 +145,13 @@ class RumboProDB {
   }
 
   async initDatabase() {
-    const CURRENT_VERSION = 'v12-affiliate-protected';
+    const CURRENT_VERSION = 'v12-4-courses-cm-single-mod-manual-afiliados';
     if (localStorage.getItem('rumbopro_folders_version') !== CURRENT_VERSION) {
       localStorage.setItem(DB_KEY_COURSES, JSON.stringify(INITIAL_COURSES));
       localStorage.setItem('rumbopro_folders_version', CURRENT_VERSION);
     } else if (!localStorage.getItem(DB_KEY_COURSES)) {
       localStorage.setItem(DB_KEY_COURSES, JSON.stringify(INITIAL_COURSES));
     }
-
     // Sync latest from Supabase
     await this.syncFromCloud();
   }
@@ -258,8 +171,7 @@ class RumboProDB {
           email: u.email,
           password: u.password,
           role: u.role,
-          status: u.status || 'PENDIENTE',
-          referredBy: u.referred_by || u.referredBy || null,
+          status: u.status,
           registeredAt: u.registered_at
         }));
         localStorage.setItem(DB_KEY_USERS, JSON.stringify(formattedUsers));
@@ -324,155 +236,10 @@ class RumboProDB {
     return JSON.parse(localStorage.getItem(DB_KEY_USERS) || '[]');
   }
 
-  recordAffiliateClick(affiliateId) {
-    if (!affiliateId) return;
-    const clicks = JSON.parse(localStorage.getItem('rumbopro_db_affiliate_clicks') || '{}');
-    clicks[affiliateId] = (clicks[affiliateId] || 0) + 1;
-    localStorage.setItem('rumbopro_db_affiliate_clicks', JSON.stringify(clicks));
-  }
-
-  getAffiliateStats(userId) {
-    const users = this.getUsers();
-    const clicksObj = JSON.parse(localStorage.getItem('rumbopro_db_affiliate_clicks') || '{}');
-    const totalClicks = clicksObj[userId] || 0;
-
-    // Find all users referred by this user
-    const referrals = users.filter(u => u.referredBy === userId || u.referred_by === userId);
-    const approvedSales = referrals.filter(u => u.status === 'APROBADO');
-    const pendingSales = referrals.filter(u => u.status === 'PENDIENTE');
-
-    const salesCount = approvedSales.length;
-    const RUMBOPRO_PRICE_USD = 97; // Precio oficial: 3.900 UYU (~$97 USD)
-    const COMMISSION_PER_SALE = 87; // 90% de comisión ($87 USD por venta)
-    const totalEarnedUsd = salesCount * COMMISSION_PER_SALE;
-
-    // Affiliate Ranks (Sales Milestones Tracking — 90% Commission & Full Platform Access for All)
-    let tier = {
-      id: 'tier-rookie',
-      name: 'Rango Rookie',
-      icon: '🥉',
-      badgeClass: 'tier-bronze',
-      commissionRate: '90% ($87 USD/venta)',
-      salesNeededForNext: 3,
-      nextTierName: 'Rango Pro (3 ventas)',
-      progressPercentage: Math.min(100, Math.round((salesCount / 3) * 100)),
-      salesRange: '0 a 2 ventas',
-      tagline: 'Fase Inicial de Afiliado'
-    };
-
-    if (salesCount >= 25) {
-      tier = {
-        id: 'tier-legend',
-        name: 'Rango Legend',
-        icon: '💎',
-        badgeClass: 'tier-diamond',
-        commissionRate: '90% ($87 USD/venta)',
-        salesNeededForNext: 0,
-        nextTierName: 'Hito Máximo Alcanzado 🏆',
-        progressPercentage: 100,
-        salesRange: '25+ ventas',
-        tagline: 'Afiliado Referente'
-      };
-    } else if (salesCount >= 10) {
-      tier = {
-        id: 'tier-master',
-        name: 'Rango Master',
-        icon: '🥇',
-        badgeClass: 'tier-gold',
-        commissionRate: '90% ($87 USD/venta)',
-        salesNeededForNext: 25,
-        nextTierName: 'Rango Legend (25 ventas)',
-        progressPercentage: Math.min(100, Math.round(((salesCount - 10) / 15) * 100)),
-        salesRange: '10 a 24 ventas',
-        tagline: 'Afiliado Avanzado'
-      };
-    } else if (salesCount >= 3) {
-      tier = {
-        id: 'tier-pro',
-        name: 'Rango Pro',
-        icon: '🥈',
-        badgeClass: 'tier-silver',
-        commissionRate: '90% ($87 USD/venta)',
-        salesNeededForNext: 10,
-        nextTierName: 'Rango Master (10 ventas)',
-        progressPercentage: Math.min(100, Math.round(((salesCount - 3) / 7) * 100)),
-        salesRange: '3 a 9 ventas',
-        tagline: 'Afiliado Activo'
-      };
-    }
-
-    return {
-      clicks: totalClicks,
-      referralsCount: referrals.length,
-      salesCount: salesCount,
-      pendingCount: pendingSales.length,
-      totalEarnedUsd: totalEarnedUsd,
-      priceUsd: RUMBOPRO_PRICE_USD,
-      commissionPerSale: COMMISSION_PER_SALE,
-      tier: tier,
-      referralsList: referrals
-    };
-  }
-
-  getTopAffiliatesLeaderboard(limit = 10) {
-    const allUsers = this.getUsers();
-    const affiliates = allUsers.filter(u => u.role !== 'ADMINISTRADOR');
-    const clicksObj = JSON.parse(localStorage.getItem('rumbopro_db_affiliate_clicks') || '{}');
-
-    const leaderboard = affiliates.map(u => {
-      const referrals = allUsers.filter(ref => ref.referredBy === u.id || ref.referred_by === u.id);
-      const approvedSales = referrals.filter(ref => ref.status === 'APROBADO');
-      const pendingSales = referrals.filter(ref => ref.status === 'PENDIENTE');
-      const salesCount = approvedSales.length;
-      const totalEarnedUsd = salesCount * 87;
-      const totalVolumeUsd = salesCount * 97;
-      const clicks = clicksObj[u.id] || 0;
-
-      let tierName = '🥉 Rookie';
-      let tierBadge = 'tier-bronze';
-      if (salesCount >= 25) {
-        tierName = '💎 Legend';
-        tierBadge = 'tier-diamond';
-      } else if (salesCount >= 10) {
-        tierName = '🥇 Master';
-        tierBadge = 'tier-gold';
-      } else if (salesCount >= 3) {
-        tierName = '🥈 Pro';
-        tierBadge = 'tier-silver';
-      }
-
-      return {
-        id: u.id,
-        firstName: u.firstName,
-        lastName: u.lastName,
-        email: u.email,
-        salesCount: salesCount,
-        pendingCount: pendingSales.length,
-        totalReferrals: referrals.length,
-        clicks: clicks,
-        totalEarnedUsd: totalEarnedUsd,
-        totalVolumeUsd: totalVolumeUsd,
-        tierName: tierName,
-        tierBadge: tierBadge,
-        registeredAt: u.registeredAt
-      };
-    });
-
-    leaderboard.sort((a, b) => {
-      if (b.salesCount !== a.salesCount) return b.salesCount - a.salesCount;
-      if (b.totalReferrals !== a.totalReferrals) return b.totalReferrals - a.totalReferrals;
-      return b.clicks - a.clicks;
-    });
-
-    return leaderboard.slice(0, limit);
-  }
-
   async registerUser(userData) {
     if (!this.supabase) this.initSupabaseClient();
 
     const cleanEmail = userData.email.trim().toLowerCase();
-    const refCode = userData.referredBy || localStorage.getItem('rumbopro_ref_code') || null;
-
     const newUser = {
       id: 'user-' + Date.now(),
       first_name: userData.firstName.trim(),
@@ -485,24 +252,20 @@ class RumboProDB {
 
     // 1. Cloud insert
     if (this.supabase) {
-      try {
-        const { data, error } = await this.supabase
-          .from('rumbopro_users')
-          .insert([newUser])
-          .select();
+      const { data, error } = await this.supabase
+        .from('rumbopro_users')
+        .insert([newUser])
+        .select();
 
-        if (error) {
-          if (error.code === '23505' || error.message.includes('unique')) {
-            throw new Error('El correo electronico ya se encuentra registrado.');
-          }
-          throw new Error(error.message || 'Error al registrar usuario en la nube.');
+      if (error) {
+        if (error.code === '23505' || error.message.includes('unique')) {
+          throw new Error('El correo electronico ya se encuentra registrado.');
         }
-      } catch (err) {
-        if (err.message && err.message.includes('ya se encuentra')) throw err;
+        throw new Error(error.message || 'Error al registrar usuario en la nube.');
       }
     }
 
-    // 2. Local Cache Update with referral attribution
+    // 2. Local Cache Update
     const users = this.getUsers();
     users.push({
       id: newUser.id,
@@ -512,7 +275,6 @@ class RumboProDB {
       password: newUser.password,
       role: newUser.role,
       status: newUser.status,
-      referredBy: refCode,
       registeredAt: new Date().toISOString()
     });
     localStorage.setItem(DB_KEY_USERS, JSON.stringify(users));
@@ -530,21 +292,13 @@ class RumboProDB {
       throw new Error('Credenciales incorrectas. Verifica tu email y contrasena.');
     }
 
-    const session = {
-      userId: user.id,
-      loginAt: new Date().toISOString(),
-      sessionId: 'sess_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9)
-    };
+    const session = { userId: user.id, loginAt: new Date().toISOString() };
     localStorage.setItem(DB_KEY_SESSION, JSON.stringify(session));
     return user;
   }
 
-  getCurrentSession() {
-    return JSON.parse(localStorage.getItem(DB_KEY_SESSION) || 'null');
-  }
-
   getCurrentUser() {
-    const session = this.getCurrentSession();
+    const session = JSON.parse(localStorage.getItem(DB_KEY_SESSION) || 'null');
     if (!session) return null;
     const users = this.getUsers();
     return users.find(u => u.id === session.userId) || null;
