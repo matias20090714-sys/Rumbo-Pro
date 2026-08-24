@@ -12,7 +12,7 @@
   <!-- Header Navigation Bar -->
   <nav class="platform-nav">
     <div class="platform-nav-inner">
-      <a href="index.html" class="platform-logo" id="nav-brand-logo">
+      <a href="#/dashboard" class="platform-logo">
         <img src="assets/logo.jpg" alt="Logo Rumbo Pro" class="platform-logo-img">
         <span>RUMBO PRO</span>
       </a>
@@ -35,16 +35,6 @@
   <script>
     // Router & View Controller Logic
     document.addEventListener('DOMContentLoaded', () => {
-      // Capture affiliate ref code if present in URL
-      const urlParams = new URLSearchParams(window.location.search);
-      const refCode = urlParams.get('ref');
-      if (refCode) {
-        localStorage.setItem('rumbopro_ref_code', refCode);
-        if (window.rumboDB && typeof window.rumboDB.recordAffiliateClick === 'function') {
-          window.rumboDB.recordAffiliateClick(refCode);
-        }
-      }
-
       window.addEventListener('hashchange', renderCurrentRoute);
 
       // 1. Render immediately with 0ms delay from local store
@@ -67,30 +57,15 @@
     }
 
     function renderCurrentRoute() {
-      let hash = window.location.hash;
-      const currentUser = window.rumboDB ? window.rumboDB.getCurrentUser() : null;
-
-      // Smart initial route resolution: if unauthenticated, go straight to login without flashing dashboard
-      if (!hash || hash === '#' || hash === '#/') {
-        hash = currentUser ? '#/dashboard' : '#/login';
-        if (window.location.hash !== hash) {
-          window.location.hash = hash;
-          return;
-        }
-      }
-
+      const hash = window.location.hash || '#/dashboard';
+      const currentUser = window.rumboDB.getCurrentUser();
       const container = document.getElementById('app-view-container');
-      const brandLogo = document.getElementById('nav-brand-logo');
+      const navContainer = document.getElementById('nav-menu-container');
 
-      // Set Brand Link destination
-      if (brandLogo) {
-        brandLogo.href = currentUser ? '#/dashboard' : 'index.html';
-      }
-
-      // Update Navigation Header (Strictly clean on login / register / unauthenticated)
+      // Update Navigation Header
       renderNavMenu(currentUser, hash);
 
-      // Public / Auth Routes
+      // Public Routes
       if (hash.startsWith('#/verificar')) {
         renderVerifyCertificatesView(container);
         return;
@@ -106,29 +81,23 @@
         return;
       }
 
-      // Protection Guard: If not logged in, immediately redirect to login view
+      // Protection Guard: If not logged in, redirect to login
       if (!currentUser) {
         navigateTo('#/login');
         return;
       }
 
-      // Check User Status: Must be approved by administrator (or be administrator)
+      // Check User Status (PENDIENTE / RECHAZADO / SUSPENDIDO)
       if (currentUser.role !== 'ADMINISTRADOR' && currentUser.status !== 'APROBADO') {
         renderPendingView(container, currentUser);
         return;
       }
 
-      // Protected Platform Routes for ALL registered students
+      // Protected Student / Admin Routes
       if (hash === '#/dashboard') {
         renderDashboardView(container, currentUser);
       } else if (hash === '#/ideas-diarias' || hash === '#/ideas') {
         renderDailyIdeasFullView(container, currentUser);
-      } else if (hash === '#/simulador-ventas' || hash === '#/simulador' || hash === '#/objeciones') {
-        renderSalesSimulatorView(container, currentUser);
-      } else if (hash === '#/calculadora' || hash === '#/proyeccion') {
-        renderEarningsCalculatorView(container, currentUser);
-      } else if (hash === '#/recursos' || hash === '#/plantillas') {
-        renderResourcesVaultView(container, currentUser);
       } else if (hash === '#/afiliados' || hash === '#/manual-afiliado') {
         renderAfiliadosManualView(container, currentUser);
       } else if (hash.startsWith('#/curso/')) {
@@ -149,16 +118,11 @@
 
     function renderNavMenu(user, currentHash) {
       const navContainer = document.getElementById('nav-menu-container');
-      if (!navContainer) return;
-
-      const isAuthPage = currentHash === '#/login' || currentHash === '#/registro' || currentHash.startsWith('#/verificar');
-
-      // For unauthenticated users, auth screens, or pending/unapproved users: Keep the header clean and minimalist
-      if (!user || isAuthPage || (user.role !== 'ADMINISTRADOR' && user.status !== 'APROBADO')) {
+      if (!user) {
         navContainer.innerHTML = `
-          <a href="index.html" class="btn-back-home">
-            ← Volver a la Web
-          </a>
+          <a href="#/login" class="platform-menu-link ${currentHash === '#/login' ? 'active' : ''}">Iniciar Sesión</a>
+          <a href="#/registro" class="platform-menu-link ${currentHash === '#/registro' ? 'active' : ''}">Registrarse</a>
+          <a href="#/verificar" class="platform-menu-link ${currentHash.startsWith('#/verificar') ? 'active' : ''}">Verificar Certificado</a>
         `;
         return;
       }
@@ -167,11 +131,8 @@
 
       navContainer.innerHTML = `
         <a href="#/dashboard" class="platform-menu-link ${currentHash === '#/dashboard' ? 'active' : ''}">Mis Cursos</a>
-        <a href="#/ideas-diarias" class="platform-menu-link ${currentHash.startsWith('#/ideas') ? 'active' : ''}" style="color:#38bdf8; font-weight:700;">Ideas 💡</a>
-        <a href="#/simulador-ventas" class="platform-menu-link ${currentHash.startsWith('#/simulador') ? 'active' : ''}" style="color:#34d399; font-weight:700;">Simulador 🎯</a>
-        <a href="#/calculadora" class="platform-menu-link ${currentHash === '#/calculadora' ? 'active' : ''}" style="color:#a78bfa; font-weight:700;">Calculadora 📊</a>
-        <a href="#/recursos" class="platform-menu-link ${currentHash === '#/recursos' ? 'active' : ''}" style="color:#fbbf24; font-weight:700;">Recursos 📂</a>
-        <a href="#/afiliados" class="platform-menu-link ${currentHash.startsWith('#/afiliados') ? 'active' : ''}" style="color:#facc15; font-weight:700;">Afiliados 💰</a>
+        <a href="#/ideas-diarias" class="platform-menu-link ${currentHash.startsWith('#/ideas') ? 'active' : ''}" style="color:#38bdf8; font-weight:700;">Ideas de Video 💡</a>
+        <a href="#/afiliados" class="platform-menu-link ${currentHash.startsWith('#/afiliados') ? 'active' : ''}" style="color:#facc15; font-weight:700;">Manual Afiliados 💰</a>
         <a href="#/certificados" class="platform-menu-link ${currentHash === '#/certificados' ? 'active' : ''}">Certificados</a>
         ${adminLink}
         <a href="#/verificar" class="platform-menu-link ${currentHash.startsWith('#/verificar') ? 'active' : ''}">Verificar ID</a>
@@ -385,8 +346,8 @@
 
               <!-- Action Buttons -->
               <div style="display:flex; flex-direction:column; gap:0.6rem;">
-                <a href="#/curso/${course.id}" class="btn-continue-course" style="width:100%;">
-                  ${isFinished ? 'Ver Material del Curso ↗' : 'Continuar Formación →'}
+                <a href="${course.id === 'course-afiliados' ? '#/afiliados' : `#/curso/${course.id}`}" class="btn-continue-course" style="width:100%;">
+                  ${course.id === 'course-afiliados' ? 'Abrir Manual del Afiliado ↗' : (isFinished ? 'Ver Material del Curso ↗' : 'Continuar Formación →')}
                 </a>
 
                 ${isFinished ? `
@@ -399,19 +360,6 @@
           </div>
         `;
       }).join('');
-
-      // Gamification Level & Badges
-      let studentLevel = { icon: '🥉', title: 'NIVEL 1: INICIADO DIGITAL', sub: 'Comenzá tu primera lección para subir de rango' };
-      if (overall.percentage >= 100) {
-        studentLevel = { icon: '💎', title: 'NIVEL 4: MASTER DIGITAL RUMBO PRO', sub: '¡Has completado todas las formaciones!' };
-      } else if (overall.percentage >= 50) {
-        studentLevel = { icon: '🥇', title: 'NIVEL 3: PRO CLOSER & CREATOR', sub: 'Más del 50% completado, ¡estás listo para escalar!' };
-      } else if (overall.percentage > 0) {
-        studentLevel = { icon: '🥈', title: 'NIVEL 2: CONSTRUCTOR ACTIVO', sub: '¡Gran avance! Continúa tu formación' };
-      }
-
-      const hasCert = overall.totalCertificates > 0;
-      const hasProgress = overall.percentage > 0;
 
       container.innerHTML = `
         <div class="dashboard-container">
@@ -449,53 +397,36 @@
             </div>
           </div>
 
-          <!-- Gamification Level & Badges Bar -->
-          <div class="gamification-bar">
-            <div class="level-badge-wrap">
-              <span class="level-icon">${studentLevel.icon}</span>
-              <div>
-                <div class="level-title">${studentLevel.title}</div>
-                <div class="level-subtitle">${studentLevel.sub}</div>
+          <!-- Quick Onboarding Guide for Newcomers -->
+          <div class="onboarding-guide-card">
+            <div class="onboarding-head">
+              <span class="onboarding-badge">🚀 GUÍA RÁPIDA PARA NUEVOS ALUMNOS</span>
+              <h3 class="onboarding-title">¿Cómo empezar en tu primer día en Rumbo Pro?</h3>
+              <p class="onboarding-sub">Sigue estos 3 pasos simples para avanzar con total claridad desde hoy:</p>
+            </div>
+            
+            <div class="onboarding-steps-grid">
+              <div class="onboarding-step-box">
+                <div class="onb-step-num">1</div>
+                <div class="onb-step-icon">🧭</div>
+                <h4 class="onb-step-title">1. Elegí tu Formación</h4>
+                <p class="onb-step-desc">Explorá los cursos abajo (E-Commerce, Closer de Ventas, Hotmart o Community Manager) y elegí el área que más te apasione.</p>
               </div>
-            </div>
-            <div class="badges-row-inline">
-              <span class="badge-tag-unlocked">🎖️ Acceso Oficial</span>
-              <span class="badge-tag-unlocked">💡 Ideas Ilimitadas</span>
-              <span class="${hasProgress ? 'badge-tag-unlocked' : 'badge-tag-locked'}">🎯 Closer en Acción</span>
-              <span class="${hasCert ? 'badge-tag-unlocked' : 'badge-tag-locked'}">🏆 Especialista Certificado</span>
-            </div>
-          </div>
 
-          <!-- Quick Tools Navigation Grid -->
-          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:1rem; margin-bottom:2rem;">
-            <a href="#/simulador-ventas" class="benefit-card" style="text-decoration:none; padding:1.25rem; border-color:rgba(52,211,153,0.3); background:radial-gradient(circle at top left, rgba(52,211,153,0.1), transparent 70%), var(--bg-surface);">
-              <div class="benefit-icon" style="font-size:1.6rem;">🎯</div>
-              <div>
-                <h4 style="color:#ffffff; font-size:0.95rem; font-weight:800;">Simulador de Ventas</h4>
-                <p style="font-size:0.78rem; color:#94a3b8; margin-top:0.2rem;">Respuestas y audios para WhatsApp</p>
+              <div class="onboarding-step-box">
+                <div class="onb-step-num">2</div>
+                <div class="onb-step-icon">🎬</div>
+                <h4 class="onb-step-title">2. Mirá el Módulo 1</h4>
+                <p class="onb-step-desc">Hacé clic en <strong>"Continuar Formación"</strong>. Mirá los videos en orden natural y aplicá lo aprendido paso a paso.</p>
               </div>
-            </a>
-            <a href="#/calculadora" class="benefit-card" style="text-decoration:none; padding:1.25rem; border-color:rgba(167,139,250,0.3); background:radial-gradient(circle at top left, rgba(167,139,250,0.1), transparent 70%), var(--bg-surface);">
-              <div class="benefit-icon" style="font-size:1.6rem;">📊</div>
-              <div>
-                <h4 style="color:#ffffff; font-size:0.95rem; font-weight:800;">Calculadora Digital</h4>
-                <p style="font-size:0.78rem; color:#94a3b8; margin-top:0.2rem;">Proyecta tus comisiones mensuales</p>
+
+              <div class="onboarding-step-box highlight-onb">
+                <div class="onb-step-num">3</div>
+                <div class="onb-step-icon">💰</div>
+                <h4 class="onb-step-title">3. ¿Querés Monetizar?</h4>
+                <p class="onb-step-desc">Si querés ganar comisiones recomendando Rumbo Pro, abrí el <strong>Manual del Afiliado</strong> y usá las <strong>Ideas de Video Diarias</strong>.</p>
               </div>
-            </a>
-            <a href="#/recursos" class="benefit-card" style="text-decoration:none; padding:1.25rem; border-color:rgba(251,191,36,0.3); background:radial-gradient(circle at top left, rgba(251,191,36,0.1), transparent 70%), var(--bg-surface);">
-              <div class="benefit-icon" style="font-size:1.6rem;">📂</div>
-              <div>
-                <h4 style="color:#ffffff; font-size:0.95rem; font-weight:800;">Bóveda de Recursos</h4>
-                <p style="font-size:0.78rem; color:#94a3b8; margin-top:0.2rem;">Contratos, guiones y plantillas</p>
-              </div>
-            </a>
-            <a href="#/ideas-diarias" class="benefit-card" style="text-decoration:none; padding:1.25rem; border-color:rgba(56,189,248,0.3); background:radial-gradient(circle at top left, rgba(56,189,248,0.1), transparent 70%), var(--bg-surface);">
-              <div class="benefit-icon" style="font-size:1.6rem;">💡</div>
-              <div>
-                <h4 style="color:#ffffff; font-size:0.95rem; font-weight:800;">Ideas de Video</h4>
-                <p style="font-size:0.78rem; color:#94a3b8; margin-top:0.2rem;">Guiones virales diarios para ti</p>
-              </div>
-            </a>
+            </div>
           </div>
 
           <!-- Featured VIP Affiliate Manual Banner -->
@@ -521,10 +452,10 @@
               <div>
                 <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.35rem;">
                   <span class="idea-live-badge">💡 IDEA DE VIDEO DEL DÍA</span>
-                  <span class="idea-unique-tag" id="idea-number-tag">Guion Exclusivo para ti</span>
+                  <span class="idea-unique-tag" id="idea-number-tag">Idea Exclusiva para ti</span>
                 </div>
                 <h3 class="idea-card-title">Guion Diario de Contenido para Vender Rumbo Pro</h3>
-                <p class="idea-card-sub">Estructuras probadas para TikTok, Reels y Shorts con ganchos virales y llamado a tu WhatsApp. Nunca repetidas.</p>
+                <p class="idea-card-sub">Cada día una idea de video diferente para atraer clientes a tu WhatsApp. Nunca repetida.</p>
               </div>
 
               <div class="idea-actions-top">
@@ -532,17 +463,6 @@
                   🔄 Otra Idea
                 </button>
               </div>
-            </div>
-
-            <!-- Niche Filter Tabs -->
-            <div class="idea-filter-tabs" id="idea-filters-dash">
-              <button class="idea-filter-btn active" data-niche="all" onclick="handleIdeaFilterChange('${user.id}', 'all')">🌟 Todos los Nichos</button>
-              <button class="idea-filter-btn" data-niche="ecom" onclick="handleIdeaFilterChange('${user.id}', 'ecom')">🛒 E-commerce</button>
-              <button class="idea-filter-btn" data-niche="closer" onclick="handleIdeaFilterChange('${user.id}', 'closer')">🎯 Closer de Ventas</button>
-              <button class="idea-filter-btn" data-niche="hotmart" onclick="handleIdeaFilterChange('${user.id}', 'hotmart')">🔥 Hotmart Fukuda</button>
-              <button class="idea-filter-btn" data-niche="cm" onclick="handleIdeaFilterChange('${user.id}', 'cm')">📱 Community Manager / IA</button>
-              <button class="idea-filter-btn" data-niche="afi" onclick="handleIdeaFilterChange('${user.id}', 'afi')">💰 Afiliados & Rumbo Pro</button>
-              <button class="idea-filter-btn" data-niche="mentalidad" onclick="handleIdeaFilterChange('${user.id}', 'mentalidad')">🧠 Mentalidad & Tips</button>
             </div>
 
             <div class="idea-content-canvas" id="idea-content-box">
@@ -574,7 +494,7 @@
               </span>
               <h1 class="welcome-title" style="margin:0;">💡 Ideas de Video Diarias para Alumnos</h1>
               <p class="welcome-sub" style="margin-top:0.35rem;">
-                Cada día recibes un guion único para tus redes (TikTok, Reels, Shorts). Presiona <strong>"🔄 Otra Idea"</strong> para generar un guion 100% nuevo en tiempo real.
+                Cada día recibes un guion único para tus redes (TikTok, Reels, Shorts). Presiona <strong>"🔄 Otra Idea"</strong> para generar un guion diferente en tiempo real.
               </p>
             </div>
 
@@ -601,17 +521,6 @@
                   🔄 Otra Idea
                 </button>
               </div>
-            </div>
-
-            <!-- Niche Filter Tabs -->
-            <div class="idea-filter-tabs" id="idea-filters-full">
-              <button class="idea-filter-btn active" data-niche="all" onclick="handleIdeaFilterChange('${user.id}', 'all')">🌟 Todos los Nichos</button>
-              <button class="idea-filter-btn" data-niche="ecom" onclick="handleIdeaFilterChange('${user.id}', 'ecom')">🛒 E-commerce</button>
-              <button class="idea-filter-btn" data-niche="closer" onclick="handleIdeaFilterChange('${user.id}', 'closer')">🎯 Closer de Ventas</button>
-              <button class="idea-filter-btn" data-niche="hotmart" onclick="handleIdeaFilterChange('${user.id}', 'hotmart')">🔥 Hotmart Fukuda</button>
-              <button class="idea-filter-btn" data-niche="cm" onclick="handleIdeaFilterChange('${user.id}', 'cm')">📱 Community Manager / IA</button>
-              <button class="idea-filter-btn" data-niche="afi" onclick="handleIdeaFilterChange('${user.id}', 'afi')">💰 Afiliados & Rumbo Pro</button>
-              <button class="idea-filter-btn" data-niche="mentalidad" onclick="handleIdeaFilterChange('${user.id}', 'mentalidad')">🧠 Mentalidad & Tips</button>
             </div>
 
             <div class="idea-content-canvas" id="idea-content-box">
@@ -771,14 +680,7 @@
 
         container.innerHTML = `
           <div class="player-top-header">
-            <div style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap;">
-              <a href="#/dashboard" class="btn-back-dashboard">← Volver al Panel Principal</a>
-              ${course.id === 'course-affiliate' ? `
-                <a href="#/afiliados" class="btn-primary" style="font-size:0.82rem; padding:0.45rem 1rem; text-decoration:none; display:inline-flex; align-items:center; gap:0.4rem; background:linear-gradient(135deg, #eab308, #ca8a04); color:#0f172a; font-weight:800; border-radius:8px;">
-                  💰 Abrir Panel & Manual Interactivo ↗
-                </a>
-              ` : ''}
-            </div>
+            <a href="#/dashboard" class="btn-back-dashboard">← Volver al Panel Principal</a>
             <div style="display:flex; align-items:center; gap:0.65rem;">
               <span class="role-badge" style="font-size:0.85rem; padding:0.4rem 0.9rem; background:${isCourseFinished ? 'rgba(16,185,129,0.2)' : 'rgba(0,194,255,0.15)'}; color:${isCourseFinished ? '#34d399' : '#00c2ff'}; border-color:${isCourseFinished ? '#10b981' : 'var(--border-accent)'};">
                 ${isCourseFinished ? '🏆 CURSO COMPLETADO AL 100%' : `Progreso del Curso: ${stats.percentage}%`}
@@ -1001,13 +903,6 @@
     function renderAdminView(container, user) {
       const users = window.rumboDB.getUsers();
       const courses = window.rumboDB.getCourses();
-      const topAffiliates = window.rumboDB.getTopAffiliatesLeaderboard(10);
-
-      // Aggregate Affiliate Stats
-      const totalAffiliateSales = topAffiliates.reduce((sum, a) => sum + a.salesCount, 0);
-      const totalAffiliateRevenue = totalAffiliateSales * 97;
-      const totalAffiliateCommissions = totalAffiliateSales * 87;
-      const totalAffiliateClicks = topAffiliates.reduce((sum, a) => sum + a.clicks, 0);
 
       // 1. Pending users
       const pendingUsers = users.filter(u => u.status === 'PENDIENTE');
@@ -1015,35 +910,6 @@
       const approvedUsers = users.filter(u => u.status === 'APROBADO');
       // 3. Suspended or Rejected users
       const otherUsers = users.filter(u => u.status === 'SUSPENDIDO' || u.status === 'RECHAZADO');
-
-      // Leaderboard rows
-      let leaderboardRows = topAffiliates.map((aff, idx) => {
-        let posBadgeClass = 'rank-pos-default';
-        let posIcon = `#${idx + 1}`;
-        if (idx === 0) { posBadgeClass = 'rank-pos-1'; posIcon = '🥇 1'; }
-        else if (idx === 1) { posBadgeClass = 'rank-pos-2'; posIcon = '🥈 2'; }
-        else if (idx === 2) { posBadgeClass = 'rank-pos-3'; posIcon = '🥉 3'; }
-
-        return `
-          <tr>
-            <td>
-              <span class="rank-pos-badge ${posBadgeClass}">${posIcon}</span>
-            </td>
-            <td>
-              <div style="font-weight:800; color:#ffffff;">${aff.firstName} ${aff.lastName}</div>
-              <div style="font-size:0.78rem; color:var(--text-muted);">${aff.email}</div>
-            </td>
-            <td>
-              <span class="tier-badge-pill ${aff.tierBadge}" style="font-size:0.75rem;">${aff.tierName}</span>
-            </td>
-            <td style="color:#38bdf8; font-weight:700;">${aff.clicks}</td>
-            <td style="color:#a78bfa; font-weight:700;">${aff.totalReferrals}</td>
-            <td style="color:#34d399; font-weight:900; font-size:0.95rem;">${aff.salesCount}</td>
-            <td style="color:#ffffff; font-weight:800;">$${aff.totalVolumeUsd} USD</td>
-            <td style="color:#facc15; font-weight:900;">$${aff.totalEarnedUsd} USD</td>
-          </tr>
-        `;
-      }).join('');
 
       let pendingRows = pendingUsers.map(u => `
         <tr>
@@ -1077,13 +943,18 @@
             <td><span class="role-badge" style="background:${isAdmin ? 'rgba(0,194,255,0.15)' : 'rgba(255,255,255,0.06)'}; color:${isAdmin ? '#38bdf8' : '#cbd5e1'};">${u.role}</span></td>
             <td><span class="status-tag tag-approved">✅ APROBADO</span></td>
             <td>
-              ${isAdmin ? `
-                <span style="font-size:0.75rem; color:#94a3b8; font-weight:700;">Administrador Principal</span>
-              ` : `
-                <button class="action-btn-sm btn-act-suspend" onclick="handleAdminUpdateUser('${u.id}', 'SUSPENDIDO')">
-                  🚫 Suspender
-                </button>
-              `}
+              <div style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
+                ${isAdmin ? `
+                  <span style="font-size:0.75rem; color:#94a3b8; font-weight:700;">Administrador Principal</span>
+                ` : `
+                  <button class="action-btn-sm btn-act-suspend" onclick="handleAdminUpdateUser('${u.id}', 'SUSPENDIDO')">
+                    🚫 Suspender
+                  </button>
+                  <button class="action-btn-sm btn-act-wa" onclick="handleSendWelcomeWa('${u.firstName}')" title="Copiar y enviar mensaje de bienvenida">
+                    💬 Enviar Bienvenida
+                  </button>
+                `}
+              </div>
             </td>
           </tr>
         `;
@@ -1114,72 +985,10 @@
           <div class="welcome-header">
             <span class="badge-pill" style="background:rgba(0,194,255,0.15); color:#38bdf8; border-color:rgba(0,194,255,0.4); margin-bottom:0.5rem; display:inline-block;">PANEL DE CONTROL</span>
             <h1 class="welcome-title">Panel de Administración</h1>
-            <p class="welcome-sub">Gestión integral de usuarios, ranking de afiliados y control de ventas en RUMBO PRO.</p>
+            <p class="welcome-sub">Gestión integral de usuarios, aprobación de accesos y estados de alumnos en RUMBO PRO.</p>
           </div>
 
-          <!-- ADMIN QUICK STATS SUMMARY -->
-          <div class="affiliate-stats-grid" style="margin-bottom:2.5rem;">
-            <div class="aff-stat-card">
-              <span class="aff-stat-label">AFILIADOS ACTIVOS</span>
-              <div class="aff-stat-num" style="color:#38bdf8;">${topAffiliates.length}</div>
-            </div>
-            <div class="aff-stat-card">
-              <span class="aff-stat-label">CLICS TOTALES EN LINKS</span>
-              <div class="aff-stat-num" style="color:#a78bfa;">${totalAffiliateClicks}</div>
-            </div>
-            <div class="aff-stat-card">
-              <span class="aff-stat-label">VENTAS DE AFILIADOS</span>
-              <div class="aff-stat-num" style="color:#34d399;">${totalAffiliateSales}</div>
-            </div>
-            <div class="aff-stat-card">
-              <span class="aff-stat-label">FACTURACIÓN POR AFILIADOS</span>
-              <div class="aff-stat-num" style="color:#facc15;">$${totalAffiliateRevenue} USD</div>
-            </div>
-          </div>
-
-          <!-- SECTION 1: RANKING TOP 10 AFILIADOS -->
-          <div class="admin-section-block" style="margin-bottom:2.5rem; border:1px solid rgba(250,204,21,0.35); box-shadow:0 15px 40px rgba(0,0,0,0.5);">
-            <div class="admin-section-header">
-              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
-                <div style="display:flex; align-items:center; gap:0.6rem;">
-                  <span style="font-size:1.4rem;">🏆</span>
-                  <div>
-                    <h2 class="courses-section-title" style="margin:0; color:#facc15;">Ranking Top 10 de Afiliados</h2>
-                    <p style="font-size:0.85rem; color:var(--text-muted); margin-top:0.2rem;">Tus mejores afiliados ordenados por ventas confirmadas, clics y comisiones generadas.</p>
-                  </div>
-                </div>
-                <span class="admin-count-badge" style="background:rgba(234,179,8,0.2); color:#facc15; border:1px solid rgba(234,179,8,0.5); font-weight:800;">Top ${topAffiliates.length}</span>
-              </div>
-            </div>
-
-            <div class="admin-table-container">
-              ${topAffiliates.length > 0 ? `
-                <table class="admin-table">
-                  <thead>
-                    <tr>
-                      <th style="width:60px;">Puesto</th>
-                      <th>Afiliado / Email</th>
-                      <th>Rango</th>
-                      <th>Clics</th>
-                      <th>Leads</th>
-                      <th>Ventas</th>
-                      <th>Facturado ($97)</th>
-                      <th>Comisión (90%)</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    ${leaderboardRows}
-                  </tbody>
-                </table>
-              ` : `
-                <div class="admin-empty-state">
-                  <span>🌱</span> Aún no hay alumnos con actividad de afiliados registrada.
-                </div>
-              `}
-            </div>
-          </div>
-
-          <!-- SECTION 2: SOLICITUDES PENDIENTES -->
+          <!-- SECTION 1: SOLICITUDES PENDIENTES -->
           <div class="admin-section-block">
             <div class="admin-section-header">
               <div style="display:flex; align-items:center; gap:0.6rem;">
@@ -1276,346 +1085,6 @@
 
         </div>
       `;
-    }
-
-    // --- VIEW: SIMULADOR DE OBJECIONES DE WHATSAPP ---
-    function renderSalesSimulatorView(container, user) {
-      const objections = [
-        {
-          id: 'obj-1',
-          icon: '💸',
-          title: '"No tengo dinero / Es muy caro"',
-          audioScript: '🎙️ "Totalmente comprensible [Nombre]. De hecho, la gran mayoría de los que hoy están generando con Rumbo Pro arrancaron exactamente en tu misma situación: sin dinero de sobra. Justamente por eso entramos a los negocios digitales, no porque nos sobre el dinero, sino porque queremos cambiar esa realidad. ¿Si te muestro cómo el método Fukuda te permite generar tus primeros $100 USD en orgánico sin poner un solo centavo extra, le darías una oportunidad hoy?"',
-          textMsg: 'Hola [Nombre]! Te entiendo al 100%. De hecho, casi todos los alumnos comenzaron estando justos de plata. Justamente entramos a aprender habilidades digitales para solucionar eso y no depender de un sueldo fijo.\n\nEl Método Fukuda se aplica 100% en orgánico (sin pagar anuncios). Si aplicas el paso a paso, en tus primeras 2 ventas ya recuperas cualquier inversión.\n\n¿Te gustaría que te reserve un cupo hoy?',
-          psychology: 'Empatía inmediata + Reencuadre de coste a solución + Prueba de retorno rápido.',
-          fatalError: 'Discutir con el cliente o bajar el precio desesperadamente sin antes validar su deseo.'
-        },
-        {
-          id: 'obj-2',
-          icon: '👥',
-          title: '"Tengo que hablarlo con mi pareja / familia"',
-          audioScript: '🎙️ "Me parece excelente [Nombre], es súper importante tener el apoyo de la familia. Pero te hago una pregunta con total sinceridad: si tu pareja te dijera \'hazlo, confío en ti\', ¿tú empezarías hoy mismo? Si es así, déjame pasarte un video de 3 minutos para que se lo muestres y vean juntos exactamente cómo funciona la plataforma por dentro."',
-          textMsg: 'Me parece genial [Nombre], tener el apoyo de la gente cercana es clave 🙌\n\nTe hago una consulta: ¿Qué es lo que más dudas le generaría a tu pareja? ¿El tiempo o cómo se generan los ingresos?\n\nTe paso un resumen rápido de 3 min para que lo vean juntos y no queden dudas.',
-          psychology: 'Aislar la objeción real y empoderar al prospecto para que defienda el proyecto ante su pareja.',
-          fatalError: 'Decirle "no necesitas pedir permiso" (genera fricción y rechazo).'
-        },
-        {
-          id: 'obj-3',
-          icon: '🛡️',
-          title: '"¿Y si esto es una estafa o no funciona para mí?"',
-          audioScript: '🎙️ "Es completamente normal que tengas esa duda, hoy en internet hay de todo y está perfecto que te cuides. Mira, en Rumbo Pro tenemos más de 500 alumnos y los cursos están grabados paso a paso para que los veas desde tu celular. Además, cada certificado oficial tiene un código QR y folio único anti-fraude verificable. No tienes nada que inventar, solo copiar y pegar lo que ya funciona."',
-          textMsg: 'Es 100% entendible tu duda [Nombre], en internet hay mucha desinformación y es bueno ser precavido 👍\n\nEn Rumbo Pro no te prometemos hacerte millonario de la noche a la mañana. Te enseñamos habilidades reales (Dropshipping, Closer, Hotmart, Community Manager) con clases prácticas y soporte.\n\nPuedes verificar los certificados oficiales y testimonios de la comunidad aquí mismo en la web.',
-          psychology: 'Transparencia brutal + Desmitificación del dinero fácil + Validación con credenciales oficiales.',
-          fatalError: 'Ofenderse o prometer "garantía de hacerte rico en 3 días".'
-        },
-        {
-          id: 'obj-4',
-          icon: '⏰',
-          title: '"No tengo tiempo para estudiar o grabar"',
-          audioScript: '🎙️ "Te entiendo perfectamente [Nombre]. La gran ventaja de la plataforma es que las clases son cortas y al grano, y puedes verlas a tu propio ritmo desde el celular cuando vuelves del trabajo o antes de dormir. Con solo 45 minutos al día que le dediques a publicar 1 video con nuestro generador automático de ideas, es más que suficiente para empezar a ver resultados."',
-          textMsg: '¡Te comprendo! La mayoría de los alumnos trabajan o estudian 8 horas al día.\n\nPor eso la plataforma está disponible 24/7 en tu celular y las lecciones van directo a la práctica. Con solo 40-50 min diarios puedes generar tus guiones con nuestra herramienta y subirlos.\n\n¿Tienes 40 minutos libres por la noche?',
-          psychology: 'Micro-compromiso de tiempo (45 min) + Enfatizar la accesibilidad móvil.',
-          fatalError: 'Decirle que necesita 6 horas al día.'
-        },
-        {
-          id: 'obj-5',
-          icon: '⚡',
-          title: '"Pásame el precio directo sin dar vueltas"',
-          audioScript: '🎙️ "¡Claro que sí, sin problema! Pero antes de darte el valor, quiero asegurarme de que esto realmente sea lo que estás buscando. En Rumbo Pro tienes acceso a 5 formaciones completas, ideas diarias de video y certificaciones. El acceso promocional completo es de [Precio] con acceso de por vida. ¿Tienes alguna duda puntual antes de que te pase el link de inscripción?"',
-          textMsg: '¡Claro que sí! Te paso la info completa y directa:\n\nEl acceso completo a RUMBO PRO incluye:\n✅ 5 Formaciones Digitales Completas\n✅ Generador Diario de Ideas de Video\n✅ Bóveda de Recursos y Plantillas Legales\n✅ Certificados Oficiales con QR\n\n🏷️ Inversión con cupo promocional: [Tu Precio Aquí]\n\n¿Quieres que te reserve un lugar?',
-          psychology: 'Anclar valor antes del precio para que el número parezca insignificante comparado con todo lo que incluye.',
-          fatalError: 'Mandar solo un número suelto ("cuesta $50") sin recordar el paquete de valor.'
-        },
-        {
-          id: 'obj-6',
-          icon: '🏦',
-          title: '"¿Cómo retiro mis ganancias a mi banco local?"',
-          audioScript: '🎙️ "Esa es la mejor parte. Si haces Hotmart o ventas de afiliados, las comisiones se acumulan en tu balance en dólares y puedes transferirlas directo a tu cuenta bancaria local en tu moneda o a través de plataformas como Payoneer o cuenta digital en cualquier país de Latinoamérica."',
-          textMsg: 'Excelente pregunta [Nombre] 💵\n\nTus comisiones se generan en dólares y puedes retirarlas directamente a:\n🏦 Tu cuenta bancaria local en tu país\n💳 Payoneer / Tarjeta digital internacional\n\nEn la academia te mostramos el paso a paso exacto para configurar tus retiros de forma 100% segura.',
-          psychology: 'Certeza financiera y tranquilidad de liquidez.',
-          fatalError: 'Dar respuestas confusas sobre métodos de pago.'
-        }
-      ];
-
-      let currentObj = objections[0];
-
-      function renderSimulator() {
-        container.innerHTML = `
-          <div class="dashboard-container">
-            <div class="welcome-header">
-              <span class="badge-pill" style="background:rgba(52,211,153,0.15); color:#34d399; border-color:rgba(52,211,153,0.4);">HERRAMIENTA DE CONVERSIÓN & ROLEPLAY</span>
-              <h1 class="welcome-title">Simulador de Objeciones de WhatsApp 🎯</h1>
-              <p class="welcome-sub">Selecciona la duda u objeción de tu cliente y obtén al instante el guion exacto de nota de voz y texto para cerrar la venta.</p>
-            </div>
-
-            <div class="simulator-layout">
-              <!-- Sidebar list of objections -->
-              <div class="simulator-sidebar">
-                <h4 style="color:#94a3b8; font-size:0.78rem; font-weight:800; letter-spacing:0.05em; margin-bottom:1rem;">SELECCIONÁ LA OBJECIÓN:</h4>
-                ${objections.map(obj => `
-                  <button class="simulator-obj-btn ${obj.id === currentObj.id ? 'active' : ''}" onclick="selectSimulatorObj('${obj.id}')">
-                    <span>${obj.icon}</span>
-                    <span style="flex:1;">${obj.title}</span>
-                  </button>
-                `).join('')}
-              </div>
-
-              <!-- Main Display Card -->
-              <div class="simulator-display-card">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
-                  <h2 style="font-size:1.4rem; font-weight:800; color:#ffffff;">
-                    ${currentObj.icon} ${currentObj.title}
-                  </h2>
-                  <span class="role-badge" style="background:rgba(0,194,255,0.15); color:#38bdf8;">GUION PROBADO</span>
-                </div>
-
-                <!-- 1. Voice Note Script -->
-                <div class="sim-box-block">
-                  <div class="sim-box-title audio">🎙️ GUION DE NOTA DE VOZ (Recomendado para generar confianza):</div>
-                  <div class="sim-text-content">${currentObj.audioScript}</div>
-                  <button class="btn-sim-copy" onclick="copySimText(decodeURIComponent('${encodeURIComponent(currentObj.audioScript)}'))">
-                    📋 Copiar Guion de Audio
-                  </button>
-                </div>
-
-                <!-- 2. Text Message Script -->
-                <div class="sim-box-block">
-                  <div class="sim-box-title text">💬 MENSAJE DE TEXTO LISTO PARA WHATSAPP:</div>
-                  <div class="sim-text-content">${currentObj.textMsg}</div>
-                  <button class="btn-sim-copy" onclick="copySimText(decodeURIComponent('${encodeURIComponent(currentObj.textMsg)}'))">
-                    📋 Copiar Mensaje de Texto
-                  </button>
-                </div>
-
-                <!-- 3. Psychology & Trigger -->
-                <div class="sim-box-block" style="border-left: 4px solid #fbbf24;">
-                  <div class="sim-box-title psychology">🧠 GATILLO MENTAL & PSICOLOGÍA APLICADA:</div>
-                  <div class="sim-text-content" style="color:#e2e8f0;">${currentObj.psychology}</div>
-                </div>
-
-                <!-- 4. Fatal Error -->
-                <div class="sim-box-block" style="border-left: 4px solid #f87171;">
-                  <div class="sim-box-title warning">❌ ERROR FATAL A EVITAR:</div>
-                  <div class="sim-text-content" style="color:#fca5a5;">${currentObj.fatalError}</div>
-                </div>
-
-              </div>
-            </div>
-          </div>
-        `;
-      }
-
-      window.selectSimulatorObj = (id) => {
-        const found = objections.find(o => o.id === id);
-        if (found) {
-          currentObj = found;
-          renderSimulator();
-        }
-      };
-
-      window.copySimText = (text) => {
-        navigator.clipboard.writeText(text).then(() => {
-          alert('¡Copiado al portapapeles con éxito! Listo para enviar en WhatsApp.');
-        });
-      };
-
-      renderSimulator();
-    }
-
-    // --- VIEW: CALCULADORA DE PROYECCIÓN DE GANANCIAS ---
-    function renderEarningsCalculatorView(container, user) {
-      container.innerHTML = `
-        <div class="dashboard-container">
-          <div class="welcome-header">
-            <span class="badge-pill" style="background:rgba(167,139,250,0.15); color:#a78bfa; border-color:rgba(167,139,250,0.4);">HERRAMIENTA FINANCIERA INTERACTIVA</span>
-            <h1 class="welcome-title">Calculadora de Proyección Digital 📊</h1>
-            <p class="welcome-sub">Descubrí cuántos ingresos en dólares podés generar al mes según tu volumen de ventas o clientes conseguidos.</p>
-          </div>
-
-          <div class="calc-grid-container">
-            <!-- Controls Card -->
-            <div class="calc-controls-card">
-              <h3 style="font-size:1.15rem; font-weight:800; color:#ffffff; margin-bottom:1.5rem;">⚙️ Parámetros de tu Negocio</h3>
-
-              <!-- Slider 1: Sales per week -->
-              <div class="calc-range-group">
-                <div class="calc-range-header">
-                  <span style="color:#cbd5e1;">Ventas o Clientes por Semana:</span>
-                  <span id="slider-sales-val" style="color:#00c2ff; font-weight:800; font-size:1.1rem;">3 ventas/sem</span>
-                </div>
-                <input type="range" min="1" max="20" value="3" class="calc-slider" id="calc-sales-slider">
-              </div>
-
-              <!-- Slider 2: Average Commission per Sale -->
-              <div class="calc-range-group">
-                <div class="calc-range-header">
-                  <span style="color:#cbd5e1;">Comisión o Ganancia por Venta (USD):</span>
-                  <span id="slider-comm-val" style="color:#34d399; font-weight:800; font-size:1.1rem;">$50 USD</span>
-                </div>
-                <input type="range" min="15" max="300" step="5" value="50" class="calc-slider" id="calc-comm-slider">
-              </div>
-
-              <!-- Quick Model Preset Buttons -->
-              <div style="margin-top:1.5rem;">
-                <span style="font-size:0.78rem; font-weight:800; color:#94a3b8; display:block; margin-bottom:0.6rem;">PREAJUSTES POR MODELO:</span>
-                <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
-                  <button class="action-btn-sm" style="background:rgba(255,255,255,0.05); color:#ffffff; padding:0.4rem 0.75rem;" onclick="setCalcPreset(3, 45)">🔥 Hotmart ($45/v)</button>
-                  <button class="action-btn-sm" style="background:rgba(255,255,255,0.05); color:#ffffff; padding:0.4rem 0.75rem;" onclick="setCalcPreset(2, 150)">🎯 Closer ($150/v)</button>
-                  <button class="action-btn-sm" style="background:rgba(255,255,255,0.05); color:#ffffff; padding:0.4rem 0.75rem;" onclick="setCalcPreset(1, 250)">📱 CM Agencia ($250/cli)</button>
-                  <button class="action-btn-sm" style="background:rgba(255,255,255,0.05); color:#ffffff; padding:0.4rem 0.75rem;" onclick="setCalcPreset(7, 25)">🛒 E-commerce ($25/prod)</button>
-                </div>
-              </div>
-            </div>
-
-            <!-- Output Display Card -->
-            <div class="calc-output-card">
-              <span class="role-badge" style="background:rgba(0,194,255,0.15); color:#38bdf8;">PROYECCIÓN ESTIMADA</span>
-              <div style="font-size:0.9rem; color:#94a3b8; margin-top:0.75rem;">Ingreso Mensual Estimado:</div>
-              <div class="calc-big-amount" id="calc-monthly-usd">$600 USD</div>
-              <p style="font-size:0.85rem; color:#cbd5e1;" id="calc-benchmark-text">💡 ¡Superas el salario mínimo promedio de varios países de Latam!</p>
-
-              <div class="calc-sub-stats">
-                <div>
-                  <span style="font-size:0.75rem; color:#94a3b8; font-weight:700; display:block;">PROYECCIÓN ANUAL</span>
-                  <span style="font-size:1.3rem; font-weight:800; color:#ffffff;" id="calc-yearly-usd">$7,200 USD</span>
-                </div>
-                <div>
-                  <span style="font-size:0.75rem; color:#94a3b8; font-weight:700; display:block;">VENTAS AL MES</span>
-                  <span style="font-size:1.3rem; font-weight:800; color:#34d399;" id="calc-monthly-sales">12 ventas</span>
-                </div>
-              </div>
-
-              <div style="margin-top:1.5rem;">
-                <a href="#/ideas-diarias" class="btn-primary" style="display:inline-block; padding:0.85rem 1.75rem; text-decoration:none; font-size:0.9rem;">
-                  GENERAR GUIONES PARA CONSEGUIRLO 🚀
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      `;
-
-      const salesSlider = document.getElementById('calc-sales-slider');
-      const commSlider = document.getElementById('calc-comm-slider');
-      const salesVal = document.getElementById('slider-sales-val');
-      const commVal = document.getElementById('slider-comm-val');
-      const monthlyUsd = document.getElementById('calc-monthly-usd');
-      const yearlyUsd = document.getElementById('calc-yearly-usd');
-      const monthlySales = document.getElementById('calc-monthly-sales');
-      const benchmarkText = document.getElementById('calc-benchmark-text');
-
-      function updateCalc() {
-        const sPerWeek = parseInt(salesSlider.value);
-        const commPerSale = parseInt(commSlider.value);
-
-        salesVal.textContent = `${sPerWeek} ${sPerWeek === 1 ? 'venta' : 'ventas'}/sem`;
-        commVal.textContent = `$${commPerSale} USD`;
-
-        const totalMonthlySales = sPerWeek * 4;
-        const totalMonthly = totalMonthlySales * commPerSale;
-        const totalYearly = totalMonthly * 12;
-
-        monthlyUsd.textContent = `$${totalMonthly.toLocaleString('en-US')} USD`;
-        yearlyUsd.textContent = `$${totalYearly.toLocaleString('en-US')} USD`;
-        monthlySales.textContent = `${totalMonthlySales} ventas/mes`;
-
-        if (totalMonthly >= 2000) {
-          benchmarkText.innerHTML = '🚀 <strong>Nivel Master:</strong> Ingreso de alta escala digital para vivir 100% de internet.';
-        } else if (totalMonthly >= 1000) {
-          benchmarkText.innerHTML = '🎯 <strong>Club de las 4 Cifras:</strong> Superas los $1,000 USD/mes de forma recurrente.';
-        } else if (totalMonthly >= 400) {
-          benchmarkText.innerHTML = '💡 <strong>Libertad Básica:</strong> Superas el sueldo promedio de la mayoría de empleos tradicionales.';
-        } else {
-          benchmarkText.innerHTML = '🌱 <strong>Primer Gran Paso:</strong> Excelente ingreso extra para iniciar sin riesgo.';
-        }
-      }
-
-      window.setCalcPreset = (sales, comm) => {
-        salesSlider.value = sales;
-        commSlider.value = comm;
-        updateCalc();
-      };
-
-      salesSlider.addEventListener('input', updateCalc);
-      commSlider.addEventListener('input', updateCalc);
-      updateCalc();
-    }
-
-    // --- VIEW: BÓVEDA DE RECURSOS & PLANTILLAS ---
-    function renderResourcesVaultView(container, user) {
-      const resources = [
-        {
-          id: 'res-1',
-          category: 'CONTRATOS & LEGAL',
-          badgeColor: 'background:rgba(56,189,248,0.15); color:#38bdf8;',
-          title: 'Contrato de Servicios para Community Manager',
-          desc: 'Plantilla legal formal para acordar pagos mensuales, entregables de contenido, fechas de corte y derechos con empresas o negocios locales.',
-          contentToCopy: `CONTRATO DE PRESTACIÓN DE SERVICIOS DIGITALES\n\nEntre [Nombre del Cliente / Empresa], en adelante "EL CLIENTE", y [Tu Nombre Completo / Agencia], en adelante "EL PRESTADOR".\n\nCLÁUSULA 1 — OBJETO: EL PRESTADOR se compromete a realizar la gestión de redes sociales, creación de [Número] piezas de contenido mensual y optimización de perfil comercial.\n\nCLÁUSULA 2 — HONORARIOS: EL CLIENTE abonará la suma de $[Monto] USD mensuales los días [Fecha de Pago] de cada mes mediante transferencia bancaria.\n\nCLÁUSULA 3 — DURACIÓN: El presente acuerdo tendrá una vigencia mínima de 3 meses renovable automáticamente.\n\nFirmado por ambas partes en fecha: [Fecha Actual].`
-        },
-        {
-          id: 'res-2',
-          category: 'PROSPECCIÓN & MENSAJES',
-          badgeColor: 'background:rgba(52,211,153,0.15); color:#34d399;',
-          title: 'Guion de Prospección en Frío por Instagram DM',
-          desc: 'Mensaje magnético de 3 fases para escribirle a dueños de negocios locales o marcas personales sin sonar a spam y agendar llamada.',
-          contentToCopy: `Hola [Nombre del Dueño/Negocio]! ¿Cómo estás?\n\nEstuve revisando su perfil y me encantó la calidad de sus [Productos/Servicios]. Noté que tienen un potencial enorme pero en los Reels les está faltando aplicar ganchos de retención para atraer clientes de su ciudad.\n\nGrabé una auditoría rápida de 2 minutos mostrándote 3 ajustes sencillos que pueden duplicar sus mensajes diarios. ¿Te la puedo compartir por acá sin ningún compromiso?`
-        },
-        {
-          id: 'res-3',
-          category: 'ORGANIZACIÓN & NOTION',
-          badgeColor: 'background:rgba(167,139,250,0.15); color:#a78bfa;',
-          title: 'Plantilla de Calendario de Contenidos 30 Días',
-          desc: 'Estructura de 4 pilares: Atracción Viral, Autoridad / Educación, Conexión Personal y Oferta Directa para nunca quedarte sin ideas.',
-          contentToCopy: `ESTRUCTURA DE CALENDARIO MENSUAL (4 PILARES):\n\n- LUNES (Atracción/Viral): Video corto de 15s desmintiendo un mito de la industria con gancho agresivo.\n- MIÉRCOLES (Educación/Paso a Paso): Tutorial de 3 pasos resolviendo un problema puntual del cliente.\n- VIERNES (Historia/Conexión): Caso de estudio o testimonio de superación de un alumno o cliente.\n- DOMINGO (Llamado a la Acción Directo): Presentación de la oferta con invitación al link de WhatsApp.`
-        },
-        {
-          id: 'res-4',
-          category: 'DROPSHIPPING & PROVEEDORES',
-          badgeColor: 'background:rgba(251,191,36,0.15); color:#fbbf24;',
-          title: 'Checklist de Validación de Productos Ganadores',
-          desc: 'Los 5 filtros obligatorios que debe cumplir cualquier producto antes de testearlo en tu tienda de dropshipping.',
-          contentToCopy: `CHECKLIST DE PRODUCTO GANADOR (5 FILTROS OBLIGATORIOS):\n\n1. [ ] Efecto WOW visual: ¿Se entiende su beneficio en los primeros 3 segundos del video?\n2. [ ] Resuelve un dolor específico o ahorra tiempo/dinero al usuario.\n3. [ ] No se encuentra fácilmente en el supermercado o tienda de la esquina.\n4. [ ] Margen mínimo de ganancia: Precio de venta al menos 3x su costo con proveedor.\n5. [ ] Facilidad de envío: Peso ligero y sin componentes frágiles.`
-        },
-        {
-          id: 'res-5',
-          category: 'VENTAS POR WHATSAPP',
-          badgeColor: 'background:rgba(239,68,68,0.15); color:#f87171;',
-          title: 'Estructura de Cierre en WhatsApp de 5 Fases',
-          desc: 'Flujo conversacional para guiar a un prospecto desde el saludo inicial hasta el pago sin parecer insistente.',
-          contentToCopy: `FLUJO DE CONVERSIÓN EN WHATSAPP (5 FASES):\n\n1. BIENVENIDA & RAPPORT: "Hola [Nombre]! Qué gusto saludarte. Vi que me escribiste por el video de [Tema]."\n2. DIAGNÓSTICO: "¿Actualmente ya tienes experiencia en negocios digitales o estás arrancando desde cero?"\n3. PRESENTACIÓN DE LA SOLUCIÓN: "Perfecto, justamente en Rumbo Pro tenemos el paso a paso exacto para tu caso..."\n4. OFERTA & LLAMADO A LA ACCIÓN: "Tenemos un cupo promocional con acceso de por vida. ¿Te paso el link para asegurar tu lugar?"\n5. MANEJO DE OBJECIONES: Resolver dudas con notas de voz de 30 segundos con el Simulador de Rumbo Pro.`
-        }
-      ];
-
-      container.innerHTML = `
-        <div class="dashboard-container">
-          <div class="welcome-header">
-            <span class="badge-pill" style="background:rgba(251,191,36,0.15); color:#facc15; border-color:rgba(251,191,36,0.4);">RECURSOS DESCARGABLES & PLANTILLAS</span>
-            <h1 class="welcome-title">Bóveda de Recursos "Copiar y Pegar" 📂</h1>
-            <p class="welcome-sub">Plantillas probadas, contratos legales y estructuras de prospección listas para utilizar en tus proyectos.</p>
-          </div>
-
-          <div class="vault-grid">
-            ${resources.map(res => `
-              <div class="vault-item-card">
-                <div>
-                  <span class="vault-badge-cat" style="${res.badgeColor}">${res.category}</span>
-                  <h3 class="vault-item-title">${res.title}</h3>
-                  <p class="vault-item-desc">${res.desc}</p>
-                </div>
-                <button class="btn-vault-action" onclick="copyVaultResource(decodeURIComponent('${encodeURIComponent(res.contentToCopy)}'))">
-                  📋 Copiar Plantilla Completa
-                </button>
-              </div>
-            `).join('')}
-          </div>
-        </div>
-      `;
-
-      window.copyVaultResource = (text) => {
-        navigator.clipboard.writeText(text).then(() => {
-          alert('¡Plantilla copiada al portapapeles con éxito! Ya puedes pegarla en tu documento o bloc de notas.');
-        });
-      };
     }
 
     // --- VIEW: MANUAL DEL AFILIADO (10 CAPÍTULOS INTERACTIVOS) ---
@@ -2245,330 +1714,89 @@
         }
       ];
 
-      let currentAffiliateTab = 'dashboard';
       let selectedCapId = chapters[0].id;
 
-      function renderMainView() {
-        const affStats = window.rumboDB.getAffiliateStats(user.id);
-        if (currentAffiliateTab === 'dashboard') {
-          // --- TAB 1: DASHBOARD & METRICS ---
-          const referralsHtml = affStats.referralsList.length === 0 ? `
-            <div class="admin-empty-state">
-              <div style="font-size:2.2rem; margin-bottom:0.5rem;">🌱</div>
-              <p style="font-weight:700; color:#ffffff;">Aún no tienes alumnos registrados con tu enlace.</p>
-              <p style="font-size:0.85rem; color:#94a3b8; margin-top:0.3rem;">¡Comparte tu link en tu biografía de TikTok o estados de WhatsApp para sumar tus primeros prospectos!</p>
-            </div>
-          ` : `
-            <div class="admin-table-container">
-              <table class="admin-table">
-                <thead>
-                  <tr>
-                    <th>Alumno Referido</th>
-                    <th>Email</th>
-                    <th>Fecha</th>
-                    <th>Estado</th>
-                    <th>Comisión</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  ${affStats.referralsList.map(ref => `
-                    <tr>
-                      <td><strong>${ref.firstName} ${ref.lastName}</strong></td>
-                      <td style="color:#94a3b8; font-size:0.8rem;">${ref.email}</td>
-                      <td style="color:#94a3b8; font-size:0.8rem;">${new Date(ref.registeredAt || Date.now()).toLocaleDateString('es-ES')}</td>
-                      <td>
-                        <span class="role-badge" style="background:${ref.status === 'APROBADO' ? 'rgba(16,185,129,0.15)' : 'rgba(245,158,11,0.15)'}; color:${ref.status === 'APROBADO' ? '#34d399' : '#fbbf24'};">
-                          ${ref.status === 'APROBADO' ? 'VENTA CONFIRMADA ✓' : 'PENDIENTE DE PAGO ⏳'}
-                        </span>
-                      </td>
-                      <td style="font-weight:800; color:${ref.status === 'APROBADO' ? '#34d399' : '#94a3b8'};">
-                        ${ref.status === 'APROBADO' ? `$${affStats.commissionPerSale} USD` : '$0 USD (En espera)'}
-                      </td>
-                    </tr>
-                  `).join('')}
-                </tbody>
-              </table>
-            </div>
-          `;
+      function renderChapterContent() {
+        const cur = chapters.find(c => c.id === selectedCapId) || chapters[0];
+        const curIdx = chapters.findIndex(c => c.id === cur.id);
+        const prevCap = curIdx > 0 ? chapters[curIdx - 1] : null;
+        const nextCap = curIdx < chapters.length - 1 ? chapters[curIdx + 1] : null;
 
-          container.innerHTML = `
-            <div class="dashboard-container">
-              <!-- Header -->
-              <div class="welcome-header">
-                <span class="badge-pill" style="background:rgba(234,179,8,0.2); color:#facc15; border-color:rgba(234,179,8,0.5);">PROGRAMA OFICIAL DE AFILIADOS</span>
-                <h1 class="welcome-title">Panel del Afiliado RUMBO PRO 💰</h1>
-                <p class="welcome-sub">Monitorea tus clics, alumnos registrados, comisiones acumuladas y escala de nivel con tus ventas.</p>
-              </div>
-
-              <!-- Sub-Navigation Tabs -->
-              <div class="affiliate-tab-nav">
-                <button class="affiliate-tab-btn active" onclick="switchAffiliateSubTab('dashboard')">
-                  📊 Mi Panel de Ventas & Rangos
-                </button>
-                <button class="affiliate-tab-btn" onclick="switchAffiliateSubTab('manual')">
-                  📖 Manual de Estrategia (10 Capítulos)
-                </button>
-              </div>
-
-              <!-- Rank Status Hero Banner -->
-              <div class="affiliate-hero-card">
-                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:1.5rem;">
-                  <div style="display:flex; align-items:center; gap:0.75rem;">
-                    <span style="font-size:2.5rem;">${affStats.tier.icon}</span>
-                    <div>
-                      <div style="display:flex; align-items:center; gap:0.5rem;">
-                        <h2 style="font-size:1.4rem; font-weight:900; color:#ffffff; margin:0;">${affStats.tier.name}</h2>
-                        <span class="tier-badge-pill ${affStats.tier.badgeClass}">90% de Comisión</span>
-                      </div>
-                      <p style="font-size:0.85rem; color:#facc15; font-weight:700; margin-top:0.25rem;">
-                        ${affStats.tier.salesNeededForNext > 0 ? `Siguiente Hito: ${affStats.tier.nextTierName} (${affStats.salesCount}/${affStats.tier.salesNeededForNext} ventas)` : '¡Hito Máximo de Ventas Alcanzado!'}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div>
-                    <span style="font-size:0.8rem; color:#94a3b8; font-weight:700;">PROGRESO DEL HITO</span>
-                    <div style="font-size:1.1rem; font-weight:800; color:#ffffff; text-align:right;">${affStats.tier.progressPercentage}%</div>
-                  </div>
-                </div>
-
-                <!-- Progress Track -->
-                <div class="progress-track" style="height:12px; margin-bottom:1rem;">
-                  <div class="progress-fill is-100" style="width:${affStats.tier.progressPercentage}%; background:linear-gradient(90deg, #eab308, #facc15);"></div>
-                </div>
-
-                <!-- Equal Access & Pricing Note (Exclusivo en el Panel de Afiliado) -->
-                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.75rem; font-size:0.82rem; color:#cbd5e1; background:rgba(0,0,0,0.35); padding:0.75rem 1rem; border-radius:10px; border:1px solid rgba(255,255,255,0.06);">
-                  <div>
-                    🏷️ <strong>Precio Oficial de Rumbo Pro:</strong> <span style="color:#ffffff; font-weight:800;">$97 USD</span> <span style="color:#94a3b8; font-size:0.78rem;">(3.900 pesos uruguayos)</span>
-                  </div>
-                  <div>
-                    💰 <strong>Tu Comisión Directa (90%):</strong> <span style="color:#34d399; font-weight:900; font-size:0.95rem;">$87 USD por venta</span>
-                  </div>
-                  <div>
-                    ✨ <em style="color:#94a3b8;">Mismos beneficios y herramientas para todos los afiliados.</em>
-                  </div>
-                </div>
-              </div>
-
-              <!-- 4 Stat Metric Cards -->
-              <div class="affiliate-stats-grid">
-                <div class="aff-stat-card">
-                  <span class="aff-stat-label">CLICS EN TU ENLACE</span>
-                  <div class="aff-stat-num" style="color:#38bdf8;">${affStats.clicks}</div>
-                </div>
-                <div class="aff-stat-card">
-                  <span class="aff-stat-label">LEADS / REGISTRADOS</span>
-                  <div class="aff-stat-num" style="color:#a78bfa;">${affStats.referralsCount}</div>
-                </div>
-                <div class="aff-stat-card">
-                  <span class="aff-stat-label">VENTAS APROBADAS</span>
-                  <div class="aff-stat-num" style="color:#34d399;">${affStats.salesCount}</div>
-                </div>
-                <div class="aff-stat-card">
-                  <span class="aff-stat-label">COMISIONES TOTALES</span>
-                  <div class="aff-stat-num" style="color:#facc15;">$${affStats.totalEarnedUsd} USD</div>
-                </div>
-              </div>
-
-              <!-- Personal Affiliate Link Box -->
-              <div class="manual-card-highlight" style="background:radial-gradient(circle at top left, rgba(0,194,255,0.12), transparent 70%), var(--bg-surface); border-color:rgba(0,194,255,0.4); margin-bottom:2rem;">
-                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1.25rem;">
-                  <div>
-                    <span class="badge-pill" style="background:rgba(0,194,255,0.15); color:#38bdf8; border-color:rgba(0,194,255,0.4); font-weight:800; font-size:0.75rem;">${user.id === 'invitado' ? 'PROGRAMA DE AFILIADOS' : 'TU ENLACE ÚNICO DE AFILIADO'}</span>
-                    <h3 style="font-size:1.15rem; font-weight:800; color:#ffffff; margin:0.35rem 0;">Recomendá Rumbo Pro y cobrá tus comisiones en dólares</h3>
-                    ${user.id === 'invitado' ? `
-                      <p style="font-size:0.85rem; color:#cbd5e1; margin-top:0.35rem;">
-                        💡 <strong>Acceso Abierto:</strong> Para registrar comisiones automáticas a tu nombre y tener tu link personal, <a href="#/registro" style="color:#facc15; font-weight:800; text-decoration:underline;">creá tu cuenta gratuita</a> o <a href="#/login" style="color:#38bdf8; font-weight:800; text-decoration:underline;">iniciá sesión</a>.
-                      </p>
-                    ` : `
-                      <code style="display:inline-block; margin-top:0.35rem; background:rgba(0,0,0,0.5); padding:0.4rem 0.85rem; border-radius:8px; font-size:0.85rem; color:#38bdf8; border:1px solid rgba(0,194,255,0.25);">https://rumbo-pro.vercel.app?ref=${user.id}</code>
-                    `}
-                  </div>
-                  <div style="display:flex; gap:0.6rem; flex-wrap:wrap;">
-                    ${user.id === 'invitado' ? `
-                      <a href="#/registro" class="btn-primary" style="padding:0.65rem 1.15rem; font-size:0.85rem; text-decoration:none; display:inline-flex; align-items:center; gap:0.4rem; background:linear-gradient(135deg,#eab308,#ca8a04); color:#0f172a; font-weight:800; border-radius:8px;">
-                        🚀 Crear Cuenta y Obtener Mi Link
-                      </a>
-                    ` : `
-                      <button class="btn-primary" style="padding:0.65rem 1.15rem; font-size:0.85rem;" onclick="copyAffiliateLink('${user.id}')">
-                        📋 Copiar Mi Link
-                      </button>
-                      <a href="https://wa.me/?text=${encodeURIComponent('¡Hola! Te recomiendo la academia RUMBO PRO donde me estoy formando en habilidades digitales: https://rumbo-pro.vercel.app?ref=' + user.id)}" target="_blank" class="header-wa-btn" style="padding:0.65rem 1.15rem; font-size:0.85rem; background:#25d366; color:#ffffff; border:none; text-decoration:none; font-weight:700; border-radius:10px;">
-                        💬 Enviar por WhatsApp
-                      </a>
-                    `}
-                  </div>
-                </div>
-              </div>
-
-              <!-- Referrals Table -->
-              <div class="admin-section-block" style="margin-bottom:2.5rem;">
-                <div class="admin-section-header">
-                  <div style="display:flex; align-items:center; gap:0.6rem;">
-                    <span style="font-size:1.2rem;">👥</span>
-                    <h3 style="font-size:1.15rem; font-weight:800; color:#ffffff; margin:0;">Tus Alumnos Referidos</h3>
-                    <span class="admin-count-badge" style="background:rgba(0,194,255,0.15); color:#38bdf8; border:1px solid rgba(0,194,255,0.4);">${affStats.referralsList.length}</span>
-                  </div>
-                </div>
-                ${referralsHtml}
-              </div>
-
-              <!-- Ranks Roadmap Explanation -->
-              <div class="manual-card-highlight" style="background:var(--bg-surface); border-color:var(--border-light);">
-                <h3 style="font-size:1.2rem; font-weight:800; color:#ffffff; margin-bottom:0.4rem;">🏆 Hitos de Ventas para Afiliados (Conteo de Logros)</h3>
-                <p style="font-size:0.85rem; color:#94a3b8; margin-bottom:1.5rem;">Todos los afiliados cuentan con los mismos beneficios completos y <strong>90% de comisión fija ($87 USD por venta / 3.900 UYU)</strong>. Los rangos sirven para medir tu volumen de ventas acumuladas:</p>
-
-                <div class="tier-roadmap-grid">
-                  <div class="tier-card ${affStats.salesCount < 3 ? 'active-tier' : ''}">
-                    <span style="font-size:1.6rem;">🥉</span>
-                    <h4 class="tier-card-title">Rango Rookie</h4>
-                    <div class="tier-card-sales">0 a 2 ventas</div>
-                    <ul class="tier-card-perks">
-                      <li>📊 Hito: Fase de Arranque</li>
-                      <li>💵 $0 a $174 USD acumulados</li>
-                      <li>⚡ 90% de comisión fija ($87/v)</li>
-                    </ul>
-                  </div>
-
-                  <div class="tier-card ${affStats.salesCount >= 3 && affStats.salesCount < 10 ? 'active-tier' : ''}">
-                    <span style="font-size:1.6rem;">🥈</span>
-                    <h4 class="tier-card-title">Rango Pro</h4>
-                    <div class="tier-card-sales">3 a 9 ventas</div>
-                    <ul class="tier-card-perks">
-                      <li>📊 Hito: Afiliado Activo</li>
-                      <li>💵 $261 a $783 USD acumulados</li>
-                      <li>⚡ 90% de comisión fija ($87/v)</li>
-                    </ul>
-                  </div>
-
-                  <div class="tier-card ${affStats.salesCount >= 10 && affStats.salesCount < 25 ? 'active-tier' : ''}">
-                    <span style="font-size:1.6rem;">🥇</span>
-                    <h4 class="tier-card-title">Rango Master</h4>
-                    <div class="tier-card-sales">10 a 24 ventas</div>
-                    <ul class="tier-card-perks">
-                      <li>📊 Hito: Afiliado Avanzado</li>
-                      <li>💵 $870 a $2,088 USD acumulados</li>
-                      <li>⚡ 90% de comisión fija ($87/v)</li>
-                    </ul>
-                  </div>
-
-                  <div class="tier-card ${affStats.salesCount >= 25 ? 'active-tier' : ''}">
-                    <span style="font-size:1.6rem;">💎</span>
-                    <h4 class="tier-card-title">Rango Legend</h4>
-                    <div class="tier-card-sales">25+ ventas</div>
-                    <ul class="tier-card-perks">
-                      <li>📊 Hito: Afiliado Referente</li>
-                      <li>💵 $2,175+ USD acumulados</li>
-                      <li>⚡ 90% de comisión fija ($87/v)</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-          `;
-        } else {
-          // --- TAB 2: MANUAL OF 10 CHAPTERS ---
-          const cur = chapters.find(c => c.id === selectedCapId) || chapters[0];
-          const curIdx = chapters.findIndex(c => c.id === cur.id);
-          const prevCap = curIdx > 0 ? chapters[curIdx - 1] : null;
-          const nextCap = curIdx < chapters.length - 1 ? chapters[curIdx + 1] : null;
-
-          const sidebarItems = chapters.map((c) => {
-            const isActive = c.id === cur.id;
-            return `
-              <div class="manual-sidebar-item ${isActive ? 'active' : ''}" onclick="selectManualChapter('${c.id}')">
-                <div class="manual-sidebar-num">${c.num}</div>
-                <div class="manual-sidebar-info">
-                  <div class="manual-sidebar-title">${c.title}</div>
-                </div>
-              </div>
-            `;
-          }).join('');
-
-          container.innerHTML = `
-            <div class="dashboard-container">
-              <!-- Header -->
-              <div class="welcome-header">
-                <span class="badge-pill" style="background:rgba(234,179,8,0.2); color:#facc15; border-color:rgba(234,179,8,0.5);">FORMACIÓN ESTRATÉGICA</span>
-                <h1 class="welcome-title">Manual de Estrategia del Afiliado 📖</h1>
-                <p class="welcome-sub">El paso a paso práctico para crear tu marca, atraer prospectos y cerrar ventas desde tu celular.</p>
-              </div>
-
-              <!-- Sub-Navigation Tabs -->
-              <div class="affiliate-tab-nav">
-                <button class="affiliate-tab-btn" onclick="switchAffiliateSubTab('dashboard')">
-                  📊 Mi Panel de Ventas & Rangos
-                </button>
-                <button class="affiliate-tab-btn active" onclick="switchAffiliateSubTab('manual')">
-                  📖 Manual de Estrategia (10 Capítulos)
-                </button>
-              </div>
-
-              <!-- Main Manual Reader Layout -->
-              <div class="manual-layout-grid">
-                
-                <!-- Sidebar -->
-                <div class="manual-sidebar-card">
-                  <div class="manual-sidebar-head">
-                    <span>📖 ÍNDICE DEL MANUAL</span>
-                  </div>
-                  <div class="manual-sidebar-list">
-                    ${sidebarItems}
-                  </div>
-                </div>
-
-                <!-- Reading Canvas -->
-                <div class="manual-content-canvas">
-                  ${cur.contentHtml}
-
-                  <!-- Chapter Navigation Footer -->
-                  <div class="manual-nav-footer">
-                    ${prevCap ? `
-                      <button class="btn-prev-lesson" onclick="selectManualChapter('${prevCap.id}')">
-                        ← Anterior: Cap. ${prevCap.num}
-                      </button>
-                    ` : '<div></div>'}
-
-                    ${nextCap ? `
-                      <button class="btn-next-lesson" onclick="selectManualChapter('${nextCap.id}')" style="background:linear-gradient(135deg, #eab308, #ca8a04); color:#0f172a; font-weight:800;">
-                        Siguiente: Cap. ${nextCap.num} →
-                      </button>
-                    ` : `
-                      <button class="btn-next-lesson" onclick="switchAffiliateSubTab('dashboard')" style="background:#10b981; color:#ffffff; font-weight:800;">
-                        ✓ Volver al Panel de Afiliado
-                      </button>
-                    `}
-                  </div>
-                </div>
-
+        const sidebarItems = chapters.map((c, idx) => {
+          const isActive = c.id === cur.id;
+          return `
+            <div class="manual-sidebar-item ${isActive ? 'active' : ''}" onclick="selectManualChapter('${c.id}')">
+              <div class="manual-sidebar-num">${c.num}</div>
+              <div class="manual-sidebar-info">
+                <div class="manual-sidebar-title">${c.title}</div>
               </div>
             </div>
           `;
-        }
+        }).join('');
+
+        container.innerHTML = `
+          <div class="dashboard-container">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem;">
+              <div>
+                <a href="#/dashboard" class="btn-back" style="display:inline-flex; align-items:center; gap:0.4rem; color:var(--color-primary-light); text-decoration:none; font-weight:700; font-size:0.88rem; margin-bottom:0.5rem;">
+                  ← Volver al Dashboard
+                </a>
+                <h1 class="welcome-title" style="margin:0;">Manual del Afiliado RUMBO PRO</h1>
+              </div>
+              <div style="display:flex; align-items:center; gap:0.5rem;">
+                <span class="role-badge" style="background:rgba(234,179,8,0.2); color:#facc15; border:1px solid rgba(234,179,8,0.5);">Capítulo ${cur.num} de ${chapters.length}</span>
+              </div>
+            </div>
+
+            <!-- Main Manual Reader Layout -->
+            <div class="manual-layout-grid">
+              
+              <!-- Sidebar of 10 Chapters -->
+              <div class="manual-sidebar-card">
+                <div class="manual-sidebar-head">
+                  <span>📖 ÍNDICE DEL MANUAL</span>
+                </div>
+                <div class="manual-sidebar-list">
+                  ${sidebarItems}
+                </div>
+              </div>
+
+              <!-- Main Reading Canvas -->
+              <div class="manual-content-canvas">
+                ${cur.contentHtml}
+
+                <!-- Chapter Navigation Footer -->
+                <div class="manual-nav-footer">
+                  ${prevCap ? `
+                    <button class="btn-prev-lesson" onclick="selectManualChapter('${prevCap.id}')">
+                      ← Anterior: Cap. ${prevCap.num}
+                    </button>
+                  ` : '<div></div>'}
+
+                  ${nextCap ? `
+                    <button class="btn-next-lesson" onclick="selectManualChapter('${nextCap.id}')" style="background:linear-gradient(135deg, #eab308, #ca8a04); color:#0f172a; font-weight:800;">
+                      Siguiente: Cap. ${nextCap.num} →
+                    </button>
+                  ` : `
+                    <button class="btn-next-lesson" onclick="navigateTo('#/dashboard')" style="background:#10b981; color:#ffffff; font-weight:800;">
+                      ✓ Finalizar Manual
+                    </button>
+                  `}
+                </div>
+              </div>
+
+            </div>
+          </div>
+        `;
       }
-
-      window.switchAffiliateSubTab = (tab) => {
-        currentAffiliateTab = tab;
-        renderMainView();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      };
 
       window.selectManualChapter = (id) => {
         selectedCapId = id;
-        renderMainView();
+        renderChapterContent();
         window.scrollTo({ top: 0, behavior: 'smooth' });
       };
 
-      window.copyAffiliateLink = (uId) => {
-        const link = `https://rumbo-pro.vercel.app?ref=${uId}`;
-        navigator.clipboard.writeText(link).then(() => {
-          alert('¡Tu enlace de afiliado personal ha sido copiado al portapapeles!\n\n' + link);
-        });
-      };
-
-      renderMainView();
+      renderChapterContent();
     }
 
     // Helper to copy text to clipboard with feedback
@@ -2593,15 +1821,13 @@
     };
 
     // ==========================================================================
-    // RUMBO PRO — SMART DAILY VIDEO IDEA ENGINE (100% Never-Repeat & Infinite Matrix)
+    // RUMBO PRO — SMART DAILY VIDEO IDEA ENGINE (Unique per user & per day)
     // ==========================================================================
     window.rumboIdeaEngine = {
-      // 45+ Master Handcrafted High-Converting Templates
+      // 30+ Core High-Converting Video Templates (Modular)
       templates: [
-        // --- E-COMMERCE & DROPSHIPPING ---
         {
           id: 'idea-ecom-1',
-          nicheCategory: 'ecom',
           niche: '🛒 E-COMMERCE / DROPSHIPPING',
           type: 'Educación & Errores',
           hook: '“El error de $0 que hace que el 90% de tiendas online no vendan nada en su primera semana.”',
@@ -2612,78 +1838,15 @@
           ],
           cta: '“Si querés aprender a montar tu tienda desde cero con productos validados, comentá TIENDA o escribime al link de mi perfil y te paso la info de la academia.”',
           broll: 'Graba tu pantalla mostrando TikTok Search o la web de Shopify de fondo mientras hablas a cámara.',
-          caption: 'No cometas este error con tu tienda online 🛒👇 Comentá TIENDA para enviarte los detalles. #ecommerce #dropshipping #rumbopro #negociosonline'
+          caption: 'No cometas este error con tu tienda online 🛒👇 Comentá TIENDA para enviarte los detalles.'
         },
-        {
-          id: 'idea-ecom-2',
-          nicheCategory: 'ecom',
-          niche: '🛒 E-COMMERCE / DROPSHIPPING',
-          type: 'Análisis de Caso Viral',
-          hook: '“3 productos que se están vendiendo como pan caliente en TikTok este mes y por qué funcionan.”',
-          body: [
-            '1. Producto 1: Un gadget que resuelve un problema visual o ahorra tiempo en la cocina o auto (efecto WOW).',
-            '2. Producto 2: Accesorio de nicho emocional de alta fidelidad (mascotas o fitness en casa).',
-            '3. Explica cómo crear una oferta irresistible (ej: 2x1 o envío gratis) con margen de ganancia superior al 50%.'
-          ],
-          cta: '“Si querés que te pase la lista completa de proveedores y cómo montar la tienda sin stock, escribime DROPSHIPPING al privado.”',
-          broll: 'Muestra videos de productos con efecto WOW en TikTok en pantalla partida con tu rostro.',
-          caption: 'Productos ganadores para tu tienda online 🛒 Comentá DROPSHIPPING para enviarte el método. #dropshipping2026 #tiendaonline #rumbopro'
-        },
-        {
-          id: 'idea-ecom-3',
-          nicheCategory: 'ecom',
-          niche: '🛒 E-COMMERCE / DROPSHIPPING',
-          type: 'Estrategia Orgánica',
-          hook: '“Cómo vender en tu tienda online sin gastar ni un dólar en anuncios de Facebook o TikTok Ads.”',
-          body: [
-            '1. Pide el producto de muestra o usa clips de demostración en alta calidad.',
-            '2. Graba 3 videos diarios enfocados en el antes y el después de usar el producto.',
-            '3. Coloca el enlace directo en tu biografía y responde todos los comentarios con nuevos videos.'
-          ],
-          cta: '“En el módulo de E-commerce de Rumbo Pro te enseñan toda la estrategia de ventas orgánicas. Comentá ORGÁNICO para empezar.”',
-          broll: 'Grabación de pantalla de TikTok Creator Center mostrando aumento de visitas orgánicas.',
-          caption: 'Ventas en orgánico para tu tienda online 🔥 Escríbeme al privado o comentá ORGÁNICO.'
-        },
-        {
-          id: 'idea-ecom-4',
-          nicheCategory: 'ecom',
-          niche: '🛒 E-COMMERCE / DROPSHIPPING',
-          type: 'Tutorial Paso a Paso',
-          hook: '“Paso a paso de cómo crear tu tienda en Shopify en menos de 30 minutos sin saber programar.”',
-          body: [
-            '1. Elige una plantilla minimalista gratuita y enfócate en la versión móvil (el 95% compra por celular).',
-            '2. Redacta descripciones con beneficios claros, no solo características técnicas.',
-            '3. Instala una app de reseñas con fotos para generar confianza inmediata en el comprador.'
-          ],
-          cta: '“Tengo una guía paso a paso de configuración que aprendí en Rumbo Pro. Pedímela al WhatsApp de mi biografía.”',
-          broll: 'Plano sobre tu hombro mostrando cómo editas la tienda en la laptop con movimientos rápidos.',
-          caption: 'Crea tu tienda en 30 minutos ⚡ Escríbeme por WhatsApp y te ayudo con los primeros pasos.'
-        },
-        {
-          id: 'idea-ecom-5',
-          nicheCategory: 'ecom',
-          niche: '🛒 E-COMMERCE / DROPSHIPPING',
-          type: 'Mitos vs Realidad',
-          hook: '“La mentira más grande sobre el Dropshipping que te dijeron en internet.”',
-          body: [
-            '1. Te dicen que te vas a hacer millonario en 3 días apretando un botón: falso, es un negocio real.',
-            '2. La verdad: Requiere aprender a seleccionar productos, negociar con proveedores y crear buen contenido.',
-            '3. La ventaja: No necesitas invertir en inventario previo ni alquilar un depósito físico.'
-          ],
-          cta: '“Si querés aprender el modelo de negocio con honestidad y acompañamiento real, tocá el link de mi perfil.”',
-          broll: 'Habla directo a la cámara en primer plano con subtítulos dinámicos de alto contraste.',
-          caption: 'La verdad sobre el dropshipping sin humo 🛒 Rumbo Pro te enseña la realidad paso a paso.'
-        },
-
-        // --- CLOSER DE VENTAS ---
         {
           id: 'idea-closer-1',
-          nicheCategory: 'closer',
           niche: '🎯 CLOSER DE VENTAS',
-          type: 'Manejo de Objeciones',
+          type: 'Tutorial de Psicología de Ventas',
           hook: '“Qué responder en WhatsApp cuando un cliente te dice: ‘Es muy caro, dejame pensarlo’.”',
           body: [
-            '1. No te pongas a la defensiva ni bajes el precio de golpe.',
+            '1. No te pongas a la defensiva ni bajes el precio inmediatamente.',
             '2. Aplica la pregunta de clarificación: “Claro, entiendo. ¿Es un tema del valor de la inversión o te quedó alguna duda sobre si esto realmente va a resolver tu problema?”',
             '3. Explica que aprender a cerrar ventas de alto valor por mensaje es la habilidad que más rápido te permite generar ingresos.'
           ],
@@ -2692,72 +1855,9 @@
           caption: 'Cómo responder al “es muy caro” como un profesional 🎯👇 Escribime INFO para aprender.'
         },
         {
-          id: 'idea-closer-2',
-          nicheCategory: 'closer',
-          niche: '🎯 CLOSER DE VENTAS',
-          type: 'Simulación de Cierre',
-          hook: '“La pregunta de 5 segundos que debes hacer al final de una conversación para que el cliente te pida comprar.”',
-          body: [
-            '1. La mayoría comete el error de decir: ‘¿Y qué te pareció?’ (le das espacio a la duda).',
-            '2. En cambio pregunta: ‘Basado en todo lo que vimos, ¿cuál sientes que es el mayor beneficio que esto te va a dar a ti hoy?’',
-            '3. El cliente se vende a sí mismo respondiendo sus propios beneficios.'
-          ],
-          cta: '“Esta técnica de cierre está dentro del temario de Rumbo Pro. Comentá CLOSER para conocer la formación completa.”',
-          broll: 'Auriculares puestos y libreta con notas de llamadas de ventas simuladas en tu escritorio.',
-          caption: 'El mejor cierre de ventas que vas a escuchar hoy 🎯 Guardá este video y compartilo. #ventas'
-        },
-        {
-          id: 'idea-closer-3',
-          nicheCategory: 'closer',
-          niche: '🎯 CLOSER DE VENTAS',
-          type: 'Rutina & Estilo de Vida',
-          hook: '“Cómo una persona sin experiencia puede generar ingresos en dólares solo respondiendo mensajes de WhatsApp.”',
-          body: [
-            '1. Las empresas digitales invierten miles de dólares en anuncios y no tienen tiempo de atender a los interesados.',
-            '2. Tu rol como Closer es recibir esos leads calificados, guiarlos y cerrar la venta a cambio de una comisión del 10% al 20%.',
-            '3. Con solo 2 a 3 ventas semanales puedes superar un sueldo tradicional en Latinoamérica.'
-          ],
-          cta: '“En Rumbo Pro te enseñan la profesión de Closer desde cero y cómo contactar empresas. Escribime al link de mi bio.”',
-          broll: 'Tomando un café con la laptop abierta respondiendo mensajes de audio en el teléfono.',
-          caption: 'La profesión digital mejor pagada hoy: Closer de Ventas 🎯 Escribime para info de Rumbo Pro.'
-        },
-        {
-          id: 'idea-closer-4',
-          nicheCategory: 'closer',
-          niche: '🎯 CLOSER DE VENTAS',
-          type: 'Psicología de Ventas',
-          hook: '“Por qué mandar notas de voz de 20 segundos vende 10 veces más que mandar textos largos en WhatsApp.”',
-          body: [
-            '1. El texto largo parece un copia y pega automático y genera rechazo inmediato.',
-            '2. La nota de voz transmite tu tono, seguridad y empatía humana, generando confianza al instante.',
-            '3. Di siempre su nombre de pila en los primeros 3 segundos del audio.'
-          ],
-          cta: '“Si querés dominar la comunicación persuasiva, unite a Rumbo Pro. Comentá VOZ y te paso el temario.”',
-          broll: 'Grabando una nota de voz en WhatsApp en primer plano con expresión empática y segura.',
-          caption: 'El poder de las notas de voz en ventas 🎙️ Comentá VOZ para enviarte la información.'
-        },
-        {
-          id: 'idea-closer-5',
-          nicheCategory: 'closer',
-          niche: '🎯 CLOSER DE VENTAS',
-          type: 'Manejo de Objeción Pareja',
-          hook: '“Cómo responder cuando te dicen: ‘Tengo que consultarlo con mi pareja / esposa’.”',
-          body: [
-            '1. Valida su postura: “Me parece excelente, es importante tomar decisiones juntos.”',
-            '2. Pregunta clave: “Si fuera 100% por ti, ¿tomarías la decisión hoy mismo o tienes alguna duda que te frene?”',
-            '3. Ofrécele enviarle un resumen claro de 3 puntos para que se lo muestre a su pareja sin confusiones.'
-          ],
-          cta: '“Todas estas técnicas de persuasión ética las aprendí en Rumbo Pro. Link en mi perfil para sumarte a la academia.”',
-          broll: 'Escribiendo en una pizarra blanca o libreta el esquema de las 3 fases de la objeción.',
-          caption: 'Aprende a responder como un Closer profesional 🎯👇 Escríbeme por WhatsApp.'
-        },
-
-        // --- HOTMART & MÉTODO FUKUDA ---
-        {
           id: 'idea-hotmart-1',
-          nicheCategory: 'hotmart',
           niche: '🔥 HOTMART (MÉTODO FUKUDA)',
-          type: 'Estrategia Sin Mostrar Cara',
+          type: 'Estrategia Orgánica',
           hook: '“Cómo vender infoproductos en Hotmart sin mostrar tu cara y sin pagar publicidad en Facebook.”',
           body: [
             '1. Elige un producto digital que solucione un dolor urgente (ej: salud, finanzas, habilidades laborales).',
@@ -2766,58 +1866,10 @@
           ],
           cta: '“Todo este paso a paso lo aprendí en el módulo de Método Fukuda en Rumbo Pro. Escribime al enlace de mi biografía si querés ver cómo funciona.”',
           broll: 'Graba tu celular abriendo la app de Hotmart o editando un clip en CapCut.',
-          caption: 'Vender en Hotmart en orgánico sí es posible 🔥 Mira el paso a paso en mi perfil. #hotmart #metodofukuda'
+          caption: 'Vender en Hotmart en orgánico sí es posible 🔥 Mira el paso a paso en mi perfil.'
         },
-        {
-          id: 'idea-hotmart-2',
-          nicheCategory: 'hotmart',
-          niche: '🔥 HOTMART (MÉTODO FUKUDA)',
-          type: 'Desmitificación',
-          hook: '“No necesitas comprar cursos de $500 dólares para empezar a vender en Hotmart. Mira esto.”',
-          body: [
-            '1. Elige un producto con buena temperatura (30°-60°) y página de ventas profesional.',
-            '2. Aplica gatillos mentales de escasez y prueba social en tus historias y videos cortos.',
-            '3. Cierra ventas uno a uno en WhatsApp escuchando las necesidades del cliente.'
-          ],
-          cta: '“Rumbo Pro tiene 16 módulos de Hotmart con método orgánico Fukuda. Comentá FUKUDA y te muestro el temario por dentro.”',
-          broll: 'Muestra la plataforma de Hotmart en tu laptop o celular navegando por el mercado de afiliación.',
-          caption: 'Cómo empezar en Hotmart con el pie derecho 🔥👇 Comentá FUKUDA para info.'
-        },
-        {
-          id: 'idea-hotmart-3',
-          nicheCategory: 'hotmart',
-          niche: '🔥 HOTMART (MÉTODO FUKUDA)',
-          type: 'Filtro de Productos Ganadores',
-          hook: '“Las 3 reglas de oro para elegir un producto en Hotmart que se venda todos los días.”',
-          body: [
-            '1. Regla 1: Que resuelva un problema doloroso y específico (no un curso genérico).',
-            '2. Regla 2: Comisión mínima del 60% al 80% para que tu tiempo sea rentable.',
-            '3. Regla 3: Que el productor te entregue material de divulgación (videos, testimonios, copys).'
-          ],
-          cta: '“Si querés que te pase la lista de nichos más rentables para este año, escribime al WhatsApp de mi bio.”',
-          broll: 'Grabación de pantalla filtrando productos en el mercado de Hotmart con las métricas clave.',
-          caption: 'Cómo elegir un producto ganador en Hotmart 🔥 Comentá PRODUCTO para ver la lista.'
-        },
-        {
-          id: 'idea-hotmart-4',
-          nicheCategory: 'hotmart',
-          niche: '🔥 HOTMART (MÉTODO FUKUDA)',
-          type: 'Embudos de Mensajes',
-          hook: '“Qué decirle a un prospecto de Hotmart que te escribe pidiendo el precio para que no te deje en visto.”',
-          body: [
-            '1. Si le das el precio directo sin crear valor, se va a ir en el 90% de los casos.',
-            '2. Primero haz una pregunta de diagnóstico: “Hola [Nombre], con gusto te paso los detalles. Antes de eso, ¿ya tienes experiencia previa en esto o empezarías desde cero?”',
-            '3. Esto abre la conversación y te permite personalizar la oferta.'
-          ],
-          cta: '“En Rumbo Pro tenemos los guiones exactos de conversación para cerrar ventas. Comentá GUION para recibirlos.”',
-          broll: 'Mostrando la pantalla de chat con el flujo de mensajes estructurado.',
-          caption: 'El guion de mensajes para Hotmart que no falla 🔥 Escríbeme por WhatsApp para aprender.'
-        },
-
-        // --- COMMUNITY MANAGER & AGENCIA DE IA ---
         {
           id: 'idea-cm-1',
-          nicheCategory: 'cm',
           niche: '📱 COMMUNITY MANAGER & IA',
           type: 'Demostración Práctica',
           hook: '“Cómo programar 30 días de contenido para un cliente en solo 2 horas usando Inteligencia Artificial.”',
@@ -2831,40 +1883,7 @@
           caption: 'El servicio digital más fácil de vender a negocios hoy 📱👇 Comentá AGENCIA para empezar.'
         },
         {
-          id: 'idea-cm-2',
-          nicheCategory: 'cm',
-          niche: '📱 COMMUNITY MANAGER & IA',
-          type: 'Prospección de Clientes',
-          hook: '“El mensaje de Instagram que le mando a negocios locales para conseguir clientes de $300 dólares.”',
-          body: [
-            '1. Entra a Google Maps o Instagram y busca negocios en tu ciudad con buen producto pero redes abandonadas.',
-            '2. Graba un video de 1 minuto mostrándoles 2 ideas de reels que podrían triplicar sus visitas.',
-            '3. Envíales el video como un aporte de valor gratuito sin venderles nada directo.'
-          ],
-          cta: '“Este método de captación de clientes lo enseña Rumbo Pro en el curso de CM. Tocá el enlace de mi perfil para sumarte.”',
-          broll: 'Navegando por perfiles de negocios en Instagram en tu laptop mientras explicas la estrategia.',
-          caption: 'Cómo conseguir tus primeros clientes de Community Manager 📱👇 Link en mi biografía.'
-        },
-        {
-          id: 'idea-cm-3',
-          nicheCategory: 'cm',
-          niche: '📱 COMMUNITY MANAGER & IA',
-          type: 'Herramientas Secretas',
-          hook: '“3 herramientas gratuitas de IA que uso para entregar contenido profesional a mis clientes.”',
-          body: [
-            '1. Herramienta 1: ChatGPT con prompts estructurados para calendarios y guiones virales.',
-            '2. Herramienta 2: CapCut para subtítulos dinámicos automáticos y transiciones limpias.',
-            '3. Herramienta 3: Canva para plantillas de carruseles con identidad visual de marca.'
-          ],
-          cta: '“Si querés aprender a monetizar estas herramientas con clientes reales, unite a Rumbo Pro. Comentá HERRAMIENTAS.”',
-          broll: 'Capturas rápidas de pantalla mostrando cada herramienta en acción en 3 segundos por clip.',
-          caption: 'Herramientas de IA para Community Managers 🤖 Comentá HERRAMIENTAS para más info.'
-        },
-
-        // --- MARKETING DE AFILIADOS & RUMBO PRO ---
-        {
           id: 'idea-afi-1',
-          nicheCategory: 'afi',
           niche: '💰 MARKETING DE AFILIADOS',
           type: 'Experiencia & Transparencia',
           hook: '“La verdad de por qué la mayoría de personas pierde meses intentando aprender por YouTube y no gana un dólar.”',
@@ -2875,396 +1894,145 @@
           ],
           cta: '“Si querés dejar de dar vueltas y empezar una formación seria con acompañamiento, tocá el link de mi perfil y hablemos por WhatsApp.”',
           broll: 'Habla directo a la cámara en plano medio con luz natural, de forma tranquila y sincera.',
-          caption: 'Aprender solo vs con una ruta clara 🧭 Hablemos por privado si querés empezar. #rumbopro'
+          caption: 'Aprender solo vs con una ruta clara 🧭 Hablemos por privado si querés empezar.'
+        },
+        {
+          id: 'idea-ecom-2',
+          niche: '🛒 E-COMMERCE / DROPSHIPPING',
+          type: 'Análisis de Caso',
+          hook: '“3 productos que se están vendiendo como pan caliente en TikTok este mes y por qué funcionan.”',
+          body: [
+            '1. Producto 1: Gadget que ahorra tiempo o resuelve un problema visual (efecto WOW).',
+            '2. Producto 2: Accesorio de nicho específico (ej: mascotas o fitness).',
+            '3. Explica cómo armar una oferta irresistible con envío rápido.'
+          ],
+          cta: '“Si querés que te pase la lista completa de proveedores y cómo montar la tienda, escribime DROPSHIPPING al privado.”',
+          broll: 'Muestra videos de productos con efecto WOW en TikTok en pantalla partida.',
+          caption: 'Productos ganadores para tu tienda online 🛒 Comentá DROPSHIPPING para enviarte el método.'
+        },
+        {
+          id: 'idea-closer-2',
+          niche: '🎯 CLOSER DE VENTAS',
+          type: 'Simulación de Llamada',
+          hook: '“La pregunta de 5 segundos que debes hacer al final de una llamada para que el cliente te pida comprar.”',
+          body: [
+            '1. La mayoría comete el error de decir: ‘¿Y qué te pareció?’ (le das espacio a la duda).',
+            '2. En cambio pregunta: ‘Basado en todo lo que vimos, ¿cuál sientes que es el mayor beneficio que esto te va a dar a ti hoy?’',
+            '3. El cliente se vende a sí mismo respondiendo los beneficios.'
+          ],
+          cta: '“Esta técnica de cierre de Tino Mossu está dentro de Rumbo Pro. Comentá CLOSER para conocer la formación completa.”',
+          broll: 'Auriculares puestos y libreta con notas de llamadas de ventas simuladas.',
+          caption: 'El mejor cierre de ventas que vas a escuchar hoy 🎯 Guardá este video y compartilo.'
+        },
+        {
+          id: 'idea-hotmart-2',
+          niche: '🔥 HOTMART (MÉTODO FUKUDA)',
+          type: 'Desmitificación',
+          hook: '“No necesitas comprar cursos de $500 dólares para empezar a vender en Hotmart. Mira esto.”',
+          body: [
+            '1. Elige un producto con buena temperatura y página de ventas profesional.',
+            '2. Aplica gatillos mentales de escasez y prueba social en tus historias.',
+            '3. Cierra ventas uno a uno en WhatsApp escuchando las necesidades del cliente.'
+          ],
+          cta: '“Rumbo Pro tiene 16 módulos de Hotmart con método orgánico. Comentá FUKUDA y te muestro el temario por dentro.”',
+          broll: 'Muestra la plataforma de Hotmart en tu laptop o celular navegando por el mercado de afiliación.',
+          caption: 'Cómo empezar en Hotmart con el pie derecho 🔥👇 Comentá FUKUDA para info.'
+        },
+        {
+          id: 'idea-ia-2',
+          niche: '🤖 IA & PRODUCTIVIDAD',
+          type: 'Herramientas Secretas',
+          hook: '“3 herramientas de Inteligencia Artificial que reemplazan a un equipo entero de marketing en 2026.”',
+          body: [
+            '1. Herramienta 1 para guiones y copys persuasivos.',
+            '2. Herramienta 2 para subtitulado automático y edición de video con IA.',
+            '3. Herramienta 3 para crear miniaturas e imágenes profesionales en segundos.'
+          ],
+          cta: '“Todo esto lo usamos dentro de la comunidad de Rumbo Pro. Mandame un mensaje si querés el enlace a la academia.”',
+          broll: 'Graba la pantalla de tu computadora mostrando cómo la IA genera el texto o edita el video.',
+          caption: 'Herramientas de IA que te van a ahorrar horas de trabajo 🤖👇 Link en bio para aprender más.'
         },
         {
           id: 'idea-afi-2',
-          nicheCategory: 'afi',
           niche: '💰 MARKETING DE AFILIADOS',
           type: 'Mentalidad & Rutina',
           hook: '“Cómo dedico 1 hora al día desde mi celular para crear contenido y generar comisiones de afiliados.”',
           body: [
-            '1. 20 minutos para anotar ideas y guiones rápidos usando el generador de la academia.',
-            '2. 20 minutos para grabar 2 videos con buena luz natural.',
+            '1. 20 minutos para anotar ideas y guiones rápidos.',
+            '2. 20 minutos para grabar 2 videos con buena luz.',
             '3. 20 minutos para responder mensajes y atender consultas en WhatsApp con respuestas rápidas.'
           ],
           cta: '“La constancia es la clave. Si querés aprender este sistema paso a paso, escribime al WhatsApp de mi perfil y te guío.”',
           broll: 'Muestra tu celular en un trípode o escritorio organizado con tu cuaderno de notas.',
           caption: 'Mi rutina de 1 hora al día para crear contenido ⏰👇 Comentá RUTINA para saber más.'
-        },
-        {
-          id: 'idea-afi-3',
-          nicheCategory: 'afi',
-          niche: '💰 MARKETING DE AFILIADOS',
-          type: 'Por Qué Rumbo Pro',
-          hook: '“Por qué decidí formarme en Rumbo Pro en lugar de seguir comprando cursos caros de $500.”',
-          body: [
-            '1. Rumbo Pro reúne en una sola plataforma: E-commerce, Closer de Ventas, Hotmart Método Fukuda y Community Manager.',
-            '2. No es solo teoría: tienes clases en video, generador de ideas de contenido, comunidad y certificado oficial.',
-            '3. Es accesible y está pensado para personas que arrancan desde cero en Latinoamérica.'
-          ],
-          cta: '“Si estás buscando una academia seria para aprender habilidades digitales este año, escribime RUMBO al privado y te muestro la plataforma por dentro.”',
-          broll: 'Muestra la pantalla de inicio de la plataforma Rumbo Pro navegando por los módulos.',
-          caption: 'La mejor decisión de educación digital que tomé 💡 Escribime RUMBO para conocer la academia.'
-        },
-        {
-          id: 'idea-afi-4',
-          nicheCategory: 'afi',
-          niche: '💰 MARKETING DE AFILIADOS',
-          type: 'Evolución Personal',
-          hook: '“Lo que me hubiera gustado saber antes de intentar ganar dinero por internet.”',
-          body: [
-            '1. No necesitas 100.000 seguidores para monetizar; necesitas una oferta clara y una vía directa a WhatsApp.',
-            '2. Aprender una habilidad de alto valor (como vender o crear contenido) te da libertad estés donde estés.',
-            '3. El soporte de una comunidad activa acelera tus resultados por diez.'
-          ],
-          cta: '“Si querés empezar hoy con el pie derecho, tocá el enlace en mi perfil y hablemos directamente por WhatsApp.”',
-          broll: 'Plano secuencia caminando hacia la cámara o sentado en tu espacio de trabajo.',
-          caption: 'Consejos que me hubieran ahorrado meses de errores 📈 Escribime para info de Rumbo Pro.'
-        },
-
-        // --- MENTALIDAD & RESULTADOS REALES ---
-        {
-          id: 'idea-men-1',
-          nicheCategory: 'mentalidad',
-          niche: '🧠 MENTALIDAD & RESULTADOS',
-          type: 'Gestión del Tiempo',
-          hook: '“No tienes falta de tiempo para emprender en digital, tienes falta de enfoque (mira este cálculo).”',
-          body: [
-            '1. Si pasas 2 horas al día mirando videos en TikTok, ya tienes el tiempo necesario para construir tu negocio.',
-            '2. Solo necesitas cambiar 1 de esas horas de consumo pasivo por 1 hora de creación de contenido y aprendizaje.',
-            '3. En 30 días habrás subido 30 videos y aprendido una profesión digital completa.'
-          ],
-          cta: '“Empieza hoy con el contenido de Rumbo Pro. Comentá ENFOQUE y te mando la guía de inicio.”',
-          broll: 'Muestra la estadística de tiempo en pantalla de tu celular y luego cambia a la app de Rumbo Pro.',
-          caption: 'Cambia el tiempo de pantalla por tiempo de aprendizaje 🧠👇 Comentá ENFOQUE.'
-        },
-        {
-          id: 'idea-men-2',
-          nicheCategory: 'mentalidad',
-          niche: '🧠 MENTALIDAD & RESULTADOS',
-          type: 'Miedo a la Cámara',
-          hook: '“El truco psicológico que me quitó la vergüenza de grabar videos para mis redes.”',
-          body: [
-            '1. No le hables a miles de personas desconocidas; imagínate que le estás mandando un video de WhatsApp a tu mejor amigo contándole algo interesante.',
-            '2. A nadie le importa si te trabas un segundo, a la gente le importa que el contenido le sea útil.',
-            '3. La confianza no llega antes de empezar; llega después de grabar tus primeros 10 videos.'
-          ],
-          cta: '“En Rumbo Pro tenemos generadores de guiones listos para que no tengas que pensar qué decir. Link en bio para entrar.”',
-          broll: 'Grábate acomodando el celular en el soporte y sonriendo relajado antes de hablar.',
-          caption: 'Cómo perder el miedo a la cámara de una vez por todas 🎥 Escribime si querés aprender.'
-        },
-        {
-          id: 'idea-men-3',
-          nicheCategory: 'mentalidad',
-          niche: '🧠 MENTALIDAD & RESULTADOS',
-          type: 'Superación & Realidad',
-          hook: '“La diferencia entre los que tienen resultados en internet y los que se quedan estancados.”',
-          body: [
-            '1. Los estancados buscan la fórmula mágica sin esfuerzo y abandonan en el video número 3.',
-            '2. Los que tienen resultados eligen una sola habilidad (Hotmart, E-commerce, Closer o CM), aplican el paso a paso y son constantes durante 60 días.',
-            '3. La disciplina siempre le gana al talento.'
-          ],
-          cta: '“Si estás listo para comprometerte con tu aprendizaje, te espero en la comunidad de Rumbo Pro. Escribime por privado.”',
-          broll: 'Anotando metas en un cuaderno y marcando tareas completadas con resaltador.',
-          caption: 'Constancia sobre motivación 💡 Comentá RUMBO para unirte a la academia.'
         }
       ],
 
-      // Infinite Combinatorial Matrix for endless new unique ideas
-      matrix: {
-        niches: [
-          { key: 'ecom', name: '🛒 E-COMMERCE / DROPSHIPPING' },
-          { key: 'closer', name: '🎯 CLOSER DE VENTAS' },
-          { key: 'hotmart', name: '🔥 HOTMART (MÉTODO FUKUDA)' },
-          { key: 'cm', name: '📱 COMMUNITY MANAGER & IA' },
-          { key: 'afi', name: '💰 MARKETING DE AFILIADOS & RUMBO PRO' },
-          { key: 'mentalidad', name: '🧠 MENTALIDAD & ESTRATEGIA' }
-        ],
-        hooks: [
-          '“Lo que nadie te dice sobre empezar un negocio digital en 2026 sin capital inicial.”',
-          '“3 señales claras de que estás perdiendo dinero por no aprender habilidades digitales hoy.”',
-          '“El método exacto que uso para generar prospectos diarios en WhatsApp sin gastar en anuncios.”',
-          '“Si tuviera que empezar desde cero hoy con solo mi celular y $0 en el bolsillo, haría exactamente esto.”',
-          '“Deja de cometer este error si quieres vender productos y servicios por internet este año.”',
-          '“Cómo pasar de 0 a tus primeras comisiones digitales con solo 1 hora libre al día.”',
-          '“La estrategia orgánica de TikTok que los creadores profesionales usan para vender todos los días.”',
-          '“Por qué tener una habilidad de alto valor es mucho más seguro que un empleo tradicional.”',
-          '“El paso a paso que aplico todos los días para cerrar ventas por mensaje sin ser pesado.”',
-          '“3 herramientas gratuitas que hacen el 80% del trabajo difícil en tu negocio digital.”',
-          '“La verdad sobre cómo monetizar tus redes sociales sin necesidad de tener miles de seguidores.”',
-          '“Qué responder cuando un cliente tiene dudas para convertir una objeción en una venta segura.”',
-          '“El hábito diario de 15 minutos que multiplica tus visitas y conversiones en TikTok y Reels.”',
-          '“Por qué comprar cursos sueltos sin soporte te hace perder tiempo y cómo solucionarlo.”'
-        ],
-        bodies: [
-          [
-            '1. Define tu oferta principal y enfócate en un solo dolor urgente de tu cliente potencial.',
-            '2. Publica contenido educativo diario con ganchos directos que llamen la atención en los primeros 2 segundos.',
-            '3. Dirige todo el tráfico cualificado a tu WhatsApp para cerrar la venta con atención 100% personalizada.'
-          ],
-          [
-            '1. No intentes vender en el primer segundo; primero entrega un consejo de alto valor que resuelva una duda real.',
-            '2. Muestra capturas o ejemplos reales que demuestren que el método funciona en la práctica.',
-            '3. En Rumbo Pro enseñan la estructura exacta de cómo llevar a un desconocido a cliente sin fricciones.'
-          ],
-          [
-            '1. La mayoría falla por querer abarcar todo al mismo tiempo: elige una sola vía (E-commerce, Closer, Hotmart o CM).',
-            '2. Crea un proceso simple y repetible que puedas mantener incluso los días que tengas poco tiempo.',
-            '3. Apóyate en el contenido de la academia y en el generador de ideas para no quedarte nunca sin qué publicar.'
-          ],
-          [
-            '1. Analiza qué es lo que más busca tu audiencia y responde sus preguntas más frecuentes en videos cortos.',
-            '2. Utiliza CapCut para subtítulos dinámicos y ChatGPT para organizar tus ideas en minutos.',
-            '3. Realiza un llamado a la acción claro al final para que las personas interesadas te contacten por privado.'
-          ]
-        ],
-        ctas: [
-          '“Si querés aprender este método paso a paso con acompañamiento, comentá RUMBO o escribime al link de mi perfil y te paso toda la info.”',
-          '“Todo esto lo aprendí dentro de la academia Rumbo Pro. Mandame un mensaje directo con la palabra INFO para contarte cómo sumarte.”',
-          '“Si estás listo para empezar a formarte en negocios digitales, tocá el link de mi biografía y hablemos directamente por WhatsApp.”',
-          '“Comentá APRENDER en este video y te mando por mensaje privado el temario completo de la academia Rumbo Pro.”',
-          '“Guardá este video para aplicarlo hoy mismo y escribime al privado si querés que te guíe en tus primeros pasos.”'
-        ],
-        brolls: [
-          'Graba tu pantalla mostrando la plataforma o un cuaderno de notas mientras hablas con energía a cámara en plano medio.',
-          'Muestra tu celular en soporte con luz natural de frente, alternando tomas tuyas hablando y capturas de pantalla con texto.',
-          'Plano over-the-shoulder trabajando en la laptop con auriculares y anotando puntos clave en un bloc de notas.',
-          'Video dinámico caminando en exteriores o en tu espacio de trabajo con subtítulos de alto impacto visual.'
-        ],
-        captions: [
-          'Aplica esta estrategia hoy mismo 🚀 Comentá RUMBO para enviarte los detalles de la academia. #rumbopro #negociosdigitales #marketing #emprendimiento',
-          'La clave para tener resultados en internet 💡 Escríbeme al privado o visita el link de mi perfil para aprender más. #libertadfinanciera #ventas #formacion',
-          'Aprende habilidades digitales reales y aplicables 📈 Comentá INFO para conocer los módulos de Rumbo Pro. #dropshipping #hotmart #closer #communitymanager'
-        ]
-      },
-
-      // Helper PRNG with 32-bit Hash for deterministic, isolated user queues
-      hashString: function(str) {
+      // Unique Seeded Generator
+      getDailyIdeaIndex: function(userId) {
         let hash = 0;
-        const s = String(str || 'default_student');
-        for (let i = 0; i < s.length; i++) {
-          hash = ((hash << 5) - hash) + s.charCodeAt(i);
+        const str = (userId || 'student') + '_' + new Date().toDateString();
+        for (let i = 0; i < str.length; i++) {
+          hash = (hash << 5) - hash + str.charCodeAt(i);
           hash |= 0;
         }
-        return Math.abs(hash) || 123456789;
+        return Math.abs(hash) % this.templates.length;
       },
 
-      createPRNG: function(seed) {
-        let a = seed;
-        return function() {
-          let t = a += 0x6D2B79F5;
-          t = Math.imul(t ^ t >>> 15, t | 1);
-          t ^= t + Math.imul(t ^ t >>> 7, t | 61);
-          return ((t ^ t >>> 14) >>> 0) / 4294967296;
-        };
-      },
-
-      // User & Login-Session Isolated Storage Helper
-      getTracker: function(userId) {
-        const uId = String(userId || 'guest_user');
-        const lifetimeKey = 'rumbo_user_seen_' + uId;
-        const sessionKey = 'rumbo_user_session_' + uId;
+      getNextUniqueIdea: function(userId) {
+        const key = 'rumbo_idea_tracker_' + (userId || 'default');
+        let tracker = JSON.parse(localStorage.getItem(key) || '{"offset": 0, "history": []}');
         
-        let lifetimeSeen = [];
-        try {
-          lifetimeSeen = JSON.parse(localStorage.getItem(lifetimeKey) || '[]');
-          if (!Array.isArray(lifetimeSeen)) lifetimeSeen = [];
-        } catch (e) {
-          lifetimeSeen = [];
-        }
-
-        let sessionData = { lastSessionId: '', activeIdea: null, sessionCounter: 0, currentNiche: 'all' };
-        try {
-          const raw = localStorage.getItem(sessionKey);
-          if (raw) sessionData = { ...sessionData, ...JSON.parse(raw) };
-        } catch (e) {}
-
-        // Check if user has started a new login session
-        let isNewLogin = false;
-        if (window.rumboDB && typeof window.rumboDB.getCurrentSession === 'function') {
-          const currentSess = window.rumboDB.getCurrentSession();
-          if (currentSess && currentSess.sessionId && currentSess.sessionId !== sessionData.lastSessionId) {
-            sessionData.lastSessionId = currentSess.sessionId;
-            sessionData.activeIdea = null; // Force new idea on every fresh login!
-            sessionData.sessionCounter = 0;
-            isNewLogin = true;
-          }
-        }
+        tracker.offset = (tracker.offset + 1);
+        const idx = (this.getDailyIdeaIndex(userId) + tracker.offset) % this.templates.length;
+        tracker.history.push(this.templates[idx].id);
+        localStorage.setItem(key, JSON.stringify(tracker));
 
         return {
-          userId: uId,
-          lifetimeKey: lifetimeKey,
-          sessionKey: sessionKey,
-          lifetimeSeen: lifetimeSeen,
-          sessionData: sessionData,
-          isNewLogin: isNewLogin
+          idea: this.templates[idx],
+          number: tracker.offset + 1
         };
       },
 
-      saveTracker: function(tracker) {
-        try {
-          localStorage.setItem(tracker.lifetimeKey, JSON.stringify(tracker.lifetimeSeen));
-          localStorage.setItem(tracker.sessionKey, JSON.stringify(tracker.sessionData));
-        } catch (e) {
-          console.error('Error saving idea tracker', e);
-        }
-      },
-
-      // Get next unseen idea isolated per user & per login session
-      getUniqueIdea: function(userId, requestedNiche, forceNext = false) {
-        const tracker = this.getTracker(userId);
-        const niche = requestedNiche || tracker.sessionData.currentNiche || 'all';
-        tracker.sessionData.currentNiche = niche;
-
-        // If not forcing next and we have an active idea for this session & niche, keep showing it
-        if (!forceNext && !tracker.isNewLogin && tracker.sessionData.activeIdea && (niche === 'all' || tracker.sessionData.activeIdea.nicheCategory === niche)) {
-          return {
-            idea: tracker.sessionData.activeIdea,
-            sessionNumber: tracker.sessionData.sessionCounter || 1,
-            lifetimeTotal: tracker.lifetimeSeen.length,
-            niche: niche,
-            isNewLogin: false
-          };
-        }
-
-        // Seed PRNG uniquely using (User ID Hash + Session Identifier + Counter)
-        const userSeed = this.hashString(tracker.userId);
-        const sessionSeed = this.hashString(tracker.sessionData.lastSessionId || 'init_sess');
-        const counterSeed = (tracker.sessionData.sessionCounter || 0) * 9973;
-        const prng = this.createPRNG(userSeed ^ sessionSeed ^ counterSeed);
-
-        // 1. Find unvisited handcrafted templates for this user
-        let pool = this.templates.filter(t => {
-          const matchesNiche = (niche === 'all' || t.nicheCategory === niche);
-          const notSeen = !tracker.lifetimeSeen.includes(t.id);
-          return matchesNiche && notSeen;
-        });
-
-        let selectedIdea = null;
-
-        if (pool.length > 0) {
-          // Shuffle pool deterministically using user's PRNG so each user gets a completely different sequence
-          const poolIndex = Math.floor(prng() * pool.length);
-          selectedIdea = pool[poolIndex];
-        } else {
-          // 2. Templates exhausted for this user/niche -> Generate unique combinatorial script!
-          const m = this.matrix;
-          let comboNicheObj = m.niches.find(n => n.key === niche);
-          if (!comboNicheObj || niche === 'all') {
-            const nicheIdx = Math.floor(prng() * m.niches.length);
-            comboNicheObj = m.niches[nicheIdx];
-          }
-
-          let attempts = 0;
-          while (attempts < 100) {
-            const hIdx = Math.floor(prng() * m.hooks.length);
-            const bIdx = Math.floor(prng() * m.bodies.length);
-            const cIdx = Math.floor(prng() * m.ctas.length);
-            const brIdx = Math.floor(prng() * m.brolls.length);
-            const cpIdx = Math.floor(prng() * m.captions.length);
-
-            const comboId = `combo-${comboNicheObj.key}-${hIdx}-${bIdx}-${cIdx}-${brIdx}`;
-            if (!tracker.lifetimeSeen.includes(comboId)) {
-              selectedIdea = {
-                id: comboId,
-                nicheCategory: comboNicheObj.key,
-                niche: comboNicheObj.name,
-                type: 'Estrategia Combinatoria Exclusiva',
-                hook: m.hooks[hIdx],
-                body: m.bodies[bIdx],
-                cta: m.ctas[cIdx],
-                broll: m.brolls[brIdx],
-                caption: m.captions[cpIdx]
-              };
-              break;
-            }
-            attempts++;
-          }
-
-          // Fallback if needed
-          if (!selectedIdea) {
-            const dynamicId = `dyn-${tracker.userId}-${Date.now()}`;
-            selectedIdea = {
-              id: dynamicId,
-              nicheCategory: comboNicheObj.key,
-              niche: comboNicheObj.name,
-              type: 'Generación Dinámica Única',
-              hook: m.hooks[Math.floor(prng() * m.hooks.length)],
-              body: m.bodies[Math.floor(prng() * m.bodies.length)],
-              cta: m.ctas[Math.floor(prng() * m.ctas.length)],
-              broll: m.brolls[Math.floor(prng() * m.brolls.length)],
-              caption: m.captions[Math.floor(prng() * m.captions.length)]
-            };
-          }
-        }
-
-        // Record lifetime seen ID (never repeated for this user)
-        if (!tracker.lifetimeSeen.includes(selectedIdea.id)) {
-          tracker.lifetimeSeen.push(selectedIdea.id);
-        }
-        tracker.sessionData.sessionCounter = (tracker.sessionData.sessionCounter || 0) + 1;
-        tracker.sessionData.activeIdea = selectedIdea;
-        this.saveTracker(tracker);
-
+      getDailyIdea: function(userId) {
+        const key = 'rumbo_idea_tracker_' + (userId || 'default');
+        let tracker = JSON.parse(localStorage.getItem(key) || '{"offset": 0, "history": []}');
+        const idx = (this.getDailyIdeaIndex(userId) + tracker.offset) % this.templates.length;
         return {
-          idea: selectedIdea,
-          sessionNumber: tracker.sessionData.sessionCounter,
-          lifetimeTotal: tracker.lifetimeSeen.length,
-          niche: niche,
-          isNewLogin: tracker.isNewLogin
+          idea: this.templates[idx],
+          number: tracker.offset + 1
         };
       },
 
-      renderIdeaForUser: function(userId, customNiche = null, forceNext = false) {
+      renderIdeaForUser: function(userId) {
         const container = document.getElementById('idea-content-box');
         const numberTag = document.getElementById('idea-number-tag');
         if (!container) return;
 
-        const data = this.getUniqueIdea(userId, customNiche, forceNext);
+        const data = this.getDailyIdea(userId);
         const idea = data.idea;
 
-        // Update tag with user isolation info
         if (numberTag) {
-          numberTag.textContent = `Guion #${data.sessionNumber} • ${idea.niche}`;
+          numberTag.textContent = `Guion #${data.number} • ${idea.niche}`;
         }
 
-        // Update active class on filter tab buttons (both in dashboard & full view)
-        ['idea-filters-dash', 'idea-filters-full'].forEach(tabId => {
-          const tabContainer = document.getElementById(tabId);
-          if (tabContainer) {
-            const btns = tabContainer.querySelectorAll('.idea-filter-btn');
-            btns.forEach(b => {
-              if (b.getAttribute('data-niche') === data.niche) {
-                b.classList.add('active');
-              } else {
-                b.classList.remove('active');
-              }
-            });
-          }
-        });
-
-        // Render card content with rich UI
         container.innerHTML = `
           <div class="idea-body-wrapper">
             
             <div class="idea-meta-row">
               <span class="idea-niche-pill">${idea.niche}</span>
-              <span class="idea-type-pill">⚡ ${idea.type}</span>
-              <span class="idea-type-pill" style="border-color:rgba(16,185,129,0.45); color:#34d399; font-weight:800;">
-                ✨ Idea Exclusiva para tu Usuario (Sin Repetición)
-              </span>
+              <span class="idea-type-pill">⚡ Tipo: ${idea.type}</span>
             </div>
 
             <!-- Hook Section -->
             <div class="idea-section-block">
-              <div class="is-label">🎣 1. GANCHO VIRAL (Primeros 0-3 segundos frente a cámara):</div>
+              <div class="is-label">🎣 1. GANCHO (Primeros 0-3 segundos en cámara):</div>
               <div class="is-hook-text">${idea.hook}</div>
             </div>
 
             <!-- Development Section -->
             <div class="idea-section-block">
-              <div class="is-label">💡 2. VALOR & DESARROLLO (4 a 25 segundos):</div>
+              <div class="is-label">💡 2. VALOR Y DESARROLLO (4 a 25 segundos):</div>
               <ul class="is-body-list">
                 ${idea.body.map(pt => `<li>${pt}</li>`).join('')}
               </ul>
@@ -3272,25 +2040,25 @@
 
             <!-- CTA Section -->
             <div class="idea-section-block highlight-cta-block">
-              <div class="is-label" style="color:#facc15;">🗣️ 3. LLAMADA A LA ACCIÓN (CTA para atraer clientes a tu WhatsApp):</div>
+              <div class="is-label" style="color:#facc15;">🗣️ 3. LLAMADA A LA ACCIÓN (CTA final):</div>
               <div class="is-cta-text">${idea.cta}</div>
             </div>
 
             <!-- Tips & Caption Box -->
             <div class="idea-tips-grid">
               <div class="idea-tip-card">
-                <div class="it-head">🎥 Dirección de Grabación / B-Roll:</div>
+                <div class="it-head">🎥 Consejo de Grabación:</div>
                 <div class="it-text">${idea.broll}</div>
               </div>
               <div class="idea-tip-card">
-                <div class="it-head">📝 Descripción y Hashtags para el Post:</div>
+                <div class="it-head">📝 Descripción / Copy Sugerido:</div>
                 <div class="it-text">${idea.caption}</div>
               </div>
             </div>
 
             <!-- Action Bar -->
             <div class="idea-bottom-bar">
-              <button class="btn-copy-script" onclick="window.rumboIdeaEngine.copyFullScript('${idea.id}', '${userId}')">
+              <button class="btn-copy-script" onclick="window.rumboIdeaEngine.copyFullScript('${idea.id}')">
                 📋 Copiar Guion Completo
               </button>
               <button class="btn-another-inline" onclick="handleGenerateNextIdea('${userId}')">
@@ -3298,48 +2066,27 @@
               </button>
             </div>
 
-            <div class="idea-stats-bar">
-              <span>🎯 Guion de esta sesión: <strong>#${data.sessionNumber}</strong> • Total vistos en tu historial: <strong>${data.lifetimeTotal}</strong></span>
-              <span>🔒 Cola de ideas 100% individual por usuario</span>
-            </div>
-
           </div>
         `;
       },
 
-      copyFullScript: function(templateId, userId) {
-        const tracker = this.getTracker(userId);
-        let t = this.templates.find(x => x.id === templateId);
-        if (!t && tracker.sessionData && tracker.sessionData.activeIdea && tracker.sessionData.activeIdea.id === templateId) {
-          t = tracker.sessionData.activeIdea;
-        }
+      copyFullScript: function(templateId) {
+        const t = this.templates.find(x => x.id === templateId);
         if (!t) return;
-
         const fullText = `🎬 GUION DE VIDEO PARA RUMBO PRO (${t.niche})\n\n` +
-          `🎯 1. GANCHO (0-3s):\n${t.hook}\n\n` +
-          `💡 2. DESARROLLO (4-25s):\n${t.body.join('\n')}\n\n` +
-          `🗣️ 3. LLAMADA A LA ACCIÓN:\n${t.cta}\n\n` +
+          `🎯 GANCHO (0-3s):\n${t.hook}\n\n` +
+          `💡 DESARROLLO (4-25s):\n${t.body.join('\n')}\n\n` +
+          `🗣️ LLAMADA A LA ACCIÓN:\n${t.cta}\n\n` +
           `🎥 CÓMO GRABARLO:\n${t.broll}\n\n` +
-          `📝 COPY Y HASHTAGS:\n${t.caption}`;
+          `📝 COPY PARA EL POST:\n${t.caption}`;
         
         window.copyText(fullText);
       }
     };
 
-    // UI Handlers for generating next idea & switching niche tabs
     window.handleGenerateNextIdea = (userId) => {
-      const tracker = window.rumboIdeaEngine.getTracker(userId);
-      window.rumboIdeaEngine.renderIdeaForUser(userId, tracker.sessionData.currentNiche, true);
-      
-      const box = document.getElementById('daily-idea-widget');
-      if (box) {
-        box.classList.add('idea-pulse-animation');
-        setTimeout(() => box.classList.remove('idea-pulse-animation'), 600);
-      }
-    };
-
-    window.handleIdeaFilterChange = (userId, niche) => {
-      window.rumboIdeaEngine.renderIdeaForUser(userId, niche, true);
+      window.rumboIdeaEngine.getNextUniqueIdea(userId);
+      window.rumboIdeaEngine.renderIdeaForUser(userId);
       
       const box = document.getElementById('daily-idea-widget');
       if (box) {
@@ -3351,6 +2098,15 @@
     window.handleAdminUpdateUser = async (userId, newStatus) => {
       await window.rumboDB.updateUserStatus(userId, newStatus);
       renderCurrentRoute();
+    };
+
+    window.handleSendWelcomeWa = (name) => {
+      const studentName = name || 'futuro especialista';
+      const msg = `¡Hola ${studentName}! 🎉 Bienvenido/a a RUMBO PRO. Tu cuenta de estudiante ya fue aprobada con éxito ✅.\n\nPodés ingresar a la plataforma aquí:\n👉 https://matias20090714-sys.github.io/Rumbo-Pro/app-platform.html#/login\n\n📌 Guía rápida para tu primer día:\n1️⃣ Entrá a 'Mis Cursos'.\n2️⃣ Elegí el área que más te guste y dale clic a 'Continuar Formación'.\n3️⃣ Mirá el Módulo 1 y avanzá a tu propio ritmo.\n\nCualquier duda que tengas avisame por acá. ¡Muchos éxitos en tu formación!`;
+      
+      window.copyText(msg);
+      const waUrl = `https://wa.me/?text=${encodeURIComponent(msg)}`;
+      window.open(waUrl, '_blank');
     };
   </script>
 </body>
