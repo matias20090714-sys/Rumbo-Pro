@@ -57,12 +57,20 @@
     }
 
     function renderCurrentRoute() {
-      const hash = window.location.hash || '#/dashboard';
       const currentUser = window.rumboDB.getCurrentUser();
-      const container = document.getElementById('app-view-container');
-      const navContainer = document.getElementById('nav-menu-container');
+      let hash = window.location.hash || '#/dashboard';
 
-      // Update Navigation Header
+      // Protection Guard: If not logged in and on protected route, go to login immediately
+      if (!currentUser && hash !== '#/registro' && !hash.startsWith('#/verificar')) {
+        hash = '#/login';
+        if (window.location.hash !== '#/login') {
+          history.replaceState(null, null, '#/login');
+        }
+      }
+
+      const container = document.getElementById('app-view-container');
+
+      // Update Navigation Header (only shows buttons if logged in!)
       renderNavMenu(currentUser, hash);
 
       // Public Routes
@@ -76,14 +84,8 @@
         return;
       }
 
-      if (hash === '#/login') {
+      if (hash === '#/login' || !currentUser) {
         renderLoginView(container);
-        return;
-      }
-
-      // Protection Guard: If not logged in, redirect to login
-      if (!currentUser) {
-        navigateTo('#/login');
         return;
       }
 
@@ -119,11 +121,8 @@
     function renderNavMenu(user, currentHash) {
       const navContainer = document.getElementById('nav-menu-container');
       if (!user) {
-        navContainer.innerHTML = `
-          <a href="#/login" class="platform-menu-link ${currentHash === '#/login' ? 'active' : ''}">Iniciar Sesión</a>
-          <a href="#/registro" class="platform-menu-link ${currentHash === '#/registro' ? 'active' : ''}">Registrarse</a>
-          <a href="#/verificar" class="platform-menu-link ${currentHash.startsWith('#/verificar') ? 'active' : ''}">Verificar Certificado</a>
-        `;
+        // Zero buttons before login — completely clean header!
+        navContainer.innerHTML = '';
         return;
       }
 
