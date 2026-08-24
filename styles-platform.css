@@ -4,26 +4,6 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
-/* Universal Box-Sizing & Layout Reset */
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  -webkit-tap-highlight-color: transparent;
-}
-
-html {
-  box-sizing: border-box;
-  overflow-x: hidden;
-  scroll-behavior: smooth;
-}
-
-input, button, select, textarea {
-  font-family: inherit;
-  box-sizing: border-box;
-  touch-action: manipulation;
-}
-
 :root {
   --bg-dark: #05070c;
   --bg-surface: #0a0f1d;
@@ -57,8 +37,6 @@ input, button, select, textarea {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  overflow-x: hidden;
-  width: 100%;
 }
 
 .platform-nav {
@@ -68,8 +46,6 @@ input, button, select, textarea {
   position: sticky;
   top: 0;
   z-index: 100;
-  width: 100%;
-  box-sizing: border-box;
 }
 
 .platform-nav-inner {
@@ -79,8 +55,6 @@ input, button, select, textarea {
   padding: 0.85rem 1.25rem;
   max-width: 1200px;
   margin: 0 auto;
-  width: 100%;
-  box-sizing: border-box;
 }
 
 .platform-logo {
@@ -119,41 +93,6 @@ input, button, select, textarea {
   color: var(--color-primary-light);
 }
 
-.btn-back-home {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  color: var(--text-muted);
-  text-decoration: none;
-  font-family: var(--font-heading);
-  font-size: 0.85rem;
-  font-weight: 700;
-  padding: 0.45rem 1rem;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--border-light);
-  border-radius: 10px;
-  transition: all 0.2s ease;
-  box-sizing: border-box;
-}
-
-.btn-back-home:hover {
-  background: rgba(0, 194, 255, 0.12);
-  border-color: rgba(0, 194, 255, 0.4);
-  color: #ffffff;
-  transform: translateX(-2px);
-}
-
-#app-view-container {
-  width: 100%;
-  box-sizing: border-box;
-  animation: viewFadeIn 0.22s ease-out;
-}
-
-@keyframes viewFadeIn {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
 .user-badge-nav {
   display: flex;
   align-items: center;
@@ -163,7 +102,6 @@ input, button, select, textarea {
   padding: 0.35rem 0.85rem;
   border-radius: 50px;
   font-size: 0.82rem;
-  box-sizing: border-box;
 }
 
 .role-badge {
@@ -174,7 +112,6 @@ input, button, select, textarea {
   background: rgba(0, 194, 255, 0.15);
   color: var(--color-primary-light);
   border: 1px solid var(--border-accent);
-  box-sizing: border-box;
 }
 
 .btn-logout {
@@ -187,7 +124,6 @@ input, button, select, textarea {
   font-weight: 700;
   cursor: pointer;
   transition: 0.2s ease;
-  box-sizing: border-box;
 }
 
 .btn-logout:hover {
@@ -196,23 +132,18 @@ input, button, select, textarea {
 
 /* Auth Cards (Login / Register / Pending) */
 .auth-container {
-  width: 100%;
   max-width: 440px;
   margin: 3.5rem auto;
-  padding: 0 1.25rem;
-  box-sizing: border-box;
+  padding: 0 1rem;
 }
 
 .auth-card {
-  width: 100%;
   background: var(--bg-surface);
   border: 1px solid var(--border-accent);
   border-radius: 20px;
   padding: 2.25rem 1.75rem;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
   text-align: center;
-  box-sizing: border-box;
-  overflow: hidden;
 }
 
 .auth-title {
@@ -228,10 +159,8 @@ input, button, select, textarea {
 }
 
 .form-group {
-  width: 100%;
   text-align: left;
   margin-bottom: 1.1rem;
-  box-sizing: border-box;
 }
 
 .form-label {
@@ -244,9 +173,7 @@ input, button, select, textarea {
 
 .form-input {
   width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
-  padding: 0.85rem 1rem;
+  padding: 0.8rem 1rem;
   border-radius: 10px;
   background: rgba(15, 23, 42, 0.9);
   border: 1px solid var(--border-light);
@@ -254,7 +181,6 @@ input, button, select, textarea {
   font-size: 0.92rem;
   outline: none;
   transition: 0.2s ease;
-  display: block;
 }
 
 .form-input:focus {
@@ -264,8 +190,6 @@ input, button, select, textarea {
 
 .btn-auth-submit {
   width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
   padding: 0.9rem;
   border-radius: 10px;
   background: linear-gradient(135deg, #0052cc 0%, #00c2ff 100%);
@@ -276,7 +200,6 @@ input, button, select, textarea {
   cursor: pointer;
   margin-top: 0.75rem;
   box-shadow: 0 8px 25px rgba(0, 102, 255, 0.4);
-  display: block;
 }
 
 .auth-footer-link {
@@ -2459,53 +2382,6 @@ button, a, input, select, textarea,
   color: #ffffff;
 }
 
-.idea-filter-tabs {
-  display: flex;
-  gap: 0.5rem;
-  overflow-x: auto;
-  padding-bottom: 0.6rem;
-  margin-bottom: 1.25rem;
-  scrollbar-width: thin;
-}
-
-.idea-filter-btn {
-  background: rgba(15, 23, 42, 0.8);
-  border: 1px solid var(--border-light);
-  color: var(--text-silver);
-  font-family: var(--font-heading);
-  font-size: 0.8rem;
-  font-weight: 700;
-  padding: 0.45rem 0.95rem;
-  border-radius: 20px;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: all 0.2s ease;
-}
-
-.idea-filter-btn:hover {
-  background: rgba(0, 194, 255, 0.15);
-  border-color: rgba(0, 194, 255, 0.45);
-  color: #ffffff;
-}
-
-.idea-filter-btn.active {
-  background: linear-gradient(135deg, rgba(0, 194, 255, 0.3), rgba(0, 102, 255, 0.3));
-  border-color: #00c2ff;
-  color: #38bdf8;
-  box-shadow: 0 0 14px rgba(0, 194, 255, 0.35);
-}
-
-.idea-stats-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.78rem;
-  color: var(--text-muted);
-  margin-top: 0.85rem;
-  padding-top: 0.75rem;
-  border-top: 1px dashed rgba(255, 255, 255, 0.08);
-}
-
 @media (max-width: 768px) {
   .daily-idea-header {
     flex-direction: column;
@@ -2660,6 +2536,19 @@ button, a, input, select, textarea,
   transform: translateY(-1px);
 }
 
+.btn-act-wa {
+  background: rgba(37, 211, 102, 0.15);
+  color: #25d366;
+  border: 1px solid rgba(37, 211, 102, 0.4);
+}
+
+.btn-act-wa:hover {
+  background: #25d366;
+  color: #ffffff;
+  box-shadow: 0 2px 10px rgba(37, 211, 102, 0.4);
+  transform: translateY(-1px);
+}
+
 .admin-empty-state {
   padding: 2.5rem 1rem;
   text-align: center;
@@ -2669,754 +2558,117 @@ button, a, input, select, textarea,
 }
 
 /* ==========================================================================
-   GAMIFICATION — STUDENT LEVEL & BADGES
+   ONBOARDING GUIDE CARD — FOR NEW STUDENTS
    ========================================================================== */
-.gamification-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.8));
-  border: 1px solid rgba(0, 194, 255, 0.25);
-  border-radius: 16px;
-  padding: 1rem 1.4rem;
+.onboarding-guide-card {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.85));
+  border: 1px solid rgba(0, 194, 255, 0.35);
+  border-radius: 18px;
+  padding: 1.75rem 2rem;
   margin-bottom: 2rem;
-  gap: 1rem;
-  flex-wrap: wrap;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
 }
 
-.level-badge-wrap {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.level-icon {
-  font-size: 1.8rem;
-}
-
-.level-title {
-  font-family: var(--font-heading);
-  font-weight: 800;
-  font-size: 1.05rem;
-  color: #ffffff;
-}
-
-.level-subtitle {
-  font-size: 0.78rem;
+.onboarding-badge {
+  display: inline-block;
+  background: rgba(0, 194, 255, 0.15);
   color: #38bdf8;
-  font-weight: 700;
-}
-
-.badges-row-inline {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-
-.badge-tag-unlocked {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  background: rgba(16, 185, 129, 0.12);
-  border: 1px solid rgba(16, 185, 129, 0.35);
-  color: #34d399;
-  font-size: 0.75rem;
-  font-weight: 700;
-  padding: 0.3rem 0.65rem;
-  border-radius: 8px;
-}
-
-.badge-tag-locked {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: #64748b;
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 0.3rem 0.65rem;
-  border-radius: 8px;
-}
-
-/* ==========================================================================
-   SIMULADOR DE OBJECIONES DE WHATSAPP
-   ========================================================================== */
-.simulator-layout {
-  display: grid;
-  grid-template-columns: 320px 1fr;
-  gap: 1.5rem;
-  align-items: start;
-}
-
-@media (max-width: 900px) {
-  .simulator-layout {
-    grid-template-columns: 1fr;
-  }
-}
-
-.simulator-sidebar {
-  background: var(--bg-surface);
-  border: 1px solid var(--border-light);
-  border-radius: 16px;
-  padding: 1.25rem;
-}
-
-.simulator-obj-btn {
-  width: 100%;
-  text-align: left;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--border-light);
-  border-radius: 10px;
-  padding: 0.85rem 1rem;
-  color: var(--text-silver);
-  font-family: var(--font-body);
-  font-size: 0.88rem;
-  font-weight: 600;
-  cursor: pointer;
-  margin-bottom: 0.6rem;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-}
-
-.simulator-obj-btn:hover {
-  background: rgba(0, 194, 255, 0.08);
-  border-color: rgba(0, 194, 255, 0.3);
-  color: #ffffff;
-}
-
-.simulator-obj-btn.active {
-  background: linear-gradient(135deg, rgba(0, 102, 255, 0.25), rgba(0, 194, 255, 0.2));
-  border-color: #00c2ff;
-  color: #ffffff;
+  border: 1px solid rgba(0, 194, 255, 0.4);
+  font-size: 0.72rem;
   font-weight: 800;
-  box-shadow: 0 0 15px rgba(0, 194, 255, 0.15);
-}
-
-.simulator-display-card {
-  background: var(--bg-surface);
-  border: 1px solid rgba(0, 194, 255, 0.25);
+  padding: 0.25rem 0.65rem;
   border-radius: 20px;
-  padding: 2rem;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  margin-bottom: 0.4rem;
+  letter-spacing: 0.05em;
 }
 
-.sim-box-block {
-  background: rgba(15, 23, 42, 0.8);
-  border: 1px solid var(--border-light);
-  border-radius: 12px;
-  padding: 1.25rem;
+.onboarding-title {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 0.25rem;
+}
+
+.onboarding-sub {
+  font-size: 0.88rem;
+  color: var(--text-silver);
   margin-bottom: 1.25rem;
 }
 
-.sim-box-title {
-  font-size: 0.82rem;
-  font-weight: 800;
-  letter-spacing: 0.05em;
-  margin-bottom: 0.6rem;
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-}
-
-.sim-box-title.audio { color: #38bdf8; }
-.sim-box-title.text { color: #34d399; }
-.sim-box-title.psychology { color: #fbbf24; }
-.sim-box-title.warning { color: #f87171; }
-
-.sim-text-content {
-  font-size: 0.94rem;
-  color: #f1f5f9;
-  line-height: 1.6;
-  white-space: pre-line;
-}
-
-.btn-sim-copy {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  background: rgba(0, 194, 255, 0.15);
-  border: 1px solid rgba(0, 194, 255, 0.4);
-  color: #38bdf8;
-  font-size: 0.82rem;
-  font-weight: 700;
-  padding: 0.4rem 0.85rem;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-top: 0.75rem;
-  transition: all 0.2s ease;
-}
-
-.btn-sim-copy:hover {
-  background: #00c2ff;
-  color: #000000;
-}
-
-/* ==========================================================================
-   CALCULADORA DE PROYECCIÓN DE GANANCIAS
-   ========================================================================== */
-.calc-grid-container {
+.onboarding-steps-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-  align-items: center;
-}
-
-@media (max-width: 860px) {
-  .calc-grid-container {
-    grid-template-columns: 1fr;
-  }
-}
-
-.calc-controls-card {
-  background: var(--bg-surface);
-  border: 1px solid var(--border-light);
-  border-radius: 20px;
-  padding: 1.75rem;
-}
-
-.calc-range-group {
-  margin-bottom: 1.5rem;
-}
-
-.calc-range-header {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.88rem;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
-}
-
-.calc-slider {
-  width: 100%;
-  height: 8px;
-  border-radius: 5px;
-  background: #1e293b;
-  outline: none;
-  -webkit-appearance: none;
-  cursor: pointer;
-}
-
-.calc-slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: #00c2ff;
-  cursor: pointer;
-  box-shadow: 0 0 10px rgba(0, 194, 255, 0.6);
-}
-
-.calc-output-card {
-  background: radial-gradient(circle at top, rgba(0, 194, 255, 0.12), transparent 70%), var(--bg-surface);
-  border: 1px solid rgba(0, 194, 255, 0.35);
-  border-radius: 20px;
-  padding: 2.25rem 2rem;
-  text-align: center;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-}
-
-.calc-big-amount {
-  font-family: var(--font-heading);
-  font-size: 3rem;
-  font-weight: 900;
-  color: #38bdf8;
-  margin: 0.5rem 0;
-  letter-spacing: -0.02em;
-}
-
-.calc-sub-stats {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-  margin-top: 1.5rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--border-light);
-}
-
-/* ==========================================================================
-   BÓVEDA DE RECURSOS & PLANTILLAS
-   ========================================================================== */
-.vault-categories-row {
-  display: flex;
-  gap: 0.5rem;
-  overflow-x: auto;
-  padding-bottom: 0.5rem;
-  margin-bottom: 1.75rem;
-}
-
-.vault-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 1.25rem;
 }
 
-.vault-item-card {
-  background: var(--bg-surface);
-  border: 1px solid var(--border-light);
-  border-radius: 16px;
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  transition: all 0.25s ease;
-}
-
-.vault-item-card:hover {
-  border-color: rgba(0, 194, 255, 0.4);
-  transform: translateY(-3px);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
-}
-
-.vault-badge-cat {
-  font-size: 0.72rem;
-  font-weight: 800;
-  padding: 0.2rem 0.6rem;
-  border-radius: 6px;
-  display: inline-block;
-  margin-bottom: 0.75rem;
-}
-
-.vault-item-title {
-  font-family: var(--font-heading);
-  font-size: 1.1rem;
-  font-weight: 800;
-  color: #ffffff;
-  margin-bottom: 0.4rem;
-}
-
-.vault-item-desc {
-  font-size: 0.85rem;
-  color: var(--text-silver);
-  line-height: 1.5;
-  margin-bottom: 1.25rem;
-}
-
-.btn-vault-action {
-  width: 100%;
-  padding: 0.75rem;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--border-light);
-  color: #ffffff;
-  font-weight: 700;
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-}
-
-.btn-vault-action:hover {
-  background: rgba(0, 194, 255, 0.15);
-  border-color: rgba(0, 194, 255, 0.4);
-  color: #38bdf8;
-}
-
-/* ==========================================================================
-   AFFILIATE DASHBOARD & RANKS (EXCLUSIVO PARA ALUMNOS AFILIADOS)
-   ========================================================================== */
-.affiliate-tab-nav {
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 2rem;
-  border-bottom: 1px solid var(--border-light);
-  padding-bottom: 0.75rem;
-}
-
-.affiliate-tab-btn {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid var(--border-light);
-  color: var(--text-muted);
-  font-family: var(--font-heading);
-  font-size: 0.95rem;
-  font-weight: 700;
-  padding: 0.75rem 1.4rem;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.affiliate-tab-btn:hover {
-  background: rgba(0, 194, 255, 0.1);
-  color: #ffffff;
-}
-
-.affiliate-tab-btn.active {
-  background: linear-gradient(135deg, rgba(234, 179, 8, 0.25), rgba(202, 138, 4, 0.2));
-  border-color: #facc15;
-  color: #facc15;
-  box-shadow: 0 0 15px rgba(250, 204, 21, 0.15);
-}
-
-.affiliate-hero-card {
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(24, 24, 27, 0.95));
-  border: 1px solid rgba(250, 204, 21, 0.35);
-  border-radius: 20px;
-  padding: 2rem;
-  margin-bottom: 2rem;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
-}
-
-.tier-badge-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.35rem 0.85rem;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 800;
-}
-
-.tier-badge-pill.tier-bronze {
-  background: rgba(205, 127, 50, 0.2);
-  color: #d97706;
-  border: 1px solid rgba(205, 127, 50, 0.4);
-}
-
-.tier-badge-pill.tier-silver {
-  background: rgba(148, 163, 184, 0.2);
-  color: #e2e8f0;
-  border: 1px solid rgba(148, 163, 184, 0.4);
-}
-
-.tier-badge-pill.tier-gold {
-  background: rgba(234, 179, 8, 0.2);
-  color: #facc15;
-  border: 1px solid rgba(234, 179, 8, 0.5);
-}
-
-.tier-badge-pill.tier-diamond {
-  background: rgba(0, 194, 255, 0.2);
-  color: #38bdf8;
-  border: 1px solid rgba(0, 194, 255, 0.5);
-  box-shadow: 0 0 12px rgba(0, 194, 255, 0.3);
-}
-
-.affiliate-stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-  margin-bottom: 2rem;
-}
-
-.aff-stat-card {
-  background: var(--bg-surface);
-  border: 1px solid var(--border-light);
-  border-radius: 14px;
-  padding: 1.25rem 1.4rem;
-  text-align: left;
-}
-
-.aff-stat-num {
-  font-family: var(--font-heading);
-  font-size: 1.8rem;
-  font-weight: 900;
-  color: #ffffff;
-  margin-top: 0.25rem;
-}
-
-.aff-stat-label {
-  font-size: 0.78rem;
-  color: var(--text-muted);
-  font-weight: 700;
-}
-
-.tier-roadmap-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.tier-card {
-  background: rgba(15, 23, 42, 0.7);
+.onboarding-step-box {
+  background: rgba(10, 15, 29, 0.8);
   border: 1px solid var(--border-light);
   border-radius: 14px;
   padding: 1.25rem;
   position: relative;
-  transition: all 0.2s ease;
+  transition: var(--transition-fast);
 }
 
-.tier-card.active-tier {
-  border-color: #facc15;
-  background: radial-gradient(circle at top, rgba(250, 204, 21, 0.1), transparent 70%), var(--bg-surface);
-  box-shadow: 0 0 20px rgba(250, 204, 21, 0.15);
+.onboarding-step-box:hover {
+  border-color: rgba(0, 194, 255, 0.5);
+  transform: translateY(-2px);
 }
 
-.tier-card-title {
+.onboarding-step-box.highlight-onb {
+  border-color: rgba(234, 179, 8, 0.45);
+  background: rgba(234, 179, 8, 0.06);
+}
+
+.onb-step-num {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 24px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: monospace;
+  font-size: 0.75rem;
+  font-weight: 900;
+  color: #94a3b8;
+}
+
+.onboarding-step-box.highlight-onb .onb-step-num {
+  background: #facc15;
+  color: #0f172a;
+}
+
+.onb-step-icon {
+  font-size: 1.6rem;
+  margin-bottom: 0.5rem;
+}
+
+.onb-step-title {
   font-family: var(--font-heading);
-  font-size: 1.05rem;
+  font-size: 1rem;
   font-weight: 800;
   color: #ffffff;
-  margin: 0.5rem 0 0.2rem;
+  margin-bottom: 0.35rem;
 }
 
-.tier-card-sales {
-  font-size: 0.75rem;
-  color: #94a3b8;
-  font-weight: 700;
-  margin-bottom: 0.75rem;
-}
-
-.tier-card-perks {
-  list-style: none;
-  font-size: 0.78rem;
+.onb-step-desc {
+  font-size: 0.82rem;
   color: var(--text-silver);
   line-height: 1.5;
 }
 
-.tier-card-perks li {
-  margin-bottom: 0.35rem;
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-}
-
-/* Leaderboard Ranking Badges */
-.rank-pos-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  font-family: var(--font-heading);
-  font-weight: 900;
-  font-size: 0.88rem;
-}
-
-.rank-pos-1 {
-  background: linear-gradient(135deg, #facc15, #ca8a04);
-  color: #0f172a;
-  box-shadow: 0 0 12px rgba(250, 204, 21, 0.4);
-}
-
-.rank-pos-2 {
-  background: linear-gradient(135deg, #e2e8f0, #94a3b8);
-  color: #0f172a;
-  box-shadow: 0 0 10px rgba(148, 163, 184, 0.3);
-}
-
-.rank-pos-3 {
-  background: linear-gradient(135deg, #d97706, #78350f);
-  color: #ffffff;
-  box-shadow: 0 0 10px rgba(217, 119, 6, 0.3);
-}
-
-.rank-pos-default {
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--text-silver);
-  border: 1px solid var(--border-light);
-}
-
-/* ==========================================================================
-   COMPREHENSIVE MOBILE RESPONSIVE SUITE (styles-platform.css)
-   ========================================================================== */
-
-/* Tablets & Mobile Navigation (<= 960px) */
-@media (max-width: 960px) {
-  .platform-nav-inner {
-    flex-wrap: wrap;
-    gap: 0.65rem;
-    padding: 0.65rem 0.85rem;
-  }
-
-  .platform-menu-links {
-    width: 100%;
-    overflow-x: auto;
-    white-space: nowrap;
-    padding-bottom: 0.35rem;
-    gap: 0.6rem;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-
-  .platform-menu-links::-webkit-scrollbar {
-    display: none;
-  }
-
-  .platform-menu-link {
-    font-size: 0.82rem;
-    padding: 0.4rem 0.75rem;
-    border-radius: 10px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    flex-shrink: 0;
-  }
-
-  .platform-menu-link.active {
-    background: rgba(0, 194, 255, 0.15);
-    border-color: rgba(0, 194, 255, 0.4);
-  }
-
-  .simulator-layout {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* Mobile Devices (<= 768px) */
 @media (max-width: 768px) {
-  .dashboard-container {
-    padding: 1.25rem 0.85rem;
-  }
-
-  .dashboard-courses-grid {
+  .onboarding-steps-grid {
     grid-template-columns: 1fr;
-    gap: 1.25rem;
+    gap: 0.85rem;
   }
-
-  .dashboard-hero-banner {
-    padding: 1.5rem 1.15rem;
-    border-radius: 18px;
-    margin-bottom: 1.5rem;
-  }
-
-  .welcome-title {
-    font-size: 1.5rem;
-  }
-
-  .benefit-cards-grid {
-    grid-template-columns: 1fr;
-    gap: 0.75rem;
-  }
-
-  .daily-video-idea-card {
-    padding: 1.35rem 1rem;
-    border-radius: 18px;
-  }
-
-  .daily-idea-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-
-  .btn-generate-another {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .idea-filter-tabs {
-    gap: 0.4rem;
-    padding-bottom: 0.4rem;
-  }
-
-  .idea-filter-btn {
-    font-size: 0.76rem;
-    padding: 0.4rem 0.8rem;
-  }
-
-  .idea-tips-grid {
-    grid-template-columns: 1fr;
-    gap: 0.75rem;
-  }
-
-  .idea-bottom-bar {
-    flex-direction: column;
-    gap: 0.6rem;
-  }
-
-  .btn-copy-script, .btn-another-inline {
-    width: 100%;
-    justify-content: center;
-    text-align: center;
-  }
-
-  .gamification-bar {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 1rem;
-  }
-
-  .vault-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .affiliate-hero-card {
-    padding: 1.35rem 1rem;
-    border-radius: 16px;
-  }
-
-  .affiliate-tab-nav {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .affiliate-tab-btn {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .tier-roadmap-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .admin-section-block {
-    padding: 1.25rem 1rem;
-    border-radius: 16px;
-  }
-}
-
-/* Small SmartPhones (<= 480px) */
-@media (max-width: 480px) {
-  .auth-container {
-    margin: 1.25rem auto;
-    padding: 0 0.75rem;
-  }
-
-  .auth-card {
-    padding: 1.5rem 1rem;
-    border-radius: 16px;
-  }
-
-  .auth-title {
-    font-size: 1.35rem;
-  }
-
-  .affiliate-stats-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 0.6rem;
-  }
-
-  .aff-stat-card {
-    padding: 0.85rem 0.65rem;
-    border-radius: 12px;
-  }
-
-  .aff-stat-num {
-    font-size: 1.35rem;
-  }
-
-  .aff-stat-label {
-    font-size: 0.7rem;
-  }
-
-  .form-input, .btn-auth-submit {
-    font-size: 0.92rem;
-    padding: 0.8rem;
-  }
-
-  .admin-table th, .admin-table td {
-    padding: 0.75rem 0.6rem;
-    font-size: 0.8rem;
-  }
-
-  .rank-pos-badge {
-    width: 28px;
-    height: 28px;
-    font-size: 0.78rem;
+  .onboarding-guide-card {
+    padding: 1.25rem;
   }
 }
 
