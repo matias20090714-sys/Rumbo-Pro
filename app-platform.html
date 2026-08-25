@@ -9,15 +9,15 @@
 </head>
 <body class="platform-body">
 
-  <!-- Header Navigation Bar -->
-  <nav class="platform-nav">
+  <!-- Header Navigation Bar (Hidden on Login/Register, shown ONLY when logged in) -->
+  <nav class="platform-nav" id="platform-main-nav" style="display: none;">
     <div class="platform-nav-inner">
       <a href="#/dashboard" class="platform-logo">
         <img src="assets/logo.jpg" alt="Logo Rumbo Pro" class="platform-logo-img">
         <span>RUMBO PRO</span>
       </a>
 
-      <div class="platform-menu-links" id="nav-menu-container" style="display:none;">
+      <div class="platform-menu-links" id="nav-menu-container">
         <!-- Dynamic links injected via JS ONLY when logged in -->
       </div>
     </div>
@@ -30,8 +30,8 @@
 
   <!-- Core Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="store-db.js?v=5.1"></script>
-  <script src="certificate-generator.js?v=5.1"></script>
+  <script src="store-db.js?v=5.2"></script>
+  <script src="certificate-generator.js?v=5.2"></script>
   <script>
     // Router & View Controller Logic
     document.addEventListener('DOMContentLoaded', () => {
@@ -70,7 +70,7 @@
 
       const container = document.getElementById('app-view-container');
 
-      // Update Navigation Header (only shows buttons if logged in!)
+      // Update Navigation Header (only shows nav bar if logged in!)
       renderNavMenu(currentUser, hash);
 
       // Public Routes
@@ -119,30 +119,35 @@
     }
 
     function renderNavMenu(user, currentHash) {
+      const navEl = document.getElementById('platform-main-nav');
       const navContainer = document.getElementById('nav-menu-container');
+
+      // 100% HIDE ENTIRE TOP BAR ON LOGIN OR REGISTER
       if (!user || currentHash === '#/login' || currentHash === '#/registro') {
-        // Zero buttons before login or during auth screens
-        navContainer.innerHTML = '';
-        navContainer.style.display = 'none';
+        if (navEl) navEl.style.display = 'none';
+        if (navContainer) navContainer.innerHTML = '';
         return;
       }
 
-      navContainer.style.display = 'flex';
-      let adminLink = user.role === 'ADMINISTRADOR' ? `<a href="#/admin" class="platform-menu-link ${currentHash === '#/admin' ? 'active' : ''}">Panel Admin</a>` : '';
+      // ONLY SHOW NAV BAR WHEN LOGGED IN INSIDE PLATFORM
+      if (navEl) navEl.style.display = 'block';
+      if (navContainer) {
+        let adminLink = user.role === 'ADMINISTRADOR' ? `<a href="#/admin" class="platform-menu-link ${currentHash === '#/admin' ? 'active' : ''}">Panel Admin</a>` : '';
 
-      navContainer.innerHTML = `
-        <a href="#/dashboard" class="platform-menu-link ${currentHash === '#/dashboard' ? 'active' : ''}">Mis Cursos</a>
-        <a href="#/ideas-diarias" class="platform-menu-link ${currentHash.startsWith('#/ideas') ? 'active' : ''}" style="color:#38bdf8; font-weight:700;">Ideas de Video 💡</a>
-        <a href="#/afiliados" class="platform-menu-link ${currentHash.startsWith('#/afiliados') ? 'active' : ''}" style="color:#facc15; font-weight:700;">Manual Afiliados 💰</a>
-        <a href="#/certificados" class="platform-menu-link ${currentHash === '#/certificados' ? 'active' : ''}">Certificados</a>
-        ${adminLink}
-        <a href="#/verificar" class="platform-menu-link ${currentHash.startsWith('#/verificar') ? 'active' : ''}">Verificar ID</a>
-        <div class="user-badge-nav">
-          <span>${user.firstName} ${user.lastName}</span>
-          <span class="role-badge">${user.role}</span>
-          <button class="btn-logout" onclick="handleLogout()">Salir</button>
-        </div>
-      `;
+        navContainer.innerHTML = `
+          <a href="#/dashboard" class="platform-menu-link ${currentHash === '#/dashboard' ? 'active' : ''}">Mis Cursos</a>
+          <a href="#/ideas-diarias" class="platform-menu-link ${currentHash.startsWith('#/ideas') ? 'active' : ''}" style="color:#38bdf8; font-weight:700;">Ideas de Video 💡</a>
+          <a href="#/afiliados" class="platform-menu-link ${currentHash.startsWith('#/afiliados') ? 'active' : ''}" style="color:#facc15; font-weight:700;">Manual Afiliados 💰</a>
+          <a href="#/certificados" class="platform-menu-link ${currentHash === '#/certificados' ? 'active' : ''}">Certificados</a>
+          ${adminLink}
+          <a href="#/verificar" class="platform-menu-link ${currentHash.startsWith('#/verificar') ? 'active' : ''}">Verificar ID</a>
+          <div class="user-badge-nav">
+            <span>${user.firstName} ${user.lastName}</span>
+            <span class="role-badge">${user.role}</span>
+            <button class="btn-logout" onclick="handleLogout()">Salir</button>
+          </div>
+        `;
+      }
     }
 
     function handleLogout() {
