@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>RUMBO PRO — Plataforma Educativa Interna</title>
   <link rel="icon" type="image/jpeg" href="assets/logo.jpg">
-  <link rel="stylesheet" href="styles-platform.css">
+  <link rel="stylesheet" href="styles-platform.css?v=5.1">
 </head>
 <body class="platform-body">
 
@@ -17,8 +17,8 @@
         <span>RUMBO PRO</span>
       </a>
 
-      <div class="platform-menu-links" id="nav-menu-container">
-        <!-- Dynamic links injected via JS -->
+      <div class="platform-menu-links" id="nav-menu-container" style="display:none;">
+        <!-- Dynamic links injected via JS ONLY when logged in -->
       </div>
     </div>
   </nav>
@@ -30,8 +30,8 @@
 
   <!-- Core Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="store-db.js"></script>
-  <script src="certificate-generator.js"></script>
+  <script src="store-db.js?v=5.1"></script>
+  <script src="certificate-generator.js?v=5.1"></script>
   <script>
     // Router & View Controller Logic
     document.addEventListener('DOMContentLoaded', () => {
@@ -120,12 +120,14 @@
 
     function renderNavMenu(user, currentHash) {
       const navContainer = document.getElementById('nav-menu-container');
-      if (!user) {
-        // Zero buttons before login — completely clean header!
+      if (!user || currentHash === '#/login' || currentHash === '#/registro') {
+        // Zero buttons before login or during auth screens
         navContainer.innerHTML = '';
+        navContainer.style.display = 'none';
         return;
       }
 
+      navContainer.style.display = 'flex';
       let adminLink = user.role === 'ADMINISTRADOR' ? `<a href="#/admin" class="platform-menu-link ${currentHash === '#/admin' ? 'active' : ''}">Panel Admin</a>` : '';
 
       navContainer.innerHTML = `
