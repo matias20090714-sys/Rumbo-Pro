@@ -2232,6 +2232,9 @@
       const fullUrl = `https://wa.me/${cleanNum}?text=${encodeURIComponent(rawMsg)}`;
       outDiv.textContent = fullUrl;
       if (testBtn) testBtn.href = fullUrl;
+      localStorage.setItem('rumbo_saved_wanum', cleanNum);
+    };
+
     // Price Script Helpers
     window.updatePriceScriptPreview = () => {
       const input = document.getElementById('custom-price-input');
