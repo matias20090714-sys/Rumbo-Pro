@@ -656,7 +656,23 @@
                 <small class="closing-tip">💡 Usá esta opción cuando el interesado busque aprender un oficio formal para trabajar con empresas.</small>
               </div>
 
-              <!-- Step 3: Objeción Plata -->
+              <!-- Step 3: Revelación de Precio & Oferta Irresistible -->
+              <div class="closing-card highlight-closing-card" style="border-color:#38bdf8; background:linear-gradient(135deg, rgba(0, 194, 255, 0.1), rgba(15, 23, 42, 0.95));">
+                <div class="closing-card-top">
+                  <span class="closing-step-tag" style="color:#38bdf8; font-weight:900;">PASO 3: CÓMO DECIR EL PRECIO (OFERTA IRRESISTIBLE & ANCLAJE) 💰</span>
+                  <button class="btn-copy-sm" style="background:#00c2ff; color:#0f172a; font-weight:800;" onclick="copyPriceScript()">📋 Copiar Mensaje de Precio</button>
+                </div>
+                <div style="margin-bottom:0.75rem; display:flex; align-items:center; gap:0.6rem; flex-wrap:wrap;">
+                  <label style="font-size:0.8rem; color:#94a3b8; font-weight:700;">Escribí el precio fijado (opcional):</label>
+                  <input type="text" id="custom-price-input" class="form-input" style="width:200px; padding:0.4rem 0.75rem; font-size:0.85rem;" placeholder="Ej: $97 USD o $95.000 ARS" value="[PRECIO]" oninput="updatePriceScriptPreview()">
+                </div>
+                <p class="closing-script-text" id="price-script-preview-text" style="color:#ffffff;">
+                  "Mirá, normalmente acceder a una formación completa con las 4 áreas (E-Commerce, Closer de Ventas, Hotmart y Redes Sociales) con certificación y el sistema de afiliados costaría más de $500 USD. Pero hoy el acceso completo de por vida a RUMBO PRO con todas las actualizaciones y el 90% de comisión está con descuento a solo <strong>[PRECIO]</strong> (pago único sin mensualidades). Con solo 1 venta que hagas como afiliado recuperás el 100% de tu inversión y ya te queda pura ganancia. ¿Te paso los datos para activar tu usuario hoy mismo?"
+                </p>
+                <small class="closing-tip" style="color:#38bdf8;">💡 Anclar el valor primero ($500 USD) hace que el precio real se perciba extremadamente barato y aumente las ventas.</small>
+              </div>
+
+              <!-- Step 4: Objeción Plata -->
               <div class="closing-card">
                 <div class="closing-card-top">
                   <span class="closing-step-tag" style="color:#f59e0b;">SI DICE: 'NO TENGO PLATA'</span>
@@ -667,7 +683,7 @@
                 </p>
               </div>
 
-              <!-- Step 4: Objeción Tiempo -->
+              <!-- Step 5: Objeción Tiempo -->
               <div class="closing-card">
                 <div class="closing-card-top">
                   <span class="closing-step-tag" style="color:#f59e0b;">SI DICE: 'NO TENGO TIEMPO'</span>
@@ -678,10 +694,10 @@
                 </p>
               </div>
 
-              <!-- Step 5: Cierre & Cobro -->
+              <!-- Step 6: Cierre & Cobro -->
               <div class="closing-card highlight-closing-card">
                 <div class="closing-card-top">
-                  <span class="closing-step-tag" style="color:#34d399; font-weight:900;">PASO 4: CIERRE Y PASE DE PAGO 🔥</span>
+                  <span class="closing-step-tag" style="color:#34d399; font-weight:900;">PASO 5: CIERRE Y PASE DE PAGO / TRANSFERENCIA 🔥</span>
                   <button class="btn-copy-sm" onclick="copyText('¡Excelente decisión! Los cupos con acceso completo y el 90% de comisión de afiliados están abiertos hoy. ¿Preferís que te pase los datos para transferir / abonar y activamos tu cuenta ahora mismo?')">📋 Copiar</button>
                 </div>
                 <p class="closing-script-text" style="color:#ffffff;">
@@ -2216,7 +2232,20 @@
       const fullUrl = `https://wa.me/${cleanNum}?text=${encodeURIComponent(rawMsg)}`;
       outDiv.textContent = fullUrl;
       if (testBtn) testBtn.href = fullUrl;
-      localStorage.setItem('rumbo_saved_wanum', cleanNum);
+    // Price Script Helpers
+    window.updatePriceScriptPreview = () => {
+      const input = document.getElementById('custom-price-input');
+      const textEl = document.getElementById('price-script-preview-text');
+      if (!input || !textEl) return;
+      const priceVal = input.value.trim() || '[PRECIO]';
+      textEl.innerHTML = `"Mirá, normalmente acceder a una formación completa con las 4 áreas (E-Commerce, Closer de Ventas, Hotmart y Redes Sociales) con certificación y el sistema de afiliados costaría más de $500 USD. Pero hoy el acceso completo de por vida a RUMBO PRO con todas las actualizaciones y el 90% de comisión está con descuento a solo <strong>${priceVal}</strong> (pago único sin mensualidades). Con solo 1 venta que hagas como afiliado recuperás el 100% de tu inversión y ya te queda pura ganancia. ¿Te paso los datos para activar tu usuario hoy mismo?"`;
+    };
+
+    window.copyPriceScript = () => {
+      const input = document.getElementById('custom-price-input');
+      const priceVal = (input && input.value.trim()) ? input.value.trim() : '[PRECIO]';
+      const fullText = `Mirá, normalmente acceder a una formación completa con las 4 áreas (E-Commerce, Closer de Ventas, Hotmart y Redes Sociales) con certificación y el sistema de afiliados costaría más de $500 USD. Pero hoy el acceso completo de por vida a RUMBO PRO con todas las actualizaciones y el 90% de comisión está con descuento a solo ${priceVal} (pago único sin mensualidades). Con solo 1 venta que hagas como afiliado recuperás el 100% de tu inversión y ya te queda pura ganancia. ¿Te paso los datos para activar tu usuario hoy mismo?`;
+      window.copyText(fullText);
     };
 
     window.copyGeneratedWaLink = () => {
