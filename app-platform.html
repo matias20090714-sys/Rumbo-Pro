@@ -98,10 +98,8 @@
       // Protected Student / Admin Routes
       if (hash === '#/dashboard') {
         renderDashboardView(container, currentUser);
-      } else if (hash === '#/ideas-diarias' || hash === '#/ideas') {
+      } else if (hash === '#/afiliados' || hash === '#/manual-afiliado' || hash === '#/ideas-diarias' || hash === '#/ideas') {
         renderDailyIdeasFullView(container, currentUser);
-      } else if (hash === '#/afiliados' || hash === '#/manual-afiliado') {
-        renderAfiliadosManualView(container, currentUser);
       } else if (hash.startsWith('#/curso/')) {
         const courseId = hash.replace('#/curso/', '');
         renderCoursePlayerView(container, currentUser, courseId);
@@ -134,10 +132,11 @@
       if (navContainer) {
         let adminLink = user.role === 'ADMINISTRADOR' ? `<a href="#/admin" class="platform-menu-link ${currentHash === '#/admin' ? 'active' : ''}">Panel Admin</a>` : '';
 
+        const isAffiliateActive = currentHash.startsWith('#/afiliados') || currentHash.startsWith('#/ideas') || currentHash.startsWith('#/manual');
+
         navContainer.innerHTML = `
           <a href="#/dashboard" class="platform-menu-link ${currentHash === '#/dashboard' ? 'active' : ''}">Mis Cursos</a>
-          <a href="#/ideas-diarias" class="platform-menu-link ${currentHash.startsWith('#/ideas') ? 'active' : ''}" style="color:#38bdf8; font-weight:700;">Ideas de Video 💡</a>
-          <a href="#/afiliados" class="platform-menu-link ${currentHash.startsWith('#/afiliados') ? 'active' : ''}" style="color:#facc15; font-weight:700;">Manual Afiliados 💰</a>
+          <a href="#/afiliados" class="platform-menu-link ${isAffiliateActive ? 'active' : ''}" style="color:#facc15; font-weight:800;">Manual de Afiliados 💰</a>
           <a href="#/certificados" class="platform-menu-link ${currentHash === '#/certificados' ? 'active' : ''}">Certificados</a>
           ${adminLink}
           <a href="#/verificar" class="platform-menu-link ${currentHash.startsWith('#/verificar') ? 'active' : ''}">Verificar ID</a>
@@ -485,7 +484,7 @@
       `;
 
       // Render the student's unique daily video idea
-      window.rumboIdeaEngine.renderIdeaForUser(user.id);
+      window.rumboIdeaEngine.renderInfiniteScriptForUser(user.id);
     }
 
     // --- VIEW: IDEAS DE VIDEO DIARIAS & KIT DE VENTAS (Página Completa Dedicada) ---
@@ -545,6 +544,31 @@
 
             <div class="idea-content-canvas" id="idea-content-box">
               <!-- Rendered dynamically by window.rumboIdeaEngine -->
+            </div>
+          </div>
+
+          <!-- ================================================================
+               HERRAMIENTA: GENERADOR DE NOMBRES Y BIOGRAFÍAS PARA REDES
+               ================================================================ -->
+          <div class="affiliate-tool-card" style="margin-bottom:2.5rem;">
+            <div class="tool-card-head">
+              <div class="tool-icon-circle" style="background:rgba(234,179,8,0.15); border-color:#facc15;">🏷️</div>
+              <div>
+                <span class="badge-pill" style="background:#facc1522; color:#facc15; border-color:#facc15;">PERFIL PROFESIONAL</span>
+                <h3 class="tool-title">Generador de Nombres de Usuario & Biografías Vendedoras</h3>
+                <p class="tool-desc">Tu perfil es tu escaparate. Utilizá estos nombres profesionales y biografías probadas para generar máxima confianza y clics a tu WhatsApp.</p>
+              </div>
+            </div>
+
+            <!-- Profile Name Input -->
+            <div style="margin-bottom:1.5rem; max-width:480px;">
+              <label class="form-label">Tu Nombre o Apodo:</label>
+              <input type="text" id="bio-custom-name" class="form-input" value="${user.firstName || 'Lucas'}" oninput="updateProfileBioGenerator()" placeholder="Escribe tu nombre">
+            </div>
+
+            <!-- Usernames & Bios Dynamic Grid -->
+            <div class="bio-generator-grid" id="bio-generator-canvas">
+              <!-- Rendered via updateProfileBioGenerator() -->
             </div>
           </div>
 
@@ -681,6 +705,7 @@
       window.rumboIdeaEngine.renderInfiniteScriptForUser(user.id);
       renderActionPlanChecklist(user.id);
       updateCustomWaLink();
+      updateProfileBioGenerator();
     }
 
     // --- VIEW: REPRODUCTOR DE CURSO Y CLASES ---
@@ -1956,6 +1981,9 @@
         }
       }
       window.rumboIdeaEngine.renderInfiniteScriptForUser(userId);
+      if (window.updateProfileBioGenerator) {
+        window.updateProfileBioGenerator();
+      }
     };
 
     window.rumboIdeaEngine = {
@@ -2187,6 +2215,101 @@
         return;
       }
       window.copyText(outDiv.textContent);
+    };
+
+    // Usernames and Bios Generator
+    window.updateProfileBioGenerator = () => {
+      const inputEl = document.getElementById('bio-custom-name');
+      const canvas = document.getElementById('bio-generator-canvas');
+      if (!canvas) return;
+
+      const rawName = (inputEl && inputEl.value.trim()) ? inputEl.value.trim() : 'Lucas';
+      const cleanName = rawName.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+      const isAnon = currentScriptMode === 'anon';
+
+      let usernames = [];
+      let bios = [];
+
+      if (!isAnon) {
+        // Personal Brand (Con Rostro)
+        usernames = [
+          `@${cleanName}.digital_`,
+          `@soy${cleanName}.pro`,
+          `@${cleanName}_negocios`,
+          `@${cleanName}.oficial`,
+          `@emprende.con${cleanName}`
+        ];
+
+        bios = [
+          {
+            title: 'Opción 1: Directa a Ingresos & WhatsApp (Más recomendada)',
+            text: `🚀 Aprendé a monetizar tus redes sociales desde cero\n💰 Generá $87 a $174+ USD/día desde tu celular\n📚 Formación práctica en Rumbo Pro\n👇 Escribime a mi WhatsApp para empezar`
+          },
+          {
+            title: 'Opción 2: Estilo Emprendedor Digital',
+            text: `📱 De 0 a vivir de internet y habilidades digitales\n🛒 E-Commerce · Closer de Ventas · Afiliados al 90%\n⚡ Te enseño mi paso a paso sin vueltas\n👇 Tocá el link para hablar conmigo`
+          },
+          {
+            title: 'Opción 3: Minimalista de Alto Impacto',
+            text: `💼 Negocios digitales & Libertad de tiempo\n💎 +$87 USD por comisión de afiliado\n🚀 Cupos abiertos en la academia\n👇 Información y acceso por WhatsApp`
+          }
+        ];
+      } else {
+        // Anonymous Brand (Marca Incógnita)
+        usernames = [
+          `@rumbo.digital_`,
+          `@mente.pro_`,
+          `@ingresos.remotos`,
+          `@escaladigital.pro`,
+          `@capital.digital_`
+        ];
+
+        bios = [
+          {
+            title: 'Opción 1: Cuenta Temática de Negocios & Dinero',
+            text: `🧠 Mentalidad, Dinero & Negocios Digitales\n📱 Cómo generar en dólares sin mostrar tu cara\n⚡ Métodos comprobados 2026\n👇 Accedé a la academia aquí`
+          },
+          {
+            title: 'Opción 2: Hábitos & Habilidades Rentables',
+            text: `📈 Hábitos, Productividad & Habilidades Online\n💰 Ganá comisiones diarias desde tu celular\n🚀 Tu primer negocio digital empieza hoy\n👇 Escribinos para activar tu acceso`
+          },
+          {
+            title: 'Opción 3: Lifestyle & Libertad Financiera',
+            text: `💎 Construyendo libertad digital 2026\n💼 E-Commerce · Ventas · Afiliados al 90%\n🚀 Guía paso a paso para empezar de cero\n👇 Tocá el link para info`
+          }
+        ];
+      }
+
+      canvas.innerHTML = `
+        <!-- Usernames Row -->
+        <div class="bio-usernames-box">
+          <div style="font-size:0.85rem; font-weight:800; color:#facc15; margin-bottom:0.65rem;">
+            📌 Ideas de Nombres de Usuario para tu cuenta:
+          </div>
+          <div class="usernames-chips-flex">
+            ${usernames.map(u => `
+              <div class="username-chip" onclick="copyText('${u}')">
+                <span>${u}</span>
+                <span style="font-size:0.7rem; color:#38bdf8;">📋 Copiar</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <!-- Bios Grid -->
+        <div class="bio-cards-grid">
+          ${bios.map((b, i) => `
+            <div class="bio-template-card">
+              <div class="bio-card-top">
+                <strong style="color:#ffffff; font-size:0.88rem;">${b.title}</strong>
+                <button class="btn-copy-sm" onclick="copyText(\`${b.text}\`)">📋 Copiar Bio</button>
+              </div>
+              <div class="bio-pre-text">${b.text.replace(/\n/g, '<br>')}</div>
+            </div>
+          `).join('')}
+        </div>
+      `;
     };
 
     // 7-Day Action Plan Checklist
