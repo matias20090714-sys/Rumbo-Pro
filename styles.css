@@ -1617,125 +1617,78 @@ section {
   line-height: 1.6;
 }
 
-/* Math Projections Grid */
-.earnings-math-grid {
+/* Star Features 3 Pillars */
+.star-features-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1.25rem;
-  margin-bottom: 2.5rem;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  text-align: left;
 }
 
-.math-card {
+.star-feat-card {
   background: rgba(10, 15, 29, 0.85);
-  border: 1px solid var(--border-light);
-  border-radius: 16px;
-  padding: 1.6rem 1.25rem;
-  text-align: center;
-  position: relative;
-  transition: transform 0.25s ease;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  padding: 1.75rem 1.4rem;
+  transition: transform 0.25s ease, border-color 0.25s ease;
 }
 
-.math-card:hover {
+.star-feat-card:hover {
   transform: translateY(-4px);
+  border-color: rgba(234, 179, 8, 0.4);
 }
 
-.math-card.highlight-math {
-  border-color: #facc15;
-  background: linear-gradient(135deg, rgba(234, 179, 8, 0.12), rgba(15, 23, 42, 0.9));
-  box-shadow: 0 10px 30px rgba(234, 179, 8, 0.2);
+.s-feat-icon {
+  font-size: 1.8rem;
+  margin-bottom: 0.75rem;
 }
 
-.math-tag {
-  display: inline-block;
-  font-size: 0.72rem;
+.s-feat-title {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
   font-weight: 800;
-  color: #94a3b8;
-  letter-spacing: 0.05em;
+  color: #ffffff;
   margin-bottom: 0.5rem;
 }
 
-.math-tag-popular {
-  background: #facc15;
-  color: #0f172a;
-  padding: 0.2rem 0.6rem;
-  border-radius: 12px;
-  font-weight: 900;
+.s-feat-text {
+  font-size: 0.88rem;
+  color: var(--text-silver);
+  line-height: 1.55;
+  margin: 0;
 }
 
-.math-amount {
-  font-family: var(--font-heading);
-  font-size: 1.8rem;
-  font-weight: 900;
-  color: #ffffff;
-  margin-bottom: 0.35rem;
-}
-
-.math-amount span {
-  font-size: 0.95rem;
-  color: #94a3b8;
-}
-
-.math-month {
-  font-size: 0.95rem;
-  color: #38bdf8;
-  margin-bottom: 0.6rem;
-}
-
-.math-note {
-  font-size: 0.78rem;
-  color: var(--text-muted);
-  line-height: 1.4;
-}
-
-/* Star Perks Box */
-.star-perks-box {
-  background: rgba(15, 23, 42, 0.7);
+/* Star Tools Bar */
+.star-tools-bar {
+  background: rgba(15, 23, 42, 0.8);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
-  padding: 1.75rem;
-  text-align: left;
-  max-width: 900px;
+  border-radius: 14px;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  max-width: 820px;
   margin: 0 auto;
 }
 
-.star-perks-title {
+.star-tools-label {
   font-family: var(--font-heading);
-  font-size: 0.95rem;
+  font-size: 0.8rem;
   font-weight: 900;
   color: #facc15;
-  margin-bottom: 1.25rem;
-  text-align: center;
+  letter-spacing: 0.05em;
 }
 
-.star-perks-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.25rem;
-}
-
-.perk-item {
+.star-tools-items {
   display: flex;
-  gap: 0.75rem;
-  align-items: flex-start;
-}
-
-.perk-icon {
-  font-size: 1.4rem;
-  flex-shrink: 0;
-}
-
-.perk-item strong {
-  font-size: 0.92rem;
-  color: #ffffff;
-  display: block;
-  margin-bottom: 0.2rem;
-}
-
-.perk-item p {
-  font-size: 0.82rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+  font-size: 0.85rem;
   color: var(--text-silver);
-  line-height: 1.45;
-  margin: 0;
+  font-weight: 600;
 }
 
 /* Method Section */
