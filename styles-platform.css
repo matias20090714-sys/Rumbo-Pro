@@ -2995,11 +2995,35 @@ button, a, input, select, textarea,
   margin: 0;
 }
 
+.seo-categories-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.seo-cat-block {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 0.85rem;
+}
+
+.seo-cat-title {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 0.78rem;
+  color: #38bdf8;
+  margin-bottom: 0.6rem;
+  letter-spacing: 0.03em;
+}
+
 @media (max-width: 960px) {
-  .bio-cards-grid {
+  .bio-cards-grid,
+  .seo-categories-grid {
     grid-template-columns: 1fr;
   }
 }
+
 
 
 
