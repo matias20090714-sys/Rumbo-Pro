@@ -2242,52 +2242,40 @@
       const canvas = document.getElementById('bio-generator-canvas');
       if (!canvas) return;
 
-      const rawName = (inputEl && inputEl.value.trim()) ? inputEl.value.trim() : 'Lucas';
+      const rawName = (inputEl && inputEl.value.trim()) ? inputEl.value.trim() : 'Matias';
+      const formattedName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
       const cleanName = rawName.toLowerCase().replace(/[^a-z0-9]/g, '');
 
       const isAnon = currentScriptMode === 'anon';
 
-      let categorizedUsernames = [];
+      let displayNames = [];
+      let usernames = [];
       let bios = [];
 
       if (!isAnon) {
-        // High-SEO Personal Brand Categories (Con Rostro)
-        categorizedUsernames = [
-          {
-            category: '🎯 Alto Tráfico & Crecimiento (SEO)',
-            names: [
-              `@${cleanName}.crecimiento`,
-              `@${cleanName}.digitalhub`,
-              `@monetizacon.${cleanName}`,
-              `@${cleanName}.escaladigital`,
-              `@${cleanName}.growth`
-            ]
-          },
-          {
-            category: '💼 Ventas & Negocios Digitales',
-            names: [
-              `@${cleanName}.salespro`,
-              `@${cleanName}.capital`,
-              `@soy${cleanName}.pro`,
-              `@${cleanName}.businessmind`,
-              `@${cleanName}_negocios`
-            ]
-          },
-          {
-            category: '⚡ E-Commerce & Remoto',
-            names: [
-              `@${cleanName}.ecom`,
-              `@${cleanName}.remoto`,
-              `@${cleanName}.mentor`,
-              `@${cleanName}.academy`,
-              `@${cleanName}.oficial`
-            ]
-          }
+        // Personal Brand Display Names (SEO Profile Name: Nombre | Especialidad)
+        displayNames = [
+          `${formattedName} | Marketing de Afiliados`,
+          `${formattedName} | E-Commerce & Negocios`,
+          `${formattedName} | Closer de Ventas & Negocios`,
+          `${formattedName} | Habilidades Digitales & IA`,
+          `${formattedName} | Monetización Online`,
+          `${formattedName} | Negocios Digitales`
+        ];
+
+        // Personal Brand Handles (@username)
+        usernames = [
+          `@${cleanName}.marketing`,
+          `@${cleanName}.ecom`,
+          `@${cleanName}.ventas`,
+          `@${cleanName}.digital_`,
+          `@soy${cleanName}.pro`,
+          `@${cleanName}.afiliados`
         ];
 
         bios = [
           {
-            title: 'Opción 1: Directa a Ingresos & Cierre de WhatsApp (Más Recomendada)',
+            title: 'Opción 1: Directa a Ingresos & WhatsApp (Más Recomendada)',
             text: `🚀 Aprendé a monetizar tus redes sociales desde cero\n💰 Generá $87 a $174+ USD/día desde tu celular\n📚 Formación práctica en Rumbo Pro\n👇 Escribime a mi WhatsApp para empezar`
           },
           {
@@ -2300,38 +2288,24 @@
           }
         ];
       } else {
-        // High-SEO Anonymous Brand Categories (Marca Incógnita)
-        categorizedUsernames = [
-          {
-            category: '📈 Autoridad, Negocios & Crecimiento',
-            names: [
-              `@escala.remota`,
-              `@rumbo.digitalpro`,
-              `@capital.creativo_`,
-              `@mente.estrategica_`,
-              `@ingresos.inteligentes`
-            ]
-          },
-          {
-            category: '🌐 Lifestyle & Trabajo Remoto',
-            names: [
-              `@negocios.deimpacto`,
-              `@activo.digital_`,
-              `@vision.digitalpro`,
-              `@rumbo.pro_`,
-              `@libertad.remota`
-            ]
-          },
-          {
-            category: '💎 E-Commerce & Hábitos Millonarios',
-            names: [
-              `@habitos.pro_`,
-              `@ecom.latinoamerica`,
-              `@mente.financiera_`,
-              `@capital.digital_`,
-              `@escalapro.club`
-            ]
-          }
+        // Anonymous Brand Display Names (SEO Profile Name)
+        displayNames = [
+          `Rumbo Pro | Marketing Digital`,
+          `Mente Digital | E-Commerce & Ventas`,
+          `Escala Remota | Negocios Online`,
+          `Libertad Digital | Hábitos & Ingresos`,
+          `Capital Creativo | Afiliados 2026`,
+          `Activo Digital | Monetización Online`
+        ];
+
+        // Anonymous Brand Handles (@username)
+        usernames = [
+          `@escala.remota`,
+          `@rumbo.digitalpro`,
+          `@capital.creativo_`,
+          `@mente.estrategica_`,
+          `@ingresos.inteligentes`,
+          `@activo.digital_`
         ];
 
         bios = [
@@ -2351,38 +2325,46 @@
       }
 
       canvas.innerHTML = `
-        <!-- SEO Usernames Box -->
-        <div class="bio-usernames-box">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; flex-wrap:wrap; gap:0.5rem;">
+        <!-- 1. SEO Display Profile Names (Nombre | Especialidad) -->
+        <div class="bio-usernames-box" style="border-left:4px solid #facc15; margin-bottom:1.25rem;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem; flex-wrap:wrap; gap:0.5rem;">
             <div>
-              <div style="font-size:0.92rem; font-weight:800; color:#facc15;">
-                📌 Nombres de Usuario Optimizados para SEO & Búsqueda:
+              <div style="font-size:0.95rem; font-weight:800; color:#facc15;">
+                🏷️ 1. Nombre Visible de Perfil (Clave SEO en TikTok e Instagram):
               </div>
-              <small style="color:#94a3b8; font-size:0.78rem;">Incluyen palabras clave que el algoritmo de TikTok e Instagram posiciona en búsquedas orgánicas.</small>
+              <small style="color:#94a3b8; font-size:0.8rem;">Este es el nombre en negrita de tu perfil. Al poner palabras clave como <em>Marketing</em> o <em>E-commerce</em>, apareces primero en las búsquedas.</small>
             </div>
-            <button class="btn-copy-sm" style="background:rgba(0,194,255,0.15); border-color:#00c2ff; color:#38bdf8;" onclick="shuffleUsernames()">
-              🎲 Más Variantes SEO
-            </button>
           </div>
 
-          <div class="seo-categories-grid">
-            ${categorizedUsernames.map(cat => `
-              <div class="seo-cat-block">
-                <div class="seo-cat-title">${cat.category}</div>
-                <div class="usernames-chips-flex">
-                  ${cat.names.map(u => `
-                    <div class="username-chip" onclick="copyText('${u}')">
-                      <span>${u}</span>
-                      <span style="font-size:0.7rem; color:#38bdf8;">📋</span>
-                    </div>
-                  `).join('')}
-                </div>
+          <div class="usernames-chips-flex">
+            ${displayNames.map(d => `
+              <div class="username-chip display-name-chip" onclick="copyText('${d}')">
+                <span style="color:#ffffff; font-weight:800;">${d}</span>
+                <span style="font-size:0.72rem; color:#facc15;">📋 Copiar</span>
               </div>
             `).join('')}
           </div>
         </div>
 
-        <!-- Bios Grid -->
+        <!-- 2. Handles (@usuario) -->
+        <div class="bio-usernames-box" style="margin-bottom:1.5rem;">
+          <div style="font-size:0.88rem; font-weight:800; color:#38bdf8; margin-bottom:0.65rem;">
+            👤 2. Nombre de Usuario sugerido (@handle):
+          </div>
+          <div class="usernames-chips-flex">
+            ${usernames.map(u => `
+              <div class="username-chip" onclick="copyText('${u}')">
+                <span>${u}</span>
+                <span style="font-size:0.7rem; color:#38bdf8;">📋 Copiar</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <!-- 3. Bios Grid -->
+        <div style="font-size:0.88rem; font-weight:800; color:#ffffff; margin-bottom:0.75rem;">
+          📝 3. Biografías Listas para Copiar y Pegar:
+        </div>
         <div class="bio-cards-grid">
           ${bios.map((b, i) => `
             <div class="bio-template-card">
