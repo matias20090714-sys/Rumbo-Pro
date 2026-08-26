@@ -2662,15 +2662,270 @@ button, a, input, select, textarea,
   line-height: 1.5;
 }
 
+/* ==========================================================================
+   AFFILIATE SALES SUITE & TOOLKIT STYLES
+   ========================================================================== */
+
+/* Mode Switcher Bar */
+.script-mode-bar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  background: rgba(15, 23, 42, 0.7);
+  padding: 0.85rem 1.25rem;
+  border-radius: 14px;
+  border: 1px solid var(--border-light);
+}
+
+.mode-buttons-group {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.mode-toggle-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--text-silver);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.mode-toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+
+.mode-toggle-btn.active-mode {
+  background: rgba(234, 179, 8, 0.2);
+  border-color: #facc15;
+  color: #facc15;
+  font-weight: 800;
+  box-shadow: 0 0 15px rgba(234, 179, 8, 0.2);
+}
+
+/* Affiliate Tool Card (WhatsApp Linker & Kits) */
+.affiliate-tool-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 20px;
+  padding: 2rem 1.75rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.tool-card-head {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+}
+
+.tool-icon-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(0, 194, 255, 0.15);
+  border: 1px solid rgba(0, 194, 255, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+
+.tool-title {
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 0.25rem;
+}
+
+.tool-desc {
+  font-size: 0.88rem;
+  color: var(--text-silver);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.tool-body-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.tool-output-box {
+  background: rgba(10, 15, 29, 0.9);
+  border: 1px dashed rgba(0, 194, 255, 0.4);
+  border-radius: 14px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.tool-output-link {
+  font-family: monospace;
+  font-size: 0.85rem;
+  color: #38bdf8;
+  word-break: break-all;
+}
+
+/* WhatsApp Closing Kit Steps */
+.wa-closing-steps-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+}
+
+.closing-card {
+  background: rgba(10, 15, 29, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem;
+  transition: var(--transition-fast);
+}
+
+.closing-card:hover {
+  border-color: rgba(0, 194, 255, 0.35);
+}
+
+.closing-card.highlight-closing-card {
+  border: 2px solid #10b981;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(15, 23, 42, 0.9));
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.2);
+}
+
+.closing-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.65rem;
+}
+
+.closing-step-tag {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 0.78rem;
+  color: #38bdf8;
+  letter-spacing: 0.05em;
+}
+
+.closing-script-text {
+  font-size: 0.92rem;
+  color: var(--text-silver);
+  line-height: 1.6;
+  margin-bottom: 0.6rem;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  border-left: 3px solid rgba(255, 255, 255, 0.2);
+}
+
+.closing-tip {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  display: block;
+}
+
+/* 7-Day Action Plan Checklist */
+.action-plan-checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.plan-task-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  background: rgba(10, 15, 29, 0.7);
+  border: 1px solid var(--border-light);
+  border-radius: 14px;
+  padding: 1rem 1.25rem;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.plan-task-row:hover {
+  background: rgba(15, 23, 42, 0.95);
+  border-color: rgba(0, 194, 255, 0.4);
+}
+
+.plan-task-row.task-completed-row {
+  border-color: #10b981;
+  background: rgba(16, 185, 129, 0.08);
+}
+
+.plan-task-checkbox {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 0.9rem;
+  color: #ffffff;
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+  transition: all 0.2s ease;
+}
+
+.plan-task-checkbox.is-checked {
+  background: #10b981;
+  border-color: #10b981;
+}
+
+.plan-task-content {
+  flex: 1;
+}
+
+.plan-day-tag {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 0.72rem;
+  color: #facc15;
+  background: rgba(234, 179, 8, 0.15);
+  padding: 0.2rem 0.55rem;
+  border-radius: 6px;
+}
+
+.plan-task-title {
+  font-size: 0.95rem;
+  color: #ffffff;
+}
+
+.task-completed-row .plan-task-title {
+  text-decoration: line-through;
+  color: #94a3b8;
+}
+
+.plan-task-desc {
+  font-size: 0.8rem;
+  color: var(--text-silver);
+  margin-top: 0.25rem;
+  margin-bottom: 0;
+  line-height: 1.45;
+}
+
 @media (max-width: 768px) {
-  .onboarding-steps-grid {
+  .tool-body-grid {
     grid-template-columns: 1fr;
-    gap: 0.85rem;
-  }
-  .onboarding-guide-card {
-    padding: 1.25rem;
   }
 }
+
 
 
 
