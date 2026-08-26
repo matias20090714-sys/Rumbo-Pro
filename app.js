@@ -3,16 +3,6 @@
    ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
-  // 0. Capture Affiliate Referral Code if present in URL
-  const urlParams = new URLSearchParams(window.location.search);
-  const refCode = urlParams.get('ref');
-  if (refCode) {
-    localStorage.setItem('rumbopro_ref_code', refCode);
-    const clicksObj = JSON.parse(localStorage.getItem('rumbopro_db_affiliate_clicks') || '{}');
-    clicksObj[refCode] = (clicksObj[refCode] || 0) + 1;
-    localStorage.setItem('rumbopro_db_affiliate_clicks', JSON.stringify(clicksObj));
-  }
-
   // 1. Scroll Reveal Animations
   const revealElements = document.querySelectorAll('.reveal-on-scroll');
   
@@ -130,211 +120,57 @@ document.addEventListener('DOMContentLoaded', () => {
     showNextNotification();
     setInterval(showNextNotification, 14000);
   }, 4000);
+});
 
-  // ==========================================================================
-  // 6. INTERACTIVE BUSINESS QUIZ ENGINE (7 DEEP DIAGNOSTIC QUESTIONS)
-  // ==========================================================================
-  const quizContainer = document.getElementById('quiz-interactive-body');
-  const quizProgressBar = document.getElementById('quiz-progress-bar');
+// Interactive Diagnostic Quiz Global Logic
+const userQuizAnswers = {};
 
-  if (quizContainer && quizProgressBar) {
-    let currentStep = 0;
-    const userAnswers = [];
+window.handleQuizAnswer = function(step, answerKey) {
+  userQuizAnswers[`step_${step}`] = answerKey;
 
-    const questions = [
-      {
-        title: 'Pregunta 1 de 7: ¿Cuál es tu nivel de experiencia en negocios o ventas por internet?',
-        desc: 'Esto nos permite calibrar la curva de aprendizaje ideal para ti.',
-        options: [
-          { icon: '🐣', text: 'Principiante Total — Nunca he vendido nada por internet y busco algo simple para empezar.', weights: { hotmart: 3, closer: 2, ecom: 1, cm: 1 } },
-          { icon: '📱', text: 'Nivel Medio — Ya manejo redes sociales o edición pero aún no genero ingresos constantes.', weights: { hotmart: 2, cm: 3, closer: 2, ecom: 2 } },
-          { icon: '💼', text: 'Con Experiencia — He intentado otros modelos y busco una habilidad de alto valor para escalar rápido.', weights: { closer: 3, ecom: 3, cm: 2, hotmart: 1 } }
-        ]
-      },
-      {
-        title: 'Pregunta 2 de 7: ¿Cuánto tiempo tienes disponible al día para dedicarle?',
-        desc: 'Selecciona tu disponibilidad real para aprender y aplicar las clases.',
-        options: [
-          { icon: '⏰', text: '1 hora al día (después de mi trabajo o estudio)', weights: { hotmart: 3, closer: 2, cm: 1, ecom: 1 } },
-          { icon: '⏳', text: '2 a 4 horas al día (dedicación media enfocada)', weights: { hotmart: 2, closer: 3, cm: 3, ecom: 2 } },
-          { icon: '🚀', text: 'Más de 4 horas / Tiempo completo', weights: { ecom: 3, closer: 3, cm: 3, hotmart: 2 } }
-        ]
-      },
-      {
-        title: 'Pregunta 3 de 7: ¿En cuánto tiempo te gustaría conseguir tus primeros ingresos o comisiones?',
-        desc: 'Cada habilidad tiene una velocidad de monetización diferente según su estructura.',
-        options: [
-          { icon: '⚡', text: 'En mis primeros 7 a 14 días — Busco la ruta más directa con resultados casi inmediatos.', weights: { closer: 4, hotmart: 3, cm: 1, ecom: 1 } },
-          { icon: '📈', text: 'En 30 a 45 días — Dispuesto a crear una base sólida y un flujo constante de ingresos.', weights: { cm: 3, hotmart: 3, closer: 2, ecom: 2 } },
-          { icon: '🏢', text: 'A mediano plazo (60+ días) — Quiero construir una marca escalable o tienda a largo plazo.', weights: { ecom: 4, cm: 3, closer: 1, hotmart: 1 } }
-        ]
-      },
-      {
-        title: 'Pregunta 4 de 7: ¿Cómo te sientes respecto a salir en cámara y mostrar tu cara?',
-        desc: 'Hay modelos 100% anónimos y otros basados en comunicación directa.',
-        options: [
-          { icon: '🙈', text: 'Prefiero NO mostrar mi cara (Formato Faceless con clips temáticos o servicios técnicos tras bambalinas)', weights: { hotmart: 4, cm: 2, ecom: 3, closer: -1 } },
-          { icon: '🎙️', text: 'Me siento cómodo hablando por notas de voz, chat o llamadas uno a uno', weights: { closer: 4, cm: 3, hotmart: 2, ecom: 1 } },
-          { icon: '🎬', text: 'No tengo problema en grabarme y ser la voz visible de mis videos', weights: { closer: 3, hotmart: 3, cm: 3, ecom: 2 } }
-        ]
-      },
-      {
-        title: 'Pregunta 5 de 7: ¿Qué tipo de actividad disfrutas más o te llama más la atención?',
-        desc: 'Elige la forma en la que te sientes más cómodo generando ingresos.',
-        options: [
-          { icon: '🔥', text: 'Crear videos virales de alta retención en TikTok para ganar comisiones en dólares como afiliado', weights: { hotmart: 5, cm: 1, closer: 1, ecom: 1 } },
-          { icon: '🎯', text: 'Conversar con personas, romper objeciones y cerrar ventas de $500 a $2,000 USD por llamada o chat', weights: { closer: 5, hotmart: 1, cm: 1, ecom: 1 } },
-          { icon: '🛒', text: 'Buscar productos físicos ganadores y montar una tienda online escalable con Dropshipping', weights: { ecom: 5, cm: 1, hotmart: 1, closer: 1 } },
-          { icon: '📱', text: 'Manejar redes sociales y crear calendarios de contenido con Inteligencia Artificial para negocios', weights: { cm: 5, hotmart: 1, closer: 1, ecom: 1 } }
-        ]
-      },
-      {
-        title: 'Pregunta 6 de 7: ¿Cuál es tu meta financiera principal para los próximos 90 días?',
-        desc: 'Tu objetivo económico define la velocidad y estrategia a seguir.',
-        options: [
-          { icon: '💵', text: 'Ganar mis primeros $300 a $600 USD extras al mes para tener un alivio económico', weights: { hotmart: 3, cm: 2, closer: 2, ecom: 1 } },
-          { icon: '🚀', text: 'Superar los $1,000 - $2,500 USD al mes para vivir 100% de mis ingresos digitales', weights: { closer: 4, ecom: 3, hotmart: 2, cm: 2 } },
-          { icon: '🏢', text: 'Crear una cartera fija de 2 a 4 clientes recurrentes que me paguen todos los meses', weights: { cm: 4, closer: 2, ecom: 1, hotmart: 1 } }
-        ]
-      },
-      {
-        title: 'Pregunta 7 de 7: ¿Qué dispositivo utilizarás principalmente para formarte y trabajar?',
-        desc: 'Toda la plataforma de Rumbo Pro está optimizada para cualquier dispositivo.',
-        options: [
-          { icon: '📱', text: '100% desde mi teléfono celular (Smartphone Android o iPhone)', weights: { hotmart: 3, closer: 3, cm: 2, ecom: 1 } },
-          { icon: '💻', text: 'Computadora / Laptop (o combinación de celular y laptop)', weights: { ecom: 3, cm: 3, closer: 2, hotmart: 2 } }
-        ]
-      }
-    ];
+  const currentStepEl = document.getElementById(`quiz-step-${step}`);
+  if (currentStepEl) currentStepEl.style.display = 'none';
 
-    const results = {
-      hotmart: {
-        badge: '🎯 TU RUTA RECOMENDADA (COINCIDENCIA 98%)',
-        title: '🔥 Hotmart (Método Fukuda)',
-        desc: 'El modelo perfecto para iniciar desde cero, sin mostrar tu cara y sin comprar stock. Aprendes a viralizar clips en TikTok y llevar a las personas directo a tu WhatsApp para generar comisiones en dólares del 60% al 80%.',
-        perks: ['🔥 Método 100% Orgánico', '👤 Formato Faceless (sin mostrar cara)', '📱 100% desde tu celular', '📈 Potencial: $300 a $1,200 USD/mes'],
-        courseHash: '#/curso/course-hotmart'
-      },
-      closer: {
-        badge: '🎯 TU RUTA RECOMENDADA (COINCIDENCIA 98%)',
-        title: '🎯 Closer de Ventas de Alto Valor',
-        desc: 'La habilidad mejor pagada y de retorno más rápido. Aprendes psicología de persuasión ética y cómo cerrar ventas de $500 a $2,000 USD mediante llamadas o notas de voz de WhatsApp cobrando comisiones directas del 10% al 20%.',
-        perks: ['⚡ Retorno más rápido en días', '🎙️ Solo necesitas WhatsApp', '📈 Potencial: $500 a $2,500 USD/mes', '🏆 Sin crear contenido complejo'],
-        courseHash: '#/curso/course-closer'
-      },
-      ecom: {
-        badge: '🎯 TU RUTA RECOMENDADA (COINCIDENCIA 98%)',
-        title: '🛒 E-Commerce & Dropshipping',
-        desc: 'Crea tu propia tienda online profesional y vende productos ganadores a nivel nacional o internacional sin comprar stock por adelantado mediante TikTok Orgánico y proveedores rápidos.',
-        perks: ['📦 Sin inventario previo', '🌐 Tienda vendiendo en piloto automático', '📈 Potencial: $600 a $3,000 USD/mes', '🛍️ Marca propia escalable'],
-        courseHash: '#/curso/course-ecommerce'
-      },
-      cm: {
-        badge: '🎯 TU RUTA RECOMENDADA (COINCIDENCIA 98%)',
-        title: '📱 Community Manager & Agencia de IA',
-        desc: 'Ofrece el servicio digital que todo negocio local necesita con urgencia: gestión de redes, calendarios con ChatGPT y edición de Reels con CapCut cobrando cuotas mensuales fijas de $200 a $500 USD por cliente.',
-        perks: ['🏢 Clientes recurrentes cada mes', '🤖 80% automatizado con IA', '📈 Potencial: $400 a $1,800 USD/mes', '💼 Servicios de alta demanda'],
-        courseHash: '#/curso/course-cm'
-      }
-    };
+  if (step < 3) {
+    const nextStepEl = document.getElementById(`quiz-step-${step + 1}`);
+    if (nextStepEl) {
+      nextStepEl.style.display = 'block';
+      nextStepEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  } else {
+    // Show Calculated Result
+    const resultView = document.getElementById('quiz-result-view');
+    const resultTitle = document.getElementById('quiz-result-title');
+    const resultDesc = document.getElementById('quiz-result-desc');
 
-    function renderQuizStep() {
-      if (currentStep < questions.length) {
-        const q = questions[currentStep];
-        quizProgressBar.style.width = `${((currentStep + 1) / questions.length) * 100}%`;
+    let title = 'Marketing de Afiliados + Closer de Ventas';
+    let desc = 'Tu perfil es perfecto para monetizar recomendando formaciones con guiones listos y cerrando ventas por WhatsApp para generar de $87 a $174+ USD por día.';
 
-        quizContainer.innerHTML = `
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
-            <span style="font-size:0.75rem; color:#38bdf8; font-weight:800; letter-spacing:0.05em;">PASO ${currentStep + 1} DE ${questions.length}</span>
-            <span style="font-size:0.75rem; color:#94a3b8; font-weight:700;">${Math.round(((currentStep + 1) / questions.length) * 100)}% Completado</span>
-          </div>
-          <div class="quiz-step-title">${q.title}</div>
-          <p class="quiz-step-desc">${q.desc}</p>
-          <div class="quiz-options-grid">
-            ${q.options.map((opt, idx) => `
-              <button class="quiz-opt-btn" onclick="handleQuizAnswer(${currentStep}, ${idx})">
-                <span class="quiz-opt-icon">${opt.icon}</span>
-                <span>${opt.text}</span>
-              </button>
-            `).join('')}
-          </div>
-          ${currentStep > 0 ? `
-            <div style="text-align:left; margin-top:1rem;">
-              <button class="btn-prev-lesson" onclick="handleQuizBack()" style="padding:0.4rem 0.8rem; font-size:0.8rem; background:transparent; border:1px solid rgba(255,255,255,0.1); color:#94a3b8; border-radius:6px; cursor:pointer;">
-                ← Pregunta anterior
-              </button>
-            </div>
-          ` : ''}
-        `;
-      } else {
-        // Calculate smart weighted score
-        quizProgressBar.style.width = '100%';
-        const finalScores = { hotmart: 0, closer: 0, ecom: 0, cm: 0 };
-
-        userAnswers.forEach((optIdx, qIdx) => {
-          const opt = questions[qIdx].options[optIdx];
-          if (opt && opt.weights) {
-            for (let k in opt.weights) {
-              finalScores[k] = (finalScores[k] || 0) + opt.weights[k];
-            }
-          }
-        });
-
-        // Determine winner
-        let highestKey = 'hotmart';
-        let highestVal = -999;
-        for (let k in finalScores) {
-          if (finalScores[k] > highestVal) {
-            highestVal = finalScores[k];
-            highestKey = k;
-          }
-        }
-
-        const res = results[highestKey] || results.hotmart;
-
-        quizContainer.innerHTML = `
-          <div class="quiz-result-card">
-            <span class="quiz-result-badge">${res.badge}</span>
-            <h3 class="quiz-result-title">${res.title}</h3>
-            <p class="quiz-result-desc">${res.desc}</p>
-            
-            <div class="quiz-result-perks">
-              ${res.perks.map(p => `<div class="quiz-perk-item">${p}</div>`).join('')}
-            </div>
-
-            <div style="display:flex; justify-content:center; gap:1rem; flex-wrap:wrap;">
-              <a href="app-platform.html#/registro" class="btn-primary" style="padding:1rem 2rem; font-size:1rem;">
-                EMPEZAR EN RUMBO PRO CON ESTA RUTA 🚀
-              </a>
-              <button class="btn-secondary" onclick="resetQuiz()" style="padding:0.9rem 1.4rem;">
-                🔄 Repetir Test
-              </button>
-            </div>
-          </div>
-        `;
-      }
+    if (userQuizAnswers.step_2 === 'style_store') {
+      title = 'E-Commerce & Dropshipping con TikTok';
+      desc = 'Tu ruta ideal es crear y gestionar tiendas online sin stock físico, aprovechando la viralidad orgánica de TikTok para vender productos.';
+    } else if (userQuizAnswers.step_2 === 'style_anon') {
+      title = 'Marketing de Afiliados (Marca Incógnita) + Hotmart';
+      desc = 'Ideal para ganar comisiones altas ($87 USD por venta) creando cuentas de contenido temático sin mostrar tu cara ni tu voz.';
+    } else if (userQuizAnswers.step_2 === 'style_talk') {
+      title = 'Closer de Ventas Profesional Remoto';
+      desc = 'Tu habilidad de comunicación te permitirá cerrar llamadas y prospectos de alto valor para agencias cobrando comisiones de $100 a $500 USD por cliente.';
     }
 
-    window.handleQuizAnswer = (step, optionIndex) => {
-      userAnswers[step] = optionIndex;
-      currentStep++;
-      renderQuizStep();
-    };
+    if (resultTitle) resultTitle.textContent = title;
+    if (resultDesc) resultDesc.textContent = desc;
 
-    window.handleQuizBack = () => {
-      if (currentStep > 0) {
-        currentStep--;
-        renderQuizStep();
-      }
-    };
-
-    window.resetQuiz = () => {
-      currentStep = 0;
-      userAnswers.length = 0;
-      renderQuizStep();
-    };
-
-    // Initial Render of Quiz
-    renderQuizStep();
+    if (resultView) {
+      resultView.style.display = 'block';
+      resultView.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
   }
-});
+};
+
+window.restartQuiz = function() {
+  document.getElementById('quiz-step-1').style.display = 'block';
+  document.getElementById('quiz-step-2').style.display = 'none';
+  document.getElementById('quiz-step-3').style.display = 'none';
+  document.getElementById('quiz-result-view').style.display = 'none';
+};
+
