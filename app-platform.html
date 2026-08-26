@@ -632,16 +632,28 @@
                 <small class="closing-tip">💡 Objetivo: Que te responda qué área le interesa para no abrumarlo con información innecesaria.</small>
               </div>
 
-              <!-- Step 2: Audio / Explicación -->
+              <!-- Step 2: Audio / Explicación de Alto Cierre -->
+              <div class="closing-card highlight-closing-card" style="border-color:#facc15; background:linear-gradient(135deg, rgba(234, 179, 8, 0.1), rgba(15, 23, 42, 0.95));">
+                <div class="closing-card-top">
+                  <span class="closing-step-tag" style="color:#facc15; font-weight:900;">PASO 2: EXPLICACIÓN DE IMPACTO & ALTO CIERRE (MÁXIMA VENTA) 🔥</span>
+                  <button class="btn-copy-sm" style="background:#facc15; color:#0f172a; font-weight:800;" onclick="copyText('Te cuento en 30 segundos cómo funciona: La mayoría de cursos allá afuera te cobran $500 USD por pura teoría vieja. En RUMBO PRO tenés una academia completa donde te enseñan las 4 habilidades más rentables de internet (E-Commerce, Closer de Ventas, Hotmart y Redes Sociales). Y lo más potente: tenés el sistema de Afiliados al 90%. Te damos guiones listos para publicar en TikTok e Instagram y con solo 1 persona que empiece con tu recomendación al día te embolsás $87 USD directos a tu bolsillo (unos $2,610 USD al mes) trabajando 1 a 2 horas desde tu celular. ¿Querés que te pase el temario y cómo activar tu cupo hoy mismo?')">📋 Copiar Explicación Estrella</button>
+                </div>
+                <p class="closing-script-text" style="color:#ffffff;">
+                  "Te cuento en 30 segundos: La mayoría de cursos te cobran $500 USD por teoría vieja. En <strong>RUMBO PRO</strong> tenés las 4 habilidades más rentables (E-Commerce, Closer, Hotmart y Redes Sociales) + <strong>el sistema de Afiliados al 90%</strong>. Te damos guiones listos y con solo 1 venta al día ganás <strong>$87 USD directos</strong> (unos $2,610 USD/mes) desde tu celular. ¿Querés que te pase el temario y cómo activar tu cupo hoy?"
+                </p>
+                <small class="closing-tip" style="color:#facc15;">💡 Consejo de Oro: Si podés mandar este mensaje en un <strong>audio de WhatsApp de 30-40 segundos</strong> con energía y seguridad, tu tasa de cierre se multiplica x3.</small>
+              </div>
+
+              <!-- Step 2-B: Alternativa Educativa / Salida Laboral -->
               <div class="closing-card">
                 <div class="closing-card-top">
-                  <span class="closing-step-tag">PASO 2: EXPLICACIÓN DE IMPACTO</span>
-                  <button class="btn-copy-sm" onclick="copyText('Genial. Te cuento rápido: RUMBO PRO es una academia digital donde te enseñan paso a paso las 4 habilidades más rentables de internet (E-Commerce, Closer de Ventas, Hotmart y Redes Sociales). Además, tenés el programa de afiliados donde ganás $87 USD por cada persona que decida formarse con tu recomendación. Todo está pensado para aplicarlo desde el celular en 1 o 2 horas al día.')">📋 Copiar</button>
+                  <span class="closing-step-tag" style="color:#38bdf8;">PASO 2 (OPCIÓN B): SI BUSCA CERTIFICADO Y TRABAJO REMOTO</span>
+                  <button class="btn-copy-sm" onclick="copyText('RUMBO PRO es la plataforma de formación digital práctica donde aprendés E-Commerce, Ventas de Alto Valor, Hotmart y Community Manager con IA. Al completar cada área recibís tu Certificado Oficial con código QR para trabajar con empresas de todo el mundo ganando entre $500 y $3,000 USD/mes. Además incluye el programa de afiliados para generar comisiones de $87 USD desde tu primera semana. ¿Ya tenés alguna experiencia previa o empezarías desde cero?')">📋 Copiar Opción B</button>
                 </div>
                 <p class="closing-script-text">
-                  "Genial. Te cuento rápido: <strong>RUMBO PRO</strong> es una academia digital donde te enseñan las 4 habilidades más rentables de internet (E-Commerce, Closer, Hotmart y Redes). Además, ganás <strong>$87 USD por cada venta</strong> como afiliado. Todo aplicable desde tu celular."
+                  "RUMBO PRO te enseña las 4 profesiones más demandadas con <strong>Certificado Oficial con QR</strong> para trabajar con empresas remotas ganando $500 a $3,000 USD/mes + acceso al programa de afiliados ($87 USD por venta). ¿Empezarías desde cero o ya tenés experiencia?"
                 </p>
-                <small class="closing-tip">💡 Consejo: Podés mandar este texto o grabarlo en un audio de 30 segundos con tono tranquilo y seguro.</small>
+                <small class="closing-tip">💡 Usá esta opción cuando el interesado busque aprender un oficio formal para trabajar con empresas.</small>
               </div>
 
               <!-- Step 3: Objeción Plata -->
@@ -2217,7 +2229,14 @@
       window.copyText(outDiv.textContent);
     };
 
-    // Usernames and Bios Generator
+    // High-SEO Categorized Usernames and Bios Generator
+    let nameShuffleIndex = 0;
+
+    window.shuffleUsernames = () => {
+      nameShuffleIndex = (nameShuffleIndex + 1) % 5;
+      window.updateProfileBioGenerator();
+    };
+
     window.updateProfileBioGenerator = () => {
       const inputEl = document.getElementById('bio-custom-name');
       const canvas = document.getElementById('bio-generator-canvas');
@@ -2228,41 +2247,91 @@
 
       const isAnon = currentScriptMode === 'anon';
 
-      let usernames = [];
+      let categorizedUsernames = [];
       let bios = [];
 
       if (!isAnon) {
-        // Personal Brand (Con Rostro)
-        usernames = [
-          `@${cleanName}.digital_`,
-          `@soy${cleanName}.pro`,
-          `@${cleanName}_negocios`,
-          `@${cleanName}.oficial`,
-          `@emprende.con${cleanName}`
+        // High-SEO Personal Brand Categories (Con Rostro)
+        categorizedUsernames = [
+          {
+            category: '🎯 Alto Tráfico & Crecimiento (SEO)',
+            names: [
+              `@${cleanName}.crecimiento`,
+              `@${cleanName}.digitalhub`,
+              `@monetizacon.${cleanName}`,
+              `@${cleanName}.escaladigital`,
+              `@${cleanName}.growth`
+            ]
+          },
+          {
+            category: '💼 Ventas & Negocios Digitales',
+            names: [
+              `@${cleanName}.salespro`,
+              `@${cleanName}.capital`,
+              `@soy${cleanName}.pro`,
+              `@${cleanName}.businessmind`,
+              `@${cleanName}_negocios`
+            ]
+          },
+          {
+            category: '⚡ E-Commerce & Remoto',
+            names: [
+              `@${cleanName}.ecom`,
+              `@${cleanName}.remoto`,
+              `@${cleanName}.mentor`,
+              `@${cleanName}.academy`,
+              `@${cleanName}.oficial`
+            ]
+          }
         ];
 
         bios = [
           {
-            title: 'Opción 1: Directa a Ingresos & WhatsApp (Más recomendada)',
+            title: 'Opción 1: Directa a Ingresos & Cierre de WhatsApp (Más Recomendada)',
             text: `🚀 Aprendé a monetizar tus redes sociales desde cero\n💰 Generá $87 a $174+ USD/día desde tu celular\n📚 Formación práctica en Rumbo Pro\n👇 Escribime a mi WhatsApp para empezar`
           },
           {
-            title: 'Opción 2: Estilo Emprendedor Digital',
+            title: 'Opción 2: Emprendedor Digital & Estilo de Vida',
             text: `📱 De 0 a vivir de internet y habilidades digitales\n🛒 E-Commerce · Closer de Ventas · Afiliados al 90%\n⚡ Te enseño mi paso a paso sin vueltas\n👇 Tocá el link para hablar conmigo`
           },
           {
-            title: 'Opción 3: Minimalista de Alto Impacto',
+            title: 'Opción 3: Minimalista de Alto Impacto & Autoridad',
             text: `💼 Negocios digitales & Libertad de tiempo\n💎 +$87 USD por comisión de afiliado\n🚀 Cupos abiertos en la academia\n👇 Información y acceso por WhatsApp`
           }
         ];
       } else {
-        // Anonymous Brand (Marca Incógnita)
-        usernames = [
-          `@rumbo.digital_`,
-          `@mente.pro_`,
-          `@ingresos.remotos`,
-          `@escaladigital.pro`,
-          `@capital.digital_`
+        // High-SEO Anonymous Brand Categories (Marca Incógnita)
+        categorizedUsernames = [
+          {
+            category: '📈 Autoridad, Negocios & Crecimiento',
+            names: [
+              `@escala.remota`,
+              `@rumbo.digitalpro`,
+              `@capital.creativo_`,
+              `@mente.estrategica_`,
+              `@ingresos.inteligentes`
+            ]
+          },
+          {
+            category: '🌐 Lifestyle & Trabajo Remoto',
+            names: [
+              `@negocios.deimpacto`,
+              `@activo.digital_`,
+              `@vision.digitalpro`,
+              `@rumbo.pro_`,
+              `@libertad.remota`
+            ]
+          },
+          {
+            category: '💎 E-Commerce & Hábitos Millonarios',
+            names: [
+              `@habitos.pro_`,
+              `@ecom.latinoamerica`,
+              `@mente.financiera_`,
+              `@capital.digital_`,
+              `@escalapro.club`
+            ]
+          }
         ];
 
         bios = [
@@ -2282,16 +2351,32 @@
       }
 
       canvas.innerHTML = `
-        <!-- Usernames Row -->
+        <!-- SEO Usernames Box -->
         <div class="bio-usernames-box">
-          <div style="font-size:0.85rem; font-weight:800; color:#facc15; margin-bottom:0.65rem;">
-            📌 Ideas de Nombres de Usuario para tu cuenta:
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; flex-wrap:wrap; gap:0.5rem;">
+            <div>
+              <div style="font-size:0.92rem; font-weight:800; color:#facc15;">
+                📌 Nombres de Usuario Optimizados para SEO & Búsqueda:
+              </div>
+              <small style="color:#94a3b8; font-size:0.78rem;">Incluyen palabras clave que el algoritmo de TikTok e Instagram posiciona en búsquedas orgánicas.</small>
+            </div>
+            <button class="btn-copy-sm" style="background:rgba(0,194,255,0.15); border-color:#00c2ff; color:#38bdf8;" onclick="shuffleUsernames()">
+              🎲 Más Variantes SEO
+            </button>
           </div>
-          <div class="usernames-chips-flex">
-            ${usernames.map(u => `
-              <div class="username-chip" onclick="copyText('${u}')">
-                <span>${u}</span>
-                <span style="font-size:0.7rem; color:#38bdf8;">📋 Copiar</span>
+
+          <div class="seo-categories-grid">
+            ${categorizedUsernames.map(cat => `
+              <div class="seo-cat-block">
+                <div class="seo-cat-title">${cat.category}</div>
+                <div class="usernames-chips-flex">
+                  ${cat.names.map(u => `
+                    <div class="username-chip" onclick="copyText('${u}')">
+                      <span>${u}</span>
+                      <span style="font-size:0.7rem; color:#38bdf8;">📋</span>
+                    </div>
+                  `).join('')}
+                </div>
               </div>
             `).join('')}
           </div>
