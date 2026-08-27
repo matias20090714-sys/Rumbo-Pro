@@ -2476,39 +2476,64 @@
 
               </div>
 
-              <!-- Column 2: Leaderboard Ranking -->
+              <!-- Column 2: Personal Ranking Status Card (No Simulated Users) -->
               <div class="gamify-ranking-col">
                 <div class="ranking-card-box">
                   <div class="ranking-header">
                     <div>
-                      <span class="q-section-badge" style="background:#10b98122; color:#34d399; border:1px solid #10b981;">RANKING EN VIVO</span>
-                      <h4 style="margin:0.25rem 0 0 0; font-size:1.1rem; color:#ffffff;">🏆 Top Afiliados del Mes</h4>
+                      <span class="q-section-badge" style="background:#10b98122; color:#34d399; border:1px solid #10b981;">TU POSICIÓN EN LA COMUNIDAD</span>
+                      <h4 style="margin:0.25rem 0 0 0; font-size:1.15rem; color:#ffffff;">🏆 Tu Estado en el Ranking</h4>
                     </div>
-                    <small style="color:#94a3b8; font-size:0.75rem;">Actualizado en tiempo real</small>
                   </div>
 
-                  <div class="leaderboard-list">
-                    ${leaderboard.map((item, idx) => {
-                      const rankNum = idx + 1;
-                      const rankIcon = rankNum === 1 ? '👑' : rankNum === 2 ? '🥈' : rankNum === 3 ? '🥉' : `#${rankNum}`;
-                      return `
-                        <div class="leaderboard-row ${item.isMe ? 'my-rank-row' : ''}">
-                          <div class="l-rank-badge">${rankIcon}</div>
-                          <div class="l-user-info">
-                            <strong class="l-user-name">${item.name}</strong>
-                            <span class="l-user-lvl">${item.lvl} · 🔥 ${item.streak}d racha</span>
-                          </div>
-                          <div class="l-user-xp">
-                            <strong>⭐ ${item.xp.toLocaleString()} XP</strong>
-                            <small style="color:#34d399; font-size:0.72rem; display:block;">💰 ${item.sales} ventas</small>
-                          </div>
+                  ${xp === 0 ? `
+                    <!-- Unranked State (0 XP) -->
+                    <div class="unranked-card-state">
+                      <div class="unranked-icon-circle">⏳</div>
+                      <div class="unranked-title">Sin Clasificar</div>
+                      <div class="unranked-score">Puntuación: <strong>0 XP</strong></div>
+                      <p class="unranked-desc">
+                        Todavía no tenés un puesto asignado en el ranking. Completá tu primera misión para activar tu puntuación y desbloquear tu número de ranking oficial.
+                      </p>
+                      <div class="unranked-tip">
+                        👉 Marcá una de las <strong>Misiones de Inicio</strong> a la izquierda para empezar a sumar tus primeros 150 XP.
+                      </div>
+                    </div>
+                  ` : `
+                    <!-- Ranked Active State -->
+                    <div class="my-active-rank-card">
+                      <div class="rank-badge-hero">
+                        <span class="rank-pos-number">#1</span>
+                        <span class="rank-pos-sub">Tu Puesto Actual</span>
+                      </div>
+
+                      <div class="rank-details-grid">
+                        <div class="r-detail-item">
+                          <span class="r-detail-label">Puntos Acumulados</span>
+                          <strong class="r-detail-val" style="color:#facc15;">⭐ ${xp.toLocaleString()} XP</strong>
                         </div>
-                      `;
-                    }).join('')}
-                  </div>
+                        <div class="r-detail-item">
+                          <span class="r-detail-label">Rango Oficial</span>
+                          <strong class="r-detail-val" style="color:${lvlInfo.cur.color};">${lvlInfo.cur.badge} ${lvlInfo.cur.name}</strong>
+                        </div>
+                        <div class="r-detail-item">
+                          <span class="r-detail-label">Racha de Publicación</span>
+                          <strong class="r-detail-val" style="color:#fb923c;">🔥 ${data.streak || 0} Días Seguidos</strong>
+                        </div>
+                        <div class="r-detail-item">
+                          <span class="r-detail-label">Ventas Verificadas</span>
+                          <strong class="r-detail-val" style="color:#34d399;">💰 ${salesCount} ($${salesCount * 87} USD)</strong>
+                        </div>
+                      </div>
 
-                  <div class="ranking-anticheat-notice">
-                    🔒 <strong>Sistema Antifraude:</strong> Las ventas solo se computan cuando el Administrador aprueba al nuevo alumno.
+                      <div class="rank-active-message">
+                        ✅ <strong>¡Perfil Activo!</strong> Estás sumando puntos diarios por tu constancia. Cada venta que valide el Administrador te sumará <strong>+1,000 XP</strong> automáticos.
+                      </div>
+                    </div>
+                  `}
+
+                  <div class="ranking-anticheat-notice" style="margin-top:auto;">
+                    🔒 <strong>Sistema Seguro:</strong> Las ventas solo se computan cuando el Administrador aprueba al nuevo alumno.
                   </div>
                 </div>
               </div>
