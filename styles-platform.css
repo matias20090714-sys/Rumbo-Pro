@@ -3030,12 +3030,323 @@ button, a, input, select, textarea,
   letter-spacing: 0.03em;
 }
 
+/* ==========================================================================
+   RUMBO PRO CHALLENGE (GAMIFICATION & LEADERBOARD)
+   ========================================================================== */
+.gamify-challenge-card {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(10, 15, 29, 0.98));
+  border: 1px solid rgba(234, 179, 8, 0.35);
+  border-radius: 20px;
+  padding: 1.75rem;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+  position: relative;
+  overflow: hidden;
+}
+
+.gamify-hero-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.gamify-rank-badge {
+  display: inline-block;
+  font-family: var(--font-heading);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  border: 1.5px solid #facc15;
+  background: rgba(0, 0, 0, 0.4);
+  margin-bottom: 0.45rem;
+}
+
+.gamify-title {
+  font-family: var(--font-heading);
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0 0 0.25rem 0;
+}
+
+.gamify-sub {
+  font-size: 0.88rem;
+  color: var(--text-silver);
+  margin: 0;
+  max-width: 540px;
+}
+
+.gamify-stats-flex {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.gamify-stat-pill {
+  background: rgba(10, 15, 29, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 0.65rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.g-stat-label {
+  font-size: 0.7rem;
+  color: #94a3b8;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.g-stat-val {
+  font-size: 0.95rem;
+  font-weight: 900;
+  font-family: var(--font-heading);
+}
+
+/* Progress Bar */
+.gamify-progress-container {
+  background: rgba(10, 15, 29, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 0.85rem 1.25rem;
+  margin-bottom: 1.75rem;
+}
+
+.gamify-progress-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  color: #94a3b8;
+  margin-bottom: 0.5rem;
+}
+
+.gamify-progress-labels strong {
+  color: #ffffff;
+}
+
+.gamify-bar-track {
+  width: 100%;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.gamify-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+/* 2 Columns Layout */
+.gamify-grid-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+/* Quests */
+.quests-section-box {
+  background: rgba(10, 15, 29, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 1.25rem;
+}
+
+.quests-section-head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.25rem;
+}
+
+.q-section-badge {
+  font-size: 0.7rem;
+  font-weight: 900;
+  padding: 0.2rem 0.55rem;
+  border-radius: 6px;
+  letter-spacing: 0.04em;
+}
+
+.quests-section-sub {
+  font-size: 0.78rem;
+  color: var(--text-silver);
+  margin-bottom: 0.85rem;
+}
+
+.quest-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  padding: 0.75rem 0.85rem;
+  margin-bottom: 0.6rem;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.quest-row:hover {
+  background: rgba(234, 179, 8, 0.08);
+  border-color: rgba(234, 179, 8, 0.35);
+}
+
+.quest-row.quest-done {
+  border-color: #10b981;
+  background: rgba(16, 185, 129, 0.06);
+}
+
+.quest-check-box {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 900;
+  color: #ffffff;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+  transition: all 0.2s ease;
+}
+
+.quest-check-box.is-checked {
+  background: #10b981;
+  border-color: #10b981;
+}
+
+.quest-info {
+  flex: 1;
+}
+
+.quest-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.quest-title-row strong {
+  font-size: 0.88rem;
+  color: #ffffff;
+}
+
+.quest-done .quest-title-row strong {
+  text-decoration: line-through;
+  color: #94a3b8;
+}
+
+.quest-xp-tag {
+  font-family: monospace;
+  font-size: 0.75rem;
+  font-weight: 900;
+  color: #facc15;
+  background: rgba(234, 179, 8, 0.15);
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+}
+
+.quest-desc {
+  font-size: 0.76rem;
+  color: var(--text-silver);
+  margin: 0.2rem 0 0 0;
+}
+
+/* Leaderboard */
+.ranking-card-box {
+  background: rgba(10, 15, 29, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.ranking-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.leaderboard-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.leaderboard-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  padding: 0.65rem 0.85rem;
+}
+
+.leaderboard-row.my-rank-row {
+  border: 1.5px solid #facc15;
+  background: linear-gradient(135deg, rgba(234, 179, 8, 0.15), rgba(15, 23, 42, 0.9));
+  box-shadow: 0 0 15px rgba(234, 179, 8, 0.2);
+}
+
+.l-rank-badge {
+  font-size: 1.1rem;
+  width: 28px;
+  text-align: center;
+  font-weight: 900;
+  color: #facc15;
+}
+
+.l-user-info {
+  flex: 1;
+}
+
+.l-user-name {
+  font-size: 0.88rem;
+  color: #ffffff;
+  display: block;
+}
+
+.l-user-lvl {
+  font-size: 0.72rem;
+  color: #94a3b8;
+}
+
+.l-user-xp {
+  text-align: right;
+  font-family: monospace;
+  font-size: 0.85rem;
+  color: #facc15;
+}
+
+.ranking-anticheat-notice {
+  font-size: 0.72rem;
+  color: #94a3b8;
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  margin-top: 0.85rem;
+  border-left: 3px solid #10b981;
+}
+
 @media (max-width: 960px) {
-  .bio-cards-grid,
-  .seo-categories-grid {
+  .gamify-grid-2col {
     grid-template-columns: 1fr;
   }
 }
+
 
 
 
