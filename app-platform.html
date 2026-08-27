@@ -2217,6 +2217,91 @@
         { lvl: 5, name: 'Leyenda Rumbo Pro', minXp: 5000, maxXp: 99999, badge: '👑', color: '#10b981' }
       ],
 
+      // Fixed Mission (Never moves, always Mission #1 of the day)
+      fixedMission: {
+        id: 'daily_v1',
+        icon: '📹',
+        title: 'Publicar Video #1 del Día',
+        xp: 100,
+        desc: 'Grabar y publicar el guion del día en TikTok / Reels con gancho fuerte.'
+      },
+
+      // Rotating Pool of Selected Missions (4 are picked daily to form 5 total)
+      rotatingPool: [
+        {
+          id: 'daily_v2',
+          icon: '⚡',
+          title: 'Publicar Video #2 (Doble Tráfico)',
+          xp: 100,
+          desc: 'Subir un segundo video para duplicar el alcance y prospectos.'
+        },
+        {
+          id: 'daily_comments',
+          icon: '💬',
+          title: 'Comentar en 5 Videos Virales de tu Nicho',
+          xp: 50,
+          desc: 'Dejar aportes de valor en videos con muchas visitas para atraer curiosos a tu perfil.'
+        },
+        {
+          id: 'daily_study',
+          icon: '📚',
+          title: 'Ver 1 Clase o Repasar 1 Capítulo',
+          xp: 50,
+          desc: 'Dedicar 10 a 15 min a capacitarte en una de las 4 habilidades o el Manual.'
+        },
+        {
+          id: 'daily_countdown',
+          icon: '🎯',
+          title: 'Subir Historia con Cuenta Regresiva de Cupos',
+          xp: 75,
+          desc: 'Crear urgencia en Instagram o WhatsApp avisando que quedan pocos cupos con descuento.'
+        },
+        {
+          id: 'daily_hooks',
+          icon: '📝',
+          title: 'Escribir 3 Ganchos Propios en tu Cuaderno',
+          xp: 50,
+          desc: 'Adaptar ideas del generador con tu propio estilo o frases magnéticas.'
+        },
+        {
+          id: 'daily_module',
+          icon: '🏆',
+          title: 'Completar o Avanzar 1 Módulo Entero de una Habilidad',
+          xp: 150,
+          desc: 'Avanzar un módulo de E-Commerce, Ventas o Marketing para dominar lo que recomendás.'
+        }
+      ],
+
+      // Lookup mission reward XP by ID
+      getMissionXp: function(mId) {
+        if (mId === 'daily_v1' || mId === 'v1') return 100;
+        if (mId === 'daily_v2' || mId === 'v2') return 100;
+        if (mId === 'daily_comments' || mId === 'v3') return 50;
+        if (mId === 'daily_study' || mId === 'v4') return 50;
+        if (mId === 'daily_countdown') return 75;
+        if (mId === 'daily_hooks') return 50;
+        if (mId === 'daily_module') return 150;
+        return 50;
+      },
+
+      getDailyMissionsForDate: function(dateStr) {
+        // Deterministic daily rotation
+        const clean = (dateStr || this.getTodayKey()).replace(/-/g, '/');
+        const d = new Date(clean);
+        const daySeed = Math.floor(d.getTime() / (1000 * 60 * 60 * 24));
+        
+        const pool = this.rotatingPool;
+        const count = pool.length; // 6
+        const chosen = [];
+        for (let i = 0; i < 4; i++) {
+          const idx = (daySeed + i) % count;
+          chosen.push(pool[idx]);
+        }
+
+        // Return Fixed Mission + 4 Rotating Missions = Exactly 5 Missions
+        return [this.fixedMission, ...chosen];
+      },
+
       getTodayKey: function() {
         const d = new Date();
         return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
@@ -2235,7 +2320,7 @@
           };
         }
         if (!data.daily[today]) {
-          data.daily[today] = { v1: false, v2: false };
+          data.daily[today] = {};
         }
         return data;
       },
@@ -2264,10 +2349,11 @@
         // Daily Quests history
         Object.keys(data.daily).forEach(dKey => {
           const day = data.daily[dKey];
-          if (day.v1) xp += 100;
-          if (day.v2) xp += 100;
-          if (day.v3) xp += 50;
-          if (day.v4) xp += 50;
+          Object.keys(day).forEach(mId => {
+            if (day[mId]) {
+              xp += this.getMissionXp(mId);
+            }
+          });
         });
 
         // Streak Bonus (+50 XP per streak day)
@@ -2302,12 +2388,13 @@
       toggleDailyQuest: function(userId, questKey) {
         const data = this.getData(userId);
         const today = this.getTodayKey();
-        if (!data.daily[today]) data.daily[today] = { v1: false, v2: false, v3: false, v4: false };
+        if (!data.daily[today]) data.daily[today] = {};
         
         data.daily[today][questKey] = !data.daily[today][questKey];
 
         // Update streak
-        const wasCompletedToday = data.daily[today].v1 || data.daily[today].v2 || data.daily[today].v3 || data.daily[today].v4;
+        const dayQuests = data.daily[today];
+        const wasCompletedToday = Object.values(dayQuests).some(v => !!v);
         if (wasCompletedToday) {
           if (data.lastDailyCompletedDate !== today) {
             data.streak = (data.streak || 0) + 1;
@@ -2325,7 +2412,8 @@
 
         const data = this.getData(userId);
         const today = this.getTodayKey();
-        const todayDaily = data.daily[today] || { v1: false, v2: false, v3: false, v4: false };
+        const todayDaily = data.daily[today] || {};
+        const dailyMissions = this.getDailyMissionsForDate(today);
         const xp = this.calculateXp(userId);
         const lvlInfo = this.getLevelInfo(xp);
         const salesCount = this.getVerifiedSalesCount(userId);
@@ -2440,69 +2528,31 @@
                   </div>
                 `}
 
-                <!-- SECTION B: MISIONES DIARIAS (HABITOS) -->
+                <!-- SECTION B: MISIONES DIARIAS (5 MISIONES CON ROTACIÓN DINÁMICA) -->
                 <div class="quests-section-box" style="margin-top:1.25rem;">
                   <div class="quests-section-head">
                     <span class="q-section-badge" style="background:#facc1522; color:#facc15; border:1px solid #facc15;">HOY: ${today}</span>
-                    <h4 style="margin:0; font-size:0.95rem; color:#ffffff;">🎥 Misiones Diarias de Creación & Tráfico</h4>
+                    <h4 style="margin:0; font-size:0.95rem; color:#ffffff;">🎥 5 Misiones Diarias del Día</h4>
                   </div>
-                  <p class="quests-section-sub">Completá tus tareas del día para mantener tu racha de fuego activa 🔥.</p>
+                  <p class="quests-section-sub">Completá tus tareas de hoy para mantener tu racha de fuego activa 🔥.</p>
 
-                  <!-- Daily Video 1 -->
-                  <div class="quest-row ${todayDaily.v1 ? 'quest-done' : ''}" onclick="window.rumboGamify.toggleDailyQuest('${userId}', 'v1')">
-                    <div class="quest-check-box ${todayDaily.v1 ? 'is-checked' : ''}">
-                      ${todayDaily.v1 ? '✓' : ''}
-                    </div>
-                    <div class="quest-info">
-                      <div class="quest-title-row">
-                        <strong>📹 1. Publicar Video #1 del Día</strong>
-                        <span class="quest-xp-tag">+100 XP</span>
+                  ${dailyMissions.map((m, idx) => {
+                    const isDone = !!todayDaily[m.id];
+                    return `
+                      <div class="quest-row ${isDone ? 'quest-done' : ''}" onclick="window.rumboGamify.toggleDailyQuest('${userId}', '${m.id}')">
+                        <div class="quest-check-box ${isDone ? 'is-checked' : ''}">
+                          ${isDone ? '✓' : ''}
+                        </div>
+                        <div class="quest-info">
+                          <div class="quest-title-row">
+                            <strong>${m.icon} ${idx === 0 ? '1. ' : (idx + 1) + '. '}${m.title}</strong>
+                            <span class="quest-xp-tag">+${m.xp} XP</span>
+                          </div>
+                          <p class="quest-desc">${m.desc}</p>
+                        </div>
                       </div>
-                      <p class="quest-desc">Grabar y publicar el guion del día en TikTok / Reels con gancho fuerte.</p>
-                    </div>
-                  </div>
-
-                  <!-- Daily Video 2 -->
-                  <div class="quest-row ${todayDaily.v2 ? 'quest-done' : ''}" onclick="window.rumboGamify.toggleDailyQuest('${userId}', 'v2')">
-                    <div class="quest-check-box ${todayDaily.v2 ? 'is-checked' : ''}">
-                      ${todayDaily.v2 ? '✓' : ''}
-                    </div>
-                    <div class="quest-info">
-                      <div class="quest-title-row">
-                        <strong>⚡ 2. Publicar Video #2 (Doble Tráfico)</strong>
-                        <span class="quest-xp-tag">+100 XP</span>
-                      </div>
-                      <p class="quest-desc">Subir un segundo video para duplicar el alcance y prospectos.</p>
-                    </div>
-                  </div>
-
-                  <!-- Daily Comments 3 -->
-                  <div class="quest-row ${todayDaily.v3 ? 'quest-done' : ''}" onclick="window.rumboGamify.toggleDailyQuest('${userId}', 'v3')">
-                    <div class="quest-check-box ${todayDaily.v3 ? 'is-checked' : ''}">
-                      ${todayDaily.v3 ? '✓' : ''}
-                    </div>
-                    <div class="quest-info">
-                      <div class="quest-title-row">
-                        <strong>💬 3. Comentar en 5 Videos Virales de tu Nicho</strong>
-                        <span class="quest-xp-tag">+50 XP</span>
-                      </div>
-                      <p class="quest-desc">Dejar aportes de valor en videos con muchas visitas para atraer curiosos a tu perfil.</p>
-                    </div>
-                  </div>
-
-                  <!-- Daily Study 4 -->
-                  <div class="quest-row ${todayDaily.v4 ? 'quest-done' : ''}" onclick="window.rumboGamify.toggleDailyQuest('${userId}', 'v4')">
-                    <div class="quest-check-box ${todayDaily.v4 ? 'is-checked' : ''}">
-                      ${todayDaily.v4 ? '✓' : ''}
-                    </div>
-                    <div class="quest-info">
-                      <div class="quest-title-row">
-                        <strong>📚 4. Ver 1 Clase o Repasar 1 Capítulo</strong>
-                        <span class="quest-xp-tag">+50 XP</span>
-                      </div>
-                      <p class="quest-desc">Dedicar 10 a 15 min a capacitarte en una de las 4 habilidades o el Manual.</p>
-                    </div>
-                  </div>
+                    `;
+                  }).join('')}
                 </div>
 
               </div>
