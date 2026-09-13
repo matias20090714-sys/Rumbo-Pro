@@ -96,38 +96,6 @@ const INITIAL_COURSES = [
         ]
       }
     ]
-  },
-  {
-    id: 'course-hotmart',
-    title: 'HOTMART',
-    badge: 'FORMACION ONLINE',
-    icon: '🔥',
-    description: 'Ventas de productos digitales con tráfico orgánico (Método Fukuda - Poder Orgánico).',
-    active: true,
-    modules: [
-      {
-        id: 'mod-hot-1',
-        title: 'Método Fukuda - Poder Orgánico',
-        lessons: [
-          { id: 'les-hot-1', title: '1. BIENVENIDOS', duration: 'Clase en Video', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1h6x4D_k_uhCVFBPjVxfL3G6pTLoLLljn#grid', driveLink: 'https://drive.google.com/drive/folders/1h6x4D_k_uhCVFBPjVxfL3G6pTLoLLljn', content: 'Bienvenida y orientación general del curso.' },
-          { id: 'les-hot-2', title: '2. GRUPOS PRIVADOS', duration: 'Clase en Video', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1le0KS8R7rb02YW2DoPBjvksvS-9OQ0Y5#grid', driveLink: 'https://drive.google.com/drive/folders/1le0KS8R7rb02YW2DoPBjvksvS-9OQ0Y5', content: 'Comunidades y canales de soporte.' },
-          { id: 'les-hot-3', title: '3. CONOCE TU PLATAFORMA', duration: 'Clase en Video', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1fiZKgrTeoZiSapWj-DJagfciLcpmTMXj#grid', driveLink: 'https://drive.google.com/drive/folders/1fiZKgrTeoZiSapWj-DJagfciLcpmTMXj', content: 'Manejo y configuración de Hotmart.' },
-          { id: 'les-hot-4', title: '4. TUS HERRAMIENTAS', duration: 'Clase en Video', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1kUHGLMarw0RVHFs6ETgOWRBhI4oNBj1I#grid', driveLink: 'https://drive.google.com/drive/folders/1kUHGLMarw0RVHFs6ETgOWRBhI4oNBj1I', content: 'Recursos y software para operar.' },
-          { id: 'les-hot-5', title: '5. INTRODUCCION AL TRAFICO ORGANICO', duration: 'Clase en Video', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1b4n_B-g1u02HkIE5KvwsPnNtAY_r2Qj4#grid', driveLink: 'https://drive.google.com/drive/folders/1b4n_B-g1u02HkIE5KvwsPnNtAY_r2Qj4', content: 'Atracción de prospectos sin pagar publicidad.' },
-          { id: 'les-hot-6', title: '6. GATILLOS MENTALES Y COPYWRITING', duration: 'Clase en Video', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1IleRz3YJzFxrhXOaoLYk5m9a83htOLfc#grid', driveLink: 'https://drive.google.com/drive/folders/1IleRz3YJzFxrhXOaoLYk5m9a83htOLfc', content: 'Persuasión escrita y disparadores psicológicos.' },
-          { id: 'les-hot-7', title: '7. VENTAS LOW TICKET', duration: 'Clase en Video', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1KYJ1eMfEY6pyH1Uzqm7ThVg0cevrGHg_#grid', driveLink: 'https://drive.google.com/drive/folders/1KYJ1eMfEY6pyH1Uzqm7ThVg0cevrGHg_', content: 'Estrategias para comercializar productos de bajo costo.' },
-          { id: 'les-hot-8', title: '8. NICHO DEL DINERO $ - High Ticket', duration: 'Clase en Video', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1CFvoiX9DqKe9k3BxzAb4rMuJzKn5jyXU#grid', driveLink: 'https://drive.google.com/drive/folders/1CFvoiX9DqKe9k3BxzAb4rMuJzKn5jyXU', content: 'Ofertas de alto valor en el sector de negocios y dinero.' },
-          { id: 'les-hot-9', title: '9. CASO DE ESTUDIO HIGH TICKET', duration: 'Clase en Video', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1-CL8tXBqBDhSHq_D_gQKwTFnjUBSU6sc#grid', driveLink: 'https://drive.google.com/drive/folders/1-CL8tXBqBDhSHq_D_gQKwTFnjUBSU6sc', content: 'Desglose práctico de ventas de alto valor.' },
-          { id: 'les-hot-10', title: '10. CREACION DE COMUNIDAD', duration: 'Clase en Video', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1iNrFwIxpyfB8qsU-vlh1-x0pSxp40HWU#grid', driveLink: 'https://drive.google.com/drive/folders/1iNrFwIxpyfB8qsU-vlh1-x0pSxp40HWU', content: 'Construcción y nutrición de audiencias leales.' },
-          { id: 'les-hot-11', title: '11. LANZAMIENTOS ORGÁNICOS', duration: 'Clase en Video', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1JZbTe4U0zrn8bYFFyveVZSuX6Y7DixxT#grid', driveLink: 'https://drive.google.com/drive/folders/1JZbTe4U0zrn8bYFFyveVZSuX6Y7DixxT', content: 'Fórmula de lanzamiento paso a paso.' },
-          { id: 'les-hot-12', title: '12. BONO - FACEBOOK MASTERS', duration: 'Clase en Video', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=13KJI7z4DLbk1yWbXHgZwwqkXuz8JZjNG#grid', driveLink: 'https://drive.google.com/drive/folders/13KJI7z4DLbk1yWbXHgZwwqkXuz8JZjNG', content: 'Técnicas avanzadas en grupos y perfiles de Facebook.' },
-          { id: 'les-hot-13', title: '13. BONO ESPECIAL - REPOTENCIA TUS CUENTAS DE INSTAGRAM', duration: 'Clase en Video', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1Ayy6mIwVXMtM2cvWCqXmn41BTMN-5un0#grid', driveLink: 'https://drive.google.com/drive/folders/1Ayy6mIwVXMtM2cvWCqXmn41BTMN-5un0', content: 'Crecimiento orgánico acelerado en Instagram.' },
-          { id: 'les-hot-14', title: '14. BONO ESPECIAL - VENTAS POR YOUTUBE', duration: 'Clase en Video', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1Tibw2wZyg-ICXsrbf9wUymslmQ6Sjcm_#grid', driveLink: 'https://drive.google.com/drive/folders/1Tibw2wZyg-ICXsrbf9wUymslmQ6Sjcm_', content: 'Conversión de suscriptores y visualizaciones en ventas.' },
-          { id: 'les-hot-15', title: '15. BONO ESPECIAL - DISEÑO PUBLICITARIO PROFESIONAL', duration: 'Clase en Video', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=1I5idERzuKuD8LpPQR12b1htmZpF8iSzJ#grid', driveLink: 'https://drive.google.com/drive/folders/1I5idERzuKuD8LpPQR12b1htmZpF8iSzJ', content: 'Creativos y piezas gráficas de alto impacto.' },
-          { id: 'les-hot-16', title: '16. CLASES EN VIVO', duration: 'Clase en Video', type: 'drive', videoUrl: 'https://drive.google.com/embeddedfolderview?id=18-b8cTfWg_EvknhVcvFrcbxmNXzpGiFE#grid', driveLink: 'https://drive.google.com/drive/folders/18-b8cTfWg_EvknhVcvFrcbxmNXzpGiFE', content: 'Sesiones de preguntas, respuestas y análisis en vivo.' }
-        ]
-      }
-    ]
   }
 ];
 
@@ -145,7 +113,7 @@ class RumboProDB {
   }
 
   async initDatabase() {
-    const CURRENT_VERSION = 'v12-4-courses-cm-single-mod-manual-afiliados';
+    const CURRENT_VERSION = 'v13-3-courses-no-hotmart';
     if (localStorage.getItem('rumbopro_folders_version') !== CURRENT_VERSION) {
       localStorage.setItem(DB_KEY_COURSES, JSON.stringify(INITIAL_COURSES));
       localStorage.setItem('rumbopro_folders_version', CURRENT_VERSION);
