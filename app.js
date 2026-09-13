@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const notifications = [
     { name: 'Lucas de Argentina 🇦🇷', action: 'Comenzó el curso de E-Commerce' },
     { name: 'Camila de Uruguay 🇺🇾', action: 'Completó el curso de Closer de Ventas' },
-    { name: 'Mateo de Chile 🇨🇱', action: 'Accedió al Método Fukuda de Hotmart' },
+    { name: 'Mateo de Chile 🇨🇱', action: 'Accedió al Sistema de Afiliados al 90%' },
     { name: 'Valentina de Colombia 🇨🇴', action: 'Obtuvo su Certificado Oficial' },
     { name: 'Agustín de México 🇲🇽', action: 'Se unió a la comunidad de Rumbo Pro' }
   ];
@@ -150,7 +150,7 @@ window.handleQuizAnswer = function(step, answerKey) {
       title = 'E-Commerce & Dropshipping con TikTok';
       desc = 'Tu ruta ideal es crear y gestionar tiendas online sin stock físico, aprovechando la viralidad orgánica de TikTok para vender productos.';
     } else if (userQuizAnswers.step_2 === 'style_anon') {
-      title = 'Marketing de Afiliados (Marca Incógnita) + Hotmart';
+      title = 'Marketing de Afiliados (Marca Incógnita) al 90%';
       desc = 'Ideal para ganar comisiones altas ($87 USD por venta) creando cuentas de contenido temático sin mostrar tu cara ni tu voz.';
     } else if (userQuizAnswers.step_2 === 'style_talk') {
       title = 'Closer de Ventas Profesional Remoto';
