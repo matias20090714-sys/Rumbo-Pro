@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   revealElements.forEach(el => revealObserver.observe(el));
 
-  // 2. Interactive Afiliados Calculator (90% Comisión)
+  // 2. Interactive Afiliados Calculator (80% Comisión)
   const calcPriceInput = document.getElementById('calc-price');
   const calcSalesInput = document.getElementById('calc-sales');
   const calcResultAmount = document.getElementById('calc-result-amount');
@@ -35,8 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (price < 0) price = 0;
     if (sales < 0) sales = 0;
 
-    // Calculation formula: PRECIO × VENTAS × 90%
-    const totalCommission = price * sales * 0.90;
+    // Calculation formula: PRECIO × VENTAS × 80%
+    const totalCommission = price * sales * 0.80;
 
     // Format output as currency in US Dollars (US$)
     const formattedNumber = new Intl.NumberFormat('en-US', {
@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const notifications = [
     { name: 'Lucas de Argentina 🇦🇷', action: 'Comenzó el curso de E-Commerce' },
     { name: 'Camila de Uruguay 🇺🇾', action: 'Completó el curso de Closer de Ventas' },
-    { name: 'Mateo de Chile 🇨🇱', action: 'Accedió al Sistema de Afiliados al 90%' },
+    { name: 'Mateo de Chile 🇨🇱', action: 'Accedió al Sistema de Afiliados al 80%' },
     { name: 'Valentina de Colombia 🇨🇴', action: 'Obtuvo su Certificado Oficial' },
     { name: 'Agustín de México 🇲🇽', action: 'Se unió a la comunidad de Rumbo Pro' }
   ];
@@ -150,7 +150,7 @@ window.handleQuizAnswer = function(step, answerKey) {
       title = 'E-Commerce & Dropshipping con TikTok';
       desc = 'Tu ruta ideal es crear y gestionar tiendas online sin stock físico, aprovechando la viralidad orgánica de TikTok para vender productos.';
     } else if (userQuizAnswers.step_2 === 'style_anon') {
-      title = 'Marketing de Afiliados (Marca Incógnita) al 90%';
+      title = 'Marketing de Afiliados (Marca Incógnita) al 80%';
       desc = 'Ideal para ganar comisiones altas ($87 USD por venta) creando cuentas de contenido temático sin mostrar tu cara ni tu voz.';
     } else if (userQuizAnswers.step_2 === 'style_talk') {
       title = 'Closer de Ventas Profesional Remoto';
